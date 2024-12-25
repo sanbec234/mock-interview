@@ -1,0 +1,61 @@
+/* Global styles for the CompletionPage */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure the body and html take the full viewport height */
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure content stretches across the full width */
+    justify-content: space-between; /* Ensure the header and footer are spaced out properly */
+    min-height: 100vh; /* Full viewport height */
+    background-color: #f1f1f1;
+}
+
+header {
+    width: 100%;
+    background-color: #4CAF50; /* Header background color */
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.main-content {
+    margin-top: 120px; /* Give space for the fixed header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden; /* Prevent scrolling in main content */
+}
+
+/* Completion message styling */
+.completion-message {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.completion-message h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+footer {
+    width: 100%;
+    background-color: #4CAF50;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 1rem;
+}
