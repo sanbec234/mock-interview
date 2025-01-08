@@ -622,3 +622,79 @@ Total Score: 0.0
 
 Total Test Score: 0.0%
 
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: fdgfhgjh
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user introduction provided, "fdgfhgjh", is completely irrelevant to the job description. The introduction does not mention any relevant skills, experience, or qualifications listed in the job description. It lacks clarity, specificity, and professionalism, making it difficult to evaluate the candidate's suitability for the Frontend Developer role.
+Total Score: 0.0
+------------------------------
+Question: What is a hypervisor in the context of virtual machines?
+Reference Answer: A hypervisor, also known as a virtual machine monitor (VMM), is a piece of software that creates and manages virtual machines (VMs) on a physical host machine.
+User Answer: eafrfsgtdhf
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "eafrfsgtdhf", is completely irrelevant to the given question and reference answer. The answer is a series of nonsensical characters that do not provide any information about what a hypervisor is in the context of virtual machines. There is no attempt to explain or describe the concept of a hypervisor, making the answer irrelevant and useless.
+Total Score: 0.0
+------------------------------
+Question: What is file compression?
+Reference Answer: File compression is the process of reducing the size of a file or data by removing redundant or unnecessary information, making it easier to store or transfer.
+User Answer: fsfgdf
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "fsfgdf" is completely irrelevant to the question "What is file compression?" and does not address the topic at all. The answer does not provide any information about file compression, and it does not show any understanding of the concept. Therefore, it receives a score of 0.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: fdgfhgjh
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: This introduction is completely irrelevant to the job description. The user did not provide any information about their experience, skills, or qualifications that are mentioned in the job description. The introduction does not demonstrate clarity, specificity, or professionalism. It appears to be random characters with no relevance to the job description.
+Total Score: 0.0
+------------------------------
+Question: What is a hypervisor in the context of virtual machines?
+Reference Answer: A hypervisor, also known as a virtual machine monitor (VMM), is a piece of software that creates and manages virtual machines (VMs) on a physical host machine.
+User Answer: eafrfsgtdhf
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "eafrfsgtdhf" is completely irrelevant to the question about what a hypervisor is in the context of virtual machines. The response is a random string of characters and does not provide any information or context related to the topic. Therefore, it is not possible to evaluate the completeness, accuracy, or contextual alignment of the answer.
+Total Score: 0.0
+------------------------------
+Question: What is file compression?
+Reference Answer: File compression is the process of reducing the size of a file or data by removing redundant or unnecessary information, making it easier to store or transfer.
+User Answer: fsfgdf
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "fsfgdf" does not provide any relevant information regarding file compression. It appears to be a random sequence of characters, making it completely irrelevant to the question and reference answer.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
