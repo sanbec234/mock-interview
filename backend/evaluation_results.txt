@@ -1,0 +1,76 @@
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: I am venkatprasadh.
+Grammar Score: 0.67
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's introduction does not provide any relevant information about their qualifications, skills, or experience in frontend development. The introduction simply consists of a single name, "venkatprasadh," which does not align with the key responsibilities and qualifications listed in the job description. The evaluation criteria emphasize clarity, specificity, and professionalism, and this introduction falls short of meeting these expectations. Therefore, the relevance score is 0, indicating that the introduction is completely irrelevant to the job description.
+Total Score: 0.04
+------------------------------
+Question: What is the difference between an absolute path and a relative path in Unix?
+Reference Answer: An absolute path in Unix refers to a path that is specified from the root directory (/), whereas a relative path is a path specified from the current working directory. Absolute paths are usually written in the format /path/to/resource, while relative paths can be written in the format ./path/to/resource or even just path/to/resource.
+User Answer: Absolute path gives the path when, the path of a file is searched in the same device. Relative path is the path that is given when searched for a file in another system.
+Grammar Score: 1.0
+Cosine Similarity Score: 0.47
+Keyword Score: 0.0
+LLM Relevance Score: 2.0
+LLM Suggestion: The user's answer is partially accurate but lacks clarity and contextual alignment with the reference answer. The reference answer explains that an absolute path starts from the root directory, while a relative path starts from the current working directory. The user's answer implies that the main difference is whether the path is searched within the same device or another system, which is not the key distinction made in the reference answer. While the user mentions "the path of a file is searched" which is related to searching for a path, the explanation is unclear and does not accurately convey the concept of absolute and relative paths in Unix.
+Total Score: 0.24
+------------------------------
+Question: What is the difference between an absolute path and a relative path in Unix?
+Reference Answer: An absolute path in Unix refers to a path that is specified from the root directory (/), whereas a relative path is a path specified from the current working directory. Absolute paths are usually written in the format /path/to/resource, while relative paths can be written in the format ./path/to/resource or even just path/to/resource.
+User Answer: I don't Know
+Grammar Score: 1.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.01
+LLM Relevance Score: 1.0
+LLM Suggestion: The user's answer is minimally relevant to the question, as it does not provide any meaningful information or attempt to address the difference between absolute and relative paths in Unix. The answer is essentially a simple statement of "I don't know," which does not contribute to understanding the concept. A score of 1 indicates that the answer is not even marginally relevant to the question, making it completely unhelpful.
+Total Score: 0.13
+------------------------------
+
+Total Test Score: 0.41%
+
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: I am venkatprasadh.
+Grammar Score: 0.67
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's introduction does not mention any relevant information related to the job description. It simply states the user's name, "venkatprasadh", without providing any details about their skills, experience, or qualifications that align with the key responsibilities and requirements listed in the job description. Therefore, the introduction is completely irrelevant to the job opening.
+Total Score: 0.04
+------------------------------
+Question: What is the difference between an absolute path and a relative path in Unix?
+Reference Answer: An absolute path in Unix refers to a path that is specified from the root directory (/), whereas a relative path is a path specified from the current working directory. Absolute paths are usually written in the format /path/to/resource, while relative paths can be written in the format ./path/to/resource or even just path/to/resource.
+User Answer: Absolute path gives the path when, the path of a file is searched in the same device. Relative path is the path that is given when searched for a file in another system.
+Grammar Score: 1.0
+Cosine Similarity Score: 0.47
+Keyword Score: 0.0
+LLM Relevance Score: 2.0
+LLM Suggestion: The user's answer partially addresses the question about the difference between absolute and relative paths in Unix, but with some inaccuracies and misunderstandings. While they correctly mention that absolute paths refer to a path specified from the root directory, their explanation of absolute paths is incomplete and unclear. They state that absolute paths give the path when the file is searched in the same device, which is not accurate. Absolute paths can be used regardless of the device, as long as the Unix system is able to read the file system.
+Total Score: 0.24
+------------------------------
+Question: What is the difference between an absolute path and a relative path in Unix?
+Reference Answer: An absolute path in Unix refers to a path that is specified from the root directory (/), whereas a relative path is a path specified from the current working directory. Absolute paths are usually written in the format /path/to/resource, while relative paths can be written in the format ./path/to/resource or even just path/to/resource.
+User Answer: I don't Know
+Grammar Score: 1.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.01
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "I don't Know", is completely irrelevant to the question "What is the difference between an absolute path and a relative path in Unix?" The reference answer provides a detailed explanation of the difference between absolute and relative paths in Unix, but the user's answer does not attempt to address the question or provide any information related to the topic.
+Total Score: 0.03
+------------------------------
+
+Total Test Score: 0.30999999999999994%
+
