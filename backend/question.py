@@ -1,8 +1,9 @@
 import pandas as pd
-
+import os
 def get_least_asked_questions(difficulty_level, num_questions=1):
     # Specify the path to the CSV file
-    csv_file = r'C:\Users\mohan\Downloads\mock-interview-main (1)\mock-interview-main\questions_without_errors1.csv'
+    base_dir = os.path.dirname(__file__)  # Directory of the current script
+    csv_file = os.path.join(base_dir, "questions_without_errors1.csv")
 
     # Load the CSV file into a DataFrame with encoding specified
     try:

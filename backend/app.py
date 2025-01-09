@@ -9,7 +9,7 @@ from evaluation import calculate_cosine_similarity, calculate_keyword_score, che
 app = Flask(__name__)
 import os
 app.secret_key = os.getenv('SECRET_KEY', 'fallback-key')
-mongo_client = MongoClient("mongodb+srv://root:Root@cluster0.trkjc.mongodb.net/")
+mongo_client = MongoClient("mongodb+srv://21z221:0000@cluster0.i0qha.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = mongo_client["test_results_db"]  # Replace with your database name
 collection = db["test_results"]       
   # Make sure to use a secret key for session management

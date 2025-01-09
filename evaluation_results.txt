@@ -698,3 +698,79 @@ Total Score: 0.0
 
 Total Test Score: 0.0%
 
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: bvnm
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's introduction "bvnm" is completely irrelevant to the job description. It lacks any information about the candidate's skills, experience, or qualifications that are relevant to the Frontend Developer role, such as proficiency in React, JavaScript, or HTML/CSS. The introduction does not demonstrate the candidate's understanding of responsive design, state management tools like Redux, or other desired skills mentioned in the job description.
+Total Score: 0.0
+------------------------------
+Question: What is an inode in the Unix file system?
+Reference Answer: An inode (index node) is a data structure in a Unix file system that represents a file or directory. Each inode contains metadata about the file or directory, including its name, size, permissions, and ownership.
+User Answer: nv vbmn,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is completely irrelevant to the question about what an inode is in the Unix file system. The provided answer "nv vbmn" appears to be nonsense and does not contain any information related to the concept of inode or its definition. The answer does not provide any details about inode's metadata, name, size, permissions, and ownership as mentioned in the reference answer. Therefore, the answer is not only incorrect but also unrelated to the question.
+Total Score: 0.0
+------------------------------
+Question: What is a virtual file system?
+Reference Answer: A virtual file system is a software
+User Answer: dsfvd
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "dsfvd" is completely irrelevant to the question about what a virtual file system is. The answer does not contain any information related to the topic, and it appears to be a nonsensical string of characters. Therefore, I would give a score of 0, indicating that the answer is not relevant to the question at all.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: bvnm
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user introduction "bvnm" appears to be a random sequence of characters and does not provide any relevant information about the user's skills, experience, or qualifications for the Frontend Developer role. It lacks clarity, specificity, and professionalism, making it completely irrelevant to the job description.
+Total Score: 0.0
+------------------------------
+Question: What is an inode in the Unix file system?
+Reference Answer: An inode (index node) is a data structure in a Unix file system that represents a file or directory. Each inode contains metadata about the file or directory, including its name, size, permissions, and ownership.
+User Answer: nv vbmn,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is "nv vbmn," which is completely irrelevant to the question and reference answer. The answer does not provide any information about inodes in the Unix file system, and it appears to be a random collection of characters. The user's response does not demonstrate an understanding of the topic and is not a relevant answer.
+Total Score: 0.0
+------------------------------
+Question: What is a virtual file system?
+Reference Answer: A virtual file system is a software
+User Answer: dsfvd
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "dsfvd" is completely irrelevant to the question "What is a virtual file system?" and the reference answer "A virtual file system is a software". The answer does not provide any information or description about virtual file systems, and it is not even a coherent statement. Therefore, it does not meet any of the evaluation criteria for relevance, accuracy, or contextual alignment with the reference answer.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
