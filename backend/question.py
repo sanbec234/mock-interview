@@ -9,7 +9,7 @@ def get_least_asked_questions(difficulty_level, num_questions=1):
     try:
         df = pd.read_csv(csv_file, encoding='ISO-8859-1')  # Adjust encoding if needed
     except Exception as e:
-        print(f"Error reading the CSV file: {e}")
+        print("Error reading the CSV file: {}".format(e))
         return []
 
     # Remove numbers from the 'Question' column
@@ -36,6 +36,6 @@ def get_least_asked_questions(difficulty_level, num_questions=1):
     try:
         df.to_csv(csv_file, index=False, encoding='ISO-8859-1')  # Match encoding used during reading
     except Exception as e:
-        print(f"Error saving the CSV file: {e}")
+        print("Error reading the CSV file: {}".format(e))
 
     return selected_questions

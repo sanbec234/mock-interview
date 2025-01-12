@@ -226,3 +226,79 @@ Total Score: 0.0
 
 Total Test Score: 0.0%
 
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: hgj
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user introduction provided, "hgj", does not contain any relevant information related to the job description. It lacks clarity, specificity, and professionalism, and does not mention any of the required or preferred skills mentioned in the job description. As a result, it is completely irrelevant to the Frontend Developer role being described.
+Total Score: 0.0
+------------------------------
+Question: What are the advantages of using an operating system?
+Reference Answer: The advantages of using an operating system include improved system management, enhanced security, faster processing, and better multitasking capabilities, as well as the ability to run multiple applications simultaneously.
+User Answer: svfdfgfh
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "svfdfgfh" is completely irrelevant to the question "What are the advantages of using an operating system?" The answer does not contain any meaningful information or keywords related to the question, and it appears to be a random collection of characters. Thus, it does not provide any useful insights or relevance to the question.
+Total Score: 0.0
+------------------------------
+Question: What is an orphan process?
+Reference Answer: An orphan process is a process in a computer program that has finished execution, but its parent process (or the program that invoked it) has already terminated, leaving the process without a parent process to monitor its termination.
+User Answer: vfb
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "vfb" is completely irrelevant to the question asked. The provided answer does not provide any information or explanation about what an orphan process is, which is the main objective of the question. The answer seems to be a random combination of letters and lacks any context or relation to the given question. Therefore, it scores 0 out of 5 for relevance.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: hgj
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user introduction "hgj" is completely irrelevant to the job description. The introduction lacks any information or context that would indicate the user's relevance to the Frontend Developer role. The user has not mentioned any skills, experience, or qualifications that align with the job requirements. A more relevant introduction would provide specific examples of the user's experience and skills in areas such as React, JavaScript, HTML, CSS, REST APIs, and state management tools like Redux.
+Total Score: 0.0
+------------------------------
+Question: What are the advantages of using an operating system?
+Reference Answer: The advantages of using an operating system include improved system management, enhanced security, faster processing, and better multitasking capabilities, as well as the ability to run multiple applications simultaneously.
+User Answer: svfdfgfh
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: Explanation: The user's answer is completely irrelevant to the question and reference answer. The provided response "svfdfgfh" does not contain any information related to the advantages of using an operating system, making it not applicable or relevant to the question.
+Total Score: 0.0
+------------------------------
+Question: What is an orphan process?
+Reference Answer: An orphan process is a process in a computer program that has finished execution, but its parent process (or the program that invoked it) has already terminated, leaving the process without a parent process to monitor its termination.
+User Answer: vfb
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "vfb" is completely irrelevant to the question about orphan processes. It appears to be a random string of letters and does not provide any context or information that relates to the concept of orphan processes. The completeness, accuracy, and contextual alignment with the reference answer are all lacking, resulting in a score of 0.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+

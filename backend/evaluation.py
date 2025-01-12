@@ -39,9 +39,9 @@ def calculate_keyword_score(user_answer, keywords):
 
 
 
-def check_grammar(user_answer):    
-    # Initialize LanguageTool for grammar checking
-    tool = language_tool_python.LanguageTool('en-US')
+def check_grammar(user_answer): 
+    tool = language_tool_python.LanguageToolPublicAPI('es') # use the public API, language Spanish
+
     
     # Check grammar using LanguageTool
     matches = tool.check(user_answer)
@@ -50,6 +50,7 @@ def check_grammar(user_answer):
     grammar_score = 1 - len(matches) / max(len(user_answer.split()), 1)
     
     return grammar_score
+    
 
 from groq import Groq  # Assuming Groq has such an import structure (Replace with correct one if not)
 
@@ -97,7 +98,7 @@ def check_relevance(question, reference_answer, user_answer):
         # Return both score and explanation
         return score, explanation.strip()
     except Exception as e:
-        print(f"Error parsing response: {e}")
+        print("Error parsing response: {}".format(e))
         return None, f"Error: Unable to process response. Details: {e}"
 
 
@@ -150,7 +151,7 @@ def check_introduction_relevance( user_introduction):
         # Return both score and explanation
         return score, explanation.strip()
     except Exception as e:
-        print(f"Error parsing response: {e}")
+        print("Error parsing response: {}".format(e))
         return None
 
 def append_evaluation_to_file(evaluations, mark):
@@ -170,5 +171,6 @@ def append_evaluation_to_file(evaluations, mark):
         
         # Write the final score to the file
         final_score = mark
-        f.write(f"\nTotal Test Score: {final_score}%\n\n")
+        f.write("\nTotal Test Score: {}%\n\n".format(final_score))
+
 

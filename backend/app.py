@@ -138,7 +138,8 @@ def completion_page():
     append_evaluation_to_file(evaluations, mark)
 
     final_score = round((mark / len(user_data["questions"])) * 100, 2)
-    print(f"\nTotal Test Score: {final_score}%")
+    print("\nTotal Test Score: {}%".format(final_score))
+
     try:
         result_data = {  # Replace with actual user ID
             "test_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -148,10 +149,11 @@ def completion_page():
         collection.insert_one(result_data)
         print("Results successfully uploaded to MongoDB.")
     except Exception as e:
-        print(f"Error uploading results to MongoDB: {e}")
+        print("Error uploading results to MongoDB: {}".format(e))
+
     
     return jsonify({
-        "message": f"Score: {final_score}%",
+        "message": "Score: {}".format(final_score),
         "final_score": final_score,
         "evaluations": evaluations
     })
@@ -180,7 +182,8 @@ def submit_answer():
         return jsonify({"error": "Invalid data"}), 400
 
     answer = data['answer']
-    print(f"Received answer: {answer}")  # Log the received answer for debugging
+    print("Received answer: {}".format(answer))  # Log the received answer for debugging
+ # Log the received answer for debugging
 
     # Store the current answer, question, and reference answer
     user_data['answers'].append(answer)
@@ -189,8 +192,7 @@ def submit_answer():
 
     # Check if we've reached the question limit
     if question_counter["count"] >= 2:
-        
-        # Redirect to a different page after 11 questions
+        print("2")
         return jsonify({"redirect": True, "url": "/complete-test"})
 
     # Increment the counter and generate the next question
@@ -222,8 +224,9 @@ def login():
     print(email,password)
 
     # Log the received email and password
-    print(f"Email: {email}")
-    print(f"Password: {password}")
+    print("Email: {}".format(email))
+    print("Password: {}".format(password))
+
 
     # Example validation (replace with your own logic)
     if email == 'test@example.com' and password == 'password123':
@@ -236,5 +239,5 @@ def login():
         return jsonify({"message": "Invalid credentials"}), 401
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
