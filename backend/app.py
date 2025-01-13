@@ -15,6 +15,33 @@ question_counter = {
     ]
 }
 
+@app.route('/api/submit', methods=['POST'])
+def submit_data():
+    try:
+        # Get JSON data from the request body
+        data = request.get_json()
+
+        # Extract the data fields from the request
+        num_questions = data.get('numQuestions')
+        api_url = data.get('apiUrl')
+        selected_topics = data.get('selectedTopics')
+
+        # Here you can process and store the data (e.g., save to database or file)
+        # For now, we'll just print it to the console
+        print(f"Received data: numQuestions={num_questions}, apiUrl={api_url}, selectedTopics={selected_topics}")
+
+        # Respond back with a success message
+        return jsonify({'message': 'Data submitted successfully!'}), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'message': 'Failed to submit data'}), 500
+    
+@app.route('/api/topics', methods=['GET'])
+def get_topics():
+    topics = ["Algorithms", "Data Structures", "Databases", "System Design", "Machine Learning"]  # Replace with dynamic topics if needed
+    return jsonify({"topics": topics})
+
 @app.route('/start-test')
 def start_test():
     session['completed'] = False  # Mark the user as not completed initially
@@ -59,7 +86,7 @@ def submit_answer():
     print(f"Received answer: {answer}")  # Log the received answer for debugging
 
     # Check if we've reached the question limit
-    if question_counter["count"] >= 11:
+    if question_counter["count"] >= 2:
         # Redirect to a different page after 11 questions
         return jsonify({"redirect": True, "url": "/complete-test"})
 
