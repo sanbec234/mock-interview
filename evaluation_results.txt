@@ -774,3 +774,239 @@ Total Score: 0.0
 
 Total Test Score: 0.0%
 
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: hgjhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user introduction "hgjhkj" appears to be a random string of characters, unrelated to the job description or requirements listed. The introduction lacks clarity, specificity, and professionalism, making it difficult to assess its relevance. Since the introduction does not mention any relevant skills, experience, or qualifications, it is not relevant to the Frontend Developer role.
+Total Score: 0.0
+------------------------------
+Question: What is a swap space?
+Reference Answer: A swap space, also known as pagefile or paging space, is a special area on a hard drive that is used to store data that the operating system cannot hold in its main memory (RAM) because it is full.
+User Answer: ghgjhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is completely irrelevant to the question "What is a swap space?" as it appears to be a series of nonsensical characters ("ghgjhkj"). Providing such an answer does not provide any information or insight into the topic of swap spaces, and it is not a valid or coherent response to the question.
+Total Score: 0.0
+------------------------------
+Question: What are the different types of operating systems?
+Reference Answer: There are several types of operating systems, including Windows, macOS, Linux, Chrome OS, Android, and iOS.
+User Answer: jhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "jhkj", is completely irrelevant to the question "What are the different types of operating systems?" The answer lacks any information or mention of the different types of operating systems, and is instead a nonsensical string of characters. Therefore, it does not meet the evaluation criteria of completeness, accuracy, or contextual alignment with the reference answer.
+Total Score: 0.0
+------------------------------
+Question: What is a block in the context of file systems?
+Reference Answer: A block in the context of file systems is a unit of data that is read or written consecutively on a storage device, such as a hard disk or solid
+User Answer: bmj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "bmj", does not provide any relevant information or explanation regarding what a block is in the context of file systems. The answer is not a complete sentence, nor does it contain any accurate or contextually relevant information. Therefore, I would rate the relevance of the user's answer as 0, indicating that it is completely irrelevant to the question asked.
+Total Score: 0.0
+------------------------------
+Question: What is a file system cache?
+Reference Answer: A file system cache is a region of a computer's memory (RAM) where frequently
+User Answer: nmj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "nmj", is completely irrelevant to the question about what a file system cache is. The answer does not provide any information or explanation about the concept of a file system cache, and it does not match any of the keywords or concepts related to the topic.
+Total Score: 0.0
+------------------------------
+Question: What is a distributed operating system?
+Reference Answer: A distributed operating system is a type of operating system that allows multiple computers or nodes to work together as a single system, allowing for resource sharing, load balancing, and improved processing power.
+User Answer: kjkll
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "kjkll", is completely irrelevant to the question "What is a distributed operating system?" The answer does not provide any meaningful information related to the topic, and it appears to be a nonsensical sequence of characters. Therefore, it receives a score of 0, indicating that it is not relevant to the question at all.
+Total Score: 0.0
+------------------------------
+Question: What is a paging mechanism?
+Reference Answer: A paging mechanism is a technique used in operating systems to manage memory by dividing it into fixed
+User Answer: nk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "nk", is completely irrelevant to the question "What is a paging mechanism?" and does not provide any information about the concept of a paging mechanism, its purpose, or its implementation. The answer lacks completeness, accuracy, and contextual alignment with the reference answer, making it zero-relevance.
+Total Score: 0.0
+------------------------------
+Question: What is the purpose of the operating system kernel?
+Reference Answer: The operating system kernel acts as the core component of the operating system, managing hardware resources such as CPU time, memory, and storage to provide a platform for running applications and processes.
+User Answer: bjhjklk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is completely irrelevant to the question. The provided response, "bjhjklk", appears to be a random sequence of characters and does not contain any meaningful information about the purpose of an operating system kernel. The answer does not demonstrate understanding of the topic or provide any relevant information to help answer the question.
+Total Score: 0.0
+------------------------------
+Question: What is a priority scheduler?
+Reference Answer: A priority scheduler is a type of operating system scheduler that allocates CPU time to processes based on their priority, which is a measure of the process's importance or urgency.
+User Answer: mhj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "mhj" is not a relevant or meaningful response to the question "What is a priority scheduler?" The answer does not provide any information or explanation about priority schedulers, and it is not even a coherent sentence or phrase. Therefore, the relevance score is 0, indicating that the answer is completely irrelevant to the question.
+Total Score: 0.0
+------------------------------
+Question: What are the different types of file systems?
+Reference Answer: The different types of file systems include Hierarchical File System (HFS), File Allocation Table (FAT), New Technology File System (NTFS), ext2, ext3, ext4, XFS, JFS, and others.
+User Answer: hjkjl
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is completely irrelevant to the question about the different types of file systems. The provided response ("hjkjl") is not a recognizable phrase or sentence that could be related to the topic of file systems.
+Total Score: 0.0
+------------------------------
+Question: What is user authentication in operating systems?
+Reference Answer: User authentication is a process in operating systems that verifies the identity of a user and allows or denies access to system resources, ensuring the confidentiality, integrity, and availability of data.
+User Answer: jhklk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is completely irrelevant to the question as it is a series of nonsensical characters ("jhklk") and does not provide any information about user authentication in operating systems.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+
+Question: introduce yourself
+Reference Answer: 
+    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
+    and experience with REST APIs. The ideal candidate should have a strong understanding 
+    of responsive design, cross-browser compatibility, and state management tools like Redux. 
+    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
+    
+User Answer: hgjhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0
+Keyword Score: 0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's introduction, "hgjhkj", is completely irrelevant to the Frontend Developer job description. It does not provide any information about the candidate's skills, experience, or qualifications, nor does it demonstrate any clarity, specificity, or professionalism.
+Total Score: 0.0
+------------------------------
+Question: What is a swap space?
+Reference Answer: A swap space, also known as pagefile or paging space, is a special area on a hard drive that is used to store data that the operating system cannot hold in its main memory (RAM) because it is full.
+User Answer: ghgjhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "ghgjhkj" is completely irrelevant to the question "What is a swap space?" as it appears to be a random string of characters. The answer does not contain any information about a swap space, pagefile, or paging space, and therefore fails to provide any relevance to the question.
+Total Score: 0.0
+------------------------------
+Question: What are the different types of operating systems?
+Reference Answer: There are several types of operating systems, including Windows, macOS, Linux, Chrome OS, Android, and iOS.
+User Answer: jhkj
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "jhkj" is completely irrelevant to the question "What are the different types of operating systems?" The answer does not provide any information or hint about the types of operating systems, and it appears to be a random sequence of characters. There is no contextual alignment or accuracy in the answer, making it score 0.
+Total Score: 0.0
+------------------------------
+Question: What is a block in the context of file systems?
+Reference Answer: A block in the context of file systems is a unit of data that is read or written consecutively on a storage device, such as a hard disk or solid
+User Answer: bmj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "bmj", is completely irrelevant to the question about what a block is in the context of file systems. The answer does not provide any information about a block or its relevance to file systems, and it appears to be a random set of letters or initials. The evaluation criteria, including completeness, accuracy, and contextual alignment, are not met in this response.
+Total Score: 0.0
+------------------------------
+Question: What is a file system cache?
+Reference Answer: A file system cache is a region of a computer's memory (RAM) where frequently
+User Answer: nmj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: This answer is completely irrelevant to the question "What is a file system cache?" The provided response "nmj" does not provide any information or explanation about what a file system cache is, and it does not seem to be related to the topic at all. Therefore, the relevance score is 0.
+Total Score: 0.0
+------------------------------
+Question: What is a distributed operating system?
+Reference Answer: A distributed operating system is a type of operating system that allows multiple computers or nodes to work together as a single system, allowing for resource sharing, load balancing, and improved processing power.
+User Answer: kjkll
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "kjkll", is completely irrelevant to the question about what a distributed operating system is. The answer does not provide any information or explanation about the topic, and it is not related to the reference answer. The answer appears to be nonsensical and does not provide any value in understanding the concept of a distributed operating system.
+Total Score: 0.0
+------------------------------
+Question: What is a paging mechanism?
+Reference Answer: A paging mechanism is a technique used in operating systems to manage memory by dividing it into fixed
+User Answer: nk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "nk" is completely irrelevant to the question "What is a paging mechanism?" and lacks any information related to the topic. A relevant answer would provide a clear explanation or definition of a paging mechanism, which is not present in this response.
+Total Score: 0.0
+------------------------------
+Question: What is the purpose of the operating system kernel?
+Reference Answer: The operating system kernel acts as the core component of the operating system, managing hardware resources such as CPU time, memory, and storage to provide a platform for running applications and processes.
+User Answer: bjhjklk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "bjhjklk" is completely irrelevant to the question "What is the purpose of the operating system kernel?" as it appears to be a random sequence of letters and not a coherent answer. None of the characteristics of the answer, such as completeness, accuracy, or contextual alignment with the reference answer, are present. Therefore, the score is 0, indicating a completely irrelevant answer.
+Total Score: 0.0
+------------------------------
+Question: What is a priority scheduler?
+Reference Answer: A priority scheduler is a type of operating system scheduler that allocates CPU time to processes based on their priority, which is a measure of the process's importance or urgency.
+User Answer: mhj,
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer is not relevant to the question about priority schedulers. The answer "mhj" is unclear and does not provide any information that is related to the concept of priority schedulers. It does not mention anything about allocating CPU time to processes based on their priority, the definition of priority, or any other relevant details. Therefore, it is considered completely irrelevant to the question.
+Total Score: 0.0
+------------------------------
+Question: What are the different types of file systems?
+Reference Answer: The different types of file systems include Hierarchical File System (HFS), File Allocation Table (FAT), New Technology File System (NTFS), ext2, ext3, ext4, XFS, JFS, and others.
+User Answer: hjkjl
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer "hjkjl" is completely irrelevant to the question "What are the different types of file systems?" The answer does not contain any information about file systems, and it appears to be a random collection of characters. There is no accuracy, completeness, or contextual alignment with the reference answer, making it a completely irrelevant response.
+Total Score: 0.0
+------------------------------
+Question: What is user authentication in operating systems?
+Reference Answer: User authentication is a process in operating systems that verifies the identity of a user and allows or denies access to system resources, ensuring the confidentiality, integrity, and availability of data.
+User Answer: jhklk
+Grammar Score: 0.0
+Cosine Similarity Score: 0.0
+Keyword Score: 0.0
+LLM Relevance Score: 0.0
+LLM Suggestion: The user's answer, "jhklk", is completely irrelevant to the question about user authentication in operating systems. The answer does not provide any information, does not relate to the topic, and is not a relevant response to the question. Therefore, it scores 0.
+Total Score: 0.0
+------------------------------
+
+Total Test Score: 0.0%
+

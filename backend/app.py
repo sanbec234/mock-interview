@@ -5,6 +5,23 @@ from datetime import datetime
 
 from question import get_least_asked_questions
 from evaluation import calculate_cosine_similarity, calculate_keyword_score, check_grammar, check_relevance, check_introduction_relevance,append_evaluation_to_file
+import pymysql
+
+# Database connection details
+timeout = 10
+connection = pymysql.connect(
+    charset="utf8mb4",
+    connect_timeout=timeout,
+    cursorclass=pymysql.cursors.DictCursor,
+    db="Jasss",  # Replace with your actual database name
+    host="mysql-390a28f4-javagarm-bf62.c.aivencloud.com",  # Replace with your actual host
+    password="AVNS_XzZH4-okIadBScgtxaI",  # Replace with your actual password
+    read_timeout=timeout,
+    port=12629,  # Replace with your actual port if needed
+    user="avnadmin",  # Replace with your actual user
+    write_timeout=timeout,
+)
+cursor = connection.cursor()
 
 app = Flask(__name__)
 import os
@@ -15,13 +32,15 @@ collection = db["test_results"]
   # Make sure to use a secret key for session management
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 count = 0
-easy_no = 2
-medium_no = 5
-hard_no = 7
+easy_no = 50
+tot_no=200
+medium_no = 100
+hard_no = 150
 diff = "Easy"
 ans = ""
 ques = ""
 key = ""
+api=""
 diffculty = {
     "Easy": 1,
     "Medium": 2,
@@ -49,6 +68,7 @@ user_data = {
 }
 @app.route('/api/submit', methods=['POST'])
 def submit_data():
+    global tot_no,easy_no,medium_no,api
     try:
         # Get JSON data from the request body
         data = request.get_json()
@@ -57,13 +77,19 @@ def submit_data():
         num_questions = data.get('numQuestions')
         api_url = data.get('apiUrl')
         selected_topics = data.get('selectedTopics')
+        tot_no=num_questions
+        easy_no=num_questions*0.4
+        medium_no=num_questions*0.7
+        api=api_url
+
+        
 
         # Here you can process and store the data (e.g., save to database or file)
         # For now, we'll just print it to the console
         print(f"Received data: numQuestions={num_questions}, apiUrl={api_url}, selectedTopics={selected_topics}")
 
         # Respond back with a success message
-        return jsonify({'message': 'Data submitted successfully!'}), 200
+        return jsonify({"redirect": True, "url": "/home"})
 
     except Exception as e:
         print(f"Error: {e}")
@@ -71,7 +97,12 @@ def submit_data():
 
 @app.route('/api/topics', methods=['GET'])
 def get_topics():
-    topics = ["Algorithms", "Data Structures", "Databases", "System Design", "Machine Learning"]  # Replace with dynamic topics if needed
+    cursor.execute("SELECT DISTINCT subject FROM question_bank")
+    result = cursor.fetchall()
+
+    # Collect distinct subjects into a list
+    topics = [row['subject'] for row in result]
+    
     return jsonify({"topics": topics})   
 
 @app.route('/start-test')
@@ -95,11 +126,12 @@ def complete_test():
 def completion_page():
     mark = 0
     evaluations = []
+    global api
 
     print("------- Test Completion -------")
     gra = check_grammar(user_data["answers"][0])
     gra = round(float(gra) if isinstance(gra, (int, float)) else 0.0, 2)
-    llm, expl = check_introduction_relevance(user_data["answers"][0])
+    llm, expl = check_introduction_relevance(user_data["answers"][0],api)
     llm = round(float(llm) if isinstance(llm, (int, float)) else 0.0, 2)
     expl = expl if isinstance(expl, str) else "No explanation provided."
     avg_score = round((gra * 0.3 + llm * 0.7) / 5, 2)
@@ -138,7 +170,7 @@ def completion_page():
         gra = check_grammar(user_answer)
         gra = round(float(gra) if isinstance(gra, (int, float)) else 0.0, 2)
         
-        llm, expl = check_relevance(question, reference_answer, user_answer)
+        llm, expl = check_relevance(question, reference_answer, user_answer,api)
         llm = round(float(llm) if isinstance(llm, (int, float)) else 0.0, 2)
         expl = expl if isinstance(expl, str) else "No explanation provided."
 
@@ -160,7 +192,7 @@ def completion_page():
             "explanation": expl
         })
 
-    # Call the function to append evaluations to the file
+
     append_evaluation_to_file(evaluations, mark)
 
     final_score = round((mark / len(user_data["questions"])) * 100, 2)
@@ -192,7 +224,7 @@ def home():
 
 @app.route('/api/send-answer', methods=['POST', 'OPTIONS'])
 def submit_answer():
-    global count, diff, mark, ans, ques, key, total, question_counter
+    global count, diff, mark, ans, ques, key, total, question_counter,tot_no
 
     # Handle the preflight OPTIONS request
     if request.method == 'OPTIONS':
@@ -217,7 +249,7 @@ def submit_answer():
     user_data['reference_answers'].append(ans)
 
     # Check if we've reached the question limit
-    if question_counter["count"] >= 2:
+    if question_counter["count"] >= tot_no:
         print("2")
         return jsonify({"redirect": True, "url": "/complete-test"})
 

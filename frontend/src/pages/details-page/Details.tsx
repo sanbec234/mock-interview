@@ -2,6 +2,8 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import './details.css';
 import Header from './../../components/Header/Header.tsx';
 import Footer from './../../components/Footer/Footer.tsx';
+import { useNavigate } from 'react-router-dom'; // Use the navigate function
+
 
 const DetailsPage: React.FC = () => {
   const [numQuestions, setNumQuestions] = useState<number | string>('');
@@ -10,6 +12,7 @@ const DetailsPage: React.FC = () => {
   const [topics, setTopics] = useState<string[]>([]); // Topics fetched from the backend
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+  const navigate = useNavigate(); // useNavigate hook for routing
 
   // Fetch topics from the backend
   useEffect(() => {
@@ -76,6 +79,7 @@ const DetailsPage: React.FC = () => {
       const result = await response.json();
       console.log('Form submitted successfully:', result);
       alert('Form submitted successfully!');
+      navigate('/home'); // Redirects to the home page
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to submit form');

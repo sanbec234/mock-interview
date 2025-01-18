@@ -54,8 +54,8 @@ def check_grammar(user_answer):
 
 from groq import Groq  # Assuming Groq has such an import structure (Replace with correct one if not)
 
-def check_relevance(question, reference_answer, user_answer):
-    client = Groq(api_key="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")
+def check_relevance(question, reference_answer, user_answer,api):
+    client = Groq(api_key=api)
     
     relevance_score_prompt = f"""
     Analyze and rate the relevance of the user's answer in relation to the given question and reference answer.
@@ -102,7 +102,7 @@ def check_relevance(question, reference_answer, user_answer):
         return None, f"Error: Unable to process response. Details: {e}"
 
 
-def check_introduction_relevance( user_introduction):
+def check_introduction_relevance( user_introduction,api):
     from groq import Groq  # Ensure the correct library import
     job_description = """
     Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
@@ -110,7 +110,7 @@ def check_introduction_relevance( user_introduction):
     of responsive design, cross-browser compatibility, and state management tools like Redux. 
     Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
     """
-    client = Groq(api_key="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") 
+    client = Groq(api_key=api) 
 
     relevance_score_prompt = f"""
     Evaluate the relevance of the user's introduction in the context of the given job description.\n
