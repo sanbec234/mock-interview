@@ -9,7 +9,7 @@ import pymysql
 
 # Database connection details
 timeout = 10
-# p="AVNS_XzZH4-okIadBScgtxaI"
+
 connection = pymysql.connect(
     charset="utf8mb4",
     connect_timeout=timeout,
