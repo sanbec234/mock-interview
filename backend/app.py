@@ -9,14 +9,13 @@ import pymysql
 
 # Database connection details
 timeout = 10
-
 connection = pymysql.connect(
     charset="utf8mb4",
     connect_timeout=timeout,
     cursorclass=pymysql.cursors.DictCursor,
     db="Jasss",  # Replace with your actual database name
     host="mysql-390a28f4-javagarm-bf62.c.aivencloud.com",  # Replace with your actual host
-    # password=p,  # Replace with your actual password
+    password="AVNS_XzZH4-okIadBScgtxaI",  # Replace with your actual password
     read_timeout=timeout,
     port=12629,  # Replace with your actual port if needed
     user="avnadmin",  # Replace with your actual user
