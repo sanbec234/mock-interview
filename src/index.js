@@ -8,6 +8,7 @@ import Details from './pages/details-page/Details.tsx';
 import reportWebVitals from './reportWebVitals';
 import LoginPage from './pages/login/LoginPage.tsx';
 import SignPage from './pages/signup-page/signup-page.tsx';
+import DashboardPage from './pages/dashboard-page/dashboard-page.tsx';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -22,6 +23,7 @@ if (rootElement) {
           <Route path="/login-page" element={<LoginPage />} />
           <Route path="/collect-details-page" element={<Details />} />
           <Route path="/sign-up" element={<SignPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </Router>
     </React.StrictMode>
