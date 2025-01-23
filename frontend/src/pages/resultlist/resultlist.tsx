@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "./../../components/Header/Header.tsx";
 import Footer from "./../../components/Footer/Footer.tsx";
-import "./result-list-page.css"; // Custom CSS for styling
+import "./result-list-page.css";
 import { useNavigate } from "react-router-dom";
 
 const ResultListPage: React.FC = () => {
@@ -14,51 +14,59 @@ const ResultListPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchTestData = async () => {
       try {
         const rollno = localStorage.getItem("userEmail");
         if (!rollno) {
-          setMessage("Roll number not found. Please log in.");
+          if (isMounted) setMessage("Roll number not found. Please log in.");
           return;
         }
 
-        console.log("Sending roll number to API:", rollno);
-
         const response = await fetch("http://localhost:5000/resultlist", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ rollno }) // Send rollno in the body
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rollno }),
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setTestData(data);
-        } else {
-          const error = await response.json();
-          console.error("API Error Response:", error);
-          setMessage(`Error: ${error.error || "Failed to fetch test data."}`);
+        if (isMounted) {
+          if (response.ok) {
+            const data = await response.json();
+            setTestData(data);
+          } else {
+            const error = await response.json();
+            setMessage(`Error: ${error.error || "Failed to fetch test data."}`);
+          }
         }
       } catch (err) {
-        console.error("Fetch Error:", err);
-        setMessage(`Error: ${err.message || "Something went wrong."}`);
+        if (isMounted) setMessage(`Error: ${err.message || "Something went wrong."}`);
       }
     };
 
     fetchTestData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleAction = async (testId: number, action: string) => {
     try {
+      if (action === "view_result") {
+        // Save testId to local storage
+        localStorage.setItem("test_id", testId.toString());
+        // Navigate to the completion page
+        navigate("/completion-page");
+        return;
+      }
+
       const endpoint =
         action === "resume"
           ? "http://localhost:5000/resume"
           : action === "check_result"
           ? "http://localhost:5000/check_result"
-          : "http://localhost:5000/view_result";
-
-      console.log(`Action: ${action}, Test ID: ${testId}, Endpoint: ${endpoint}`);
+          : "";
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -68,18 +76,28 @@ const ResultListPage: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        if (action === "view_result") {
-          navigate("/result-detail-page", { state: { result } });
+
+        if (action === "check_result") {
+          if (Array.isArray(result) && result.length > 0) {
+            // If check_result succeeds, move the test to 'tests_with_results'
+            setTestData((prev) => ({
+              ...prev,
+              tests_with_pending_results: prev.tests_with_pending_results.filter(
+                (id) => id !== testId
+              ),
+              tests_with_results: [...prev.tests_with_results, testId],
+            }));
+          } else {
+            setMessage("No results available for this test yet.");
+          }
         } else {
           setMessage(result.message || "Action completed successfully.");
         }
       } else {
         const error = await response.json();
-        console.error("Action Error Response:", error);
         setMessage(`Error: ${error.error || "Failed to perform action."}`);
       }
     } catch (err) {
-      console.error("Action Error:", err);
       setMessage(`Error: ${err.message || "Something went wrong."}`);
     }
   };

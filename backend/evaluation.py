@@ -24,10 +24,7 @@ def calculate_cosine_similarity(reference_answer, user_answer):
 def calculate_keyword_score(user_answer, keywords):
     # Extract keywords from the user answer
     user_answer_keywords = set(re.findall(r'\b\w+\b', user_answer.lower()))
-    
-    # Handle case where the keywords list is empty
-    if not keywords:
-        return 0.0, []  # Return 0 score and an empty list of common keywords if no keywords are provided
+     # Return 0 score and an empty list of common keywords if no keywords are provided
 
     # Find the common keywords between the user answer and the predefined keywords
     common_keywords = set(keywords).intersection(user_answer_keywords)
