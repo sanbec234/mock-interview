@@ -63,3 +63,24 @@
     background-color: #0056b3;
   }
   
+  /* Adjust radio button alignment */
+.radio-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligns items to the left */
+}
+
+.radio-options {
+  display: flex;
+  align-items: center;
+}
+
+.radio-options label {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.radio-options input {
+  margin-right: 5px;
+}

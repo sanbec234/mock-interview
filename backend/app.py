@@ -1,301 +1,541 @@
-from flask import Flask, jsonify, redirect, url_for, session, request
-from flask_cors import CORS  # Import CORS to handle cross-origin requests
-from pymongo import MongoClient
-from datetime import datetime
-
-from question import get_least_asked_questions
-from evaluation import calculate_cosine_similarity, calculate_keyword_score, check_grammar, check_relevance, check_introduction_relevance,append_evaluation_to_file
+from flask import Flask, request, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
+import mysql.connector
+from flask_cors import CORS
+import json
 
-# Database connection details
-timeout = 10
-connection = pymysql.connect(
-    charset="utf8mb4",
-    connect_timeout=timeout,
-    cursorclass=pymysql.cursors.DictCursor,
-    db="Jasss",  # Replace with your actual database name
-    host="mysql-390a28f4-javagarm-bf62.c.aivencloud.com",  # Replace with your actual host
-    password="AVNS_XzZH4-okIadBScgtxaI",  # Replace with your actual password
-    read_timeout=timeout,
-    port=12629,  # Replace with your actual port if needed
-    user="avnadmin",  # Replace with your actual user
-    write_timeout=timeout,
-)
-cursor = connection.cursor()
 
 app = Flask(__name__)
-import os
-app.secret_key = os.getenv('SECRET_KEY', 'fallback-key')
-mongo_client = MongoClient("mongodb+srv://21z221:0000@cluster0.i0qha.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-db = mongo_client["test_results_db"]  # Replace with your database name
-collection = db["test_results"]       
-  # Make sure to use a secret key for session management
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
-count = 0
-easy_no = 50
-tot_no=200
-medium_no = 100
-hard_no = 150
-diff = "Easy"
-ans = ""
-ques = ""
-key = ""
-api=""
-diffculty = {
-    "Easy": 1,
-    "Medium": 2,
-    "Hard": 3
-}
-# Enable CORS for all routes and all origins
-CORS(app)
-mark = 0
-total = 0
+app.secret_key = 'your_secret_key' 
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+  # Enable CORS with credentials
+# CORS(app)
 
-# Initialize a counter to track the number of questions
-question_counter = {
-    "count": 0,
-    "questions": [
-        "Your Roll no?"
-    ]
-}
+# Database connection timeout and parameters
+timeout = 10
+connection = pymysql.connect(
+  charset="utf8mb4",
+  connect_timeout=timeout,
+  cursorclass=pymysql.cursors.DictCursor,
+  db="Jasss",
+  host="mysql-390a28f4-javagarm-bf62.c.aivencloud.com",
+  password="AVNS_XzZH4-okIadBScgtxaI",
+  read_timeout=timeout,
+  port=12629,
+  user="avnadmin",
+  write_timeout=timeout,
+)
 
-# New data structure to store answers, reference answers, and scores
-user_data = {
-    "answers": [],
-    "reference_answers": [],
-    "questions": [],
-    "scores": []
-}
-@app.route('/api/submit', methods=['POST'])
-def submit_data():
-    global tot_no,easy_no,medium_no,api
+# Database connection
+def get_db_connection():
+    return pymysql.connect(
+        charset="utf8mb4",
+        connect_timeout=timeout,
+        cursorclass=pymysql.cursors.DictCursor,
+        db="Jasss",
+        host="mysql-390a28f4-javagarm-bf62.c.aivencloud.com",
+        password="AVNS_XzZH4-okIadBScgtxaI",
+        read_timeout=timeout,
+        port=12629,
+        user="avnadmin",
+        write_timeout=timeout,
+    )
+
+conn = get_db_connection()
+
+# Create User Endpoint
+@app.route('/create_user', methods=['POST'])
+def create_user():
+    data = request.json
     try:
-        # Get JSON data from the request body
+        cursor = conn.cursor()
+
+        hashed_password = generate_password_hash(data['password'])
+        sql = """INSERT INTO user (rollno, name, email, password, department, year, cgpa) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+        values = (data['rollno'], data['name'], data['email'], hashed_password, data['department'], data['year'], data['cgpa'])
+        cursor.execute(sql, values)
+        conn.commit()
+        return jsonify({'message': 'User created successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    finally:
+        cursor.close()
+
+# Login User Endpoint
+@app.route('/login_user', methods=['POST'])
+def login_user():
+    data = request.json
+    print(data)
+    try:
+        cursor = conn.cursor()
+
+        print(data['userType'])
+        cursor.execute("SELECT * FROM user WHERE email = %s", (data['email'],))
+        user = cursor.fetchone()
+        if user and check_password_hash(user['password'], data['password']):
+            return jsonify({'message': 'Login successful', 'user': user["email"]}), 200
+        else:
+            return jsonify({'error': 'Invalid credentials'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    finally:
+        cursor.close()
+
+# Start Test Endpoint
+@app.route('/start_test', methods=['POST'])
+def start_test():
+    data = request.get_json()
+    roll_no = data.get('email')
+    num_questions = data.get('numQuestions')
+    selected_topics = data.get('selectedTopics')
+    questions_indices = create_question_indices(num_questions, selected_topics)
+    question_ids_str = ','.join(map(str, questions_indices))
+    roll_no="22i434"
+    print(data)
+    # code to insert a new test record in DB
+    cursor = conn.cursor()
+    sql = """INSERT INTO test (rollno, question_indices) VALUES (%s, %s)"""
+    values = (roll_no, question_ids_str)
+    cursor.execute(sql, values)
+    test_id = cursor.lastrowid
+    print(test_id)
+    conn.commit()
+
+    # Convert the list of question IDs into a string format for the query
+    cursor.execute(f"SELECT id, question FROM question_bank WHERE id IN ({question_ids_str})")
+    completed_tests = cursor.fetchall()
+
+    questions_list = []
+
+    for test in completed_tests:
+        questions_list.append({'id': test['id'], 'question': test['question']})
+
+    if len(questions_indices) == 0:
+      return jsonify({'message' : 'Failed to fetch questions'}), 201
+    
+    return jsonify({'message': 'New test created', 'questions_id': questions_list, "test_id": test_id}), 201
+
+
+def create_question_indices(num_questions, selected_topics):
+    questions_indices = []
+
+    for i in range(len(selected_topics)):
+        subject = selected_topics[i]
+        to_ask = 0
+
+        if i == len(selected_topics) - 1:
+            to_ask = num_questions - len(questions_indices)
+        else:
+          to_ask = num_questions / len(selected_topics)
+
+        try:
+            cursor = conn.cursor()
+            call_procedure = f"CALL GetQuestionsBySubjects({to_ask}, '{subject}')"
+            cursor.execute(call_procedure)
+
+            # Fetch the results
+            results = cursor.fetchall()
+            for row in results:
+                questions_indices.append(row['id'])
+            cursor.close()
+        except Exception as e:
+            pass
+        finally:
+            cursor.close()
+    return questions_indices
+
+
+
+# --------------------------------- Above code completed ------------------ \
+
+
+
+
+# @app.route('/resultlist', methods=['POST'])#-------------------------------postman pass
+# {
+#   "rollno": "22i434"
+# }
+# {
+#     "incomplete_tests": [
+#         1,
+#         2,
+#         3,
+#         4,
+#         5,
+#         6,
+#         7,
+#         8,
+#         11
+#     ],
+#     "tests_with_pending_results": [
+#         9,
+#         12
+#     ],
+#     "tests_with_results": [
+#         10
+#     ]
+# }
+
+@app.route('/resultlist', methods=['POST'])
+def resultlist():
+    try:
         data = request.get_json()
-
-        # Extract the data fields from the request
-        num_questions = data.get('numQuestions')
-        api_url = data.get('apiUrl')
-        selected_topics = data.get('selectedTopics')
-        tot_no=num_questions
-        easy_no=num_questions*0.4
-        medium_no=num_questions*0.7
-        api=api_url
-
+        if not data:
+            return jsonify({"error": "Invalid or missing JSON data"}), 400
         
+        roll_no = data.get('rollno')
+        roll_no="22i434"
+        if not roll_no:
+            return jsonify({"error": "Missing rollno"}), 400
 
-        # Here you can process and store the data (e.g., save to database or file)
-        # For now, we'll just print it to the console
-        print(f"Received data: numQuestions={num_questions}, apiUrl={api_url}, selectedTopics={selected_topics}")
+        # Call stored procedure
+        cursor = conn.cursor()
+        if cursor:
+            print("True")
+        cursor.execute("CALL GetTestResults(%s)", (roll_no,))
+        result = cursor.fetchone()
+        
+        if result is None:
+            return jsonify({"error": "No results found for the given rollno"}), 404
 
-        # Respond back with a success message
-        return jsonify({"redirect": True, "url": "/home"})
+        # Check for unexpected output
+        if result == (0, 0, 0):
+            return jsonify({"error": "Unexpected result returned from stored procedure"}), 500
+        result=result["""JSON_OBJECT('incomplete_tests', incomplete_tests,\n                       'tests_with_pending_results', tests_with_pending_results,\n                       'tests_with_results', tests_with_results)"""]
+        # Format the result
+        print(result)
+        result_dict = json.loads(result)
+        print(result_dict)
+        formatted_result = {
+            "incomplete_tests": result_dict["incomplete_tests"],
+            "tests_with_pending_results": result_dict["tests_with_pending_results"],
+            "tests_with_results": result_dict["tests_with_results"]
+        }
+        print("dtfyghj",formatted_result)
+        return jsonify(formatted_result), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+
+@app.route('/submit_answers', methods=['POST'])#--------------------postman pass
+#{
+#     "rollno": "21i434",
+#     "testid": 4,
+#     "answers": [
+#         {"id": 1, "answer": "This is the answer for Q1"},
+#         {"id": 2, "answer": "This is the answer for Q2"}
+#     ]
+# }
+
+def submit_answers():
+    # Get JSON data from the request
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid or missing JSON data"}), 400
+
+    # Extract fields from the JSON payload
+    roll_no = data.get('rollno')
+    test_id = data.get('testid')
+    answers = data.get('answers')
+
+    if not roll_no or not test_id or not answers:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Validate that answers is a list
+    if not isinstance(answers, list):
+        return jsonify({"error": "'answers' should be a list of dictionaries"}), 400
+
+    # Connect to the MySQL database
+    try:
+        cursor = conn.cursor()
+
+        # Prepare the SQL statement (replace column names with actual table columns)
+        sql = """
+        INSERT INTO history ( test_id, question, answer)
+        VALUES ( %s, %s, %s)
+        ON DUPLICATE KEY UPDATE answer= VALUES(answer)
+        """
+
+        # Insert each answer into the table
+        for ans in answers:
+            question_id = ans.get('id')
+            answer_text = ans.get('answer')
+
+            if question_id is None or answer_text is None:
+                continue  # Skip invalid entries
+
+            cursor.execute(sql, ( test_id, question_id, answer_text))
+
+        # Commit the transaction
+        conn.commit()
+
+        return jsonify({"message": "Answers submitted successfully"}), 201
 
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({'message': 'Failed to submit data'}), 500
+        return jsonify({"error": "Database error occurred"}), 500
+
+    finally:
+        # Close the cursor
+        if cursor:
+            cursor.close()
+
+            
+
+@app.route('/upload', methods=['POST'])
+def upload_csv():
+    try:
+        # Parse the JSON data
+        data = request.json.get('data')
+        cursor = conn.cursor()
+
+        if not data or not isinstance(data, list):
+            return jsonify({"message": "Invalid data format"}), 400
+
+        max_keyword_length = 1024  # Adjust based on your database column size
+
+        sanitized_data = []
+        for item in data:
+            if not item.get('Question') or not item.get('Answer') or not item.get('Keyword') or not item.get('Subject') or not item.get('Subtopic') or not item.get('Difficultylevel'):
+                return jsonify({"message": "Data Invalid: Required fields are missing"}), 400
+
+            keyword = item['Keyword'][:max_keyword_length] if len(item['Keyword']) > max_keyword_length else item['Keyword']
+
+            sanitized_data.append((
+                item['Question'],
+                item['Answer'],
+                keyword,
+                item.get('Difficultylevel'),
+                item['Subject'],
+                item['Subtopic'],
+                item.get('count', 0)
+            ))
+        
+
+        insert_query = """
+        INSERT INTO question_bank (question, answer, keyword, difficulty_level, subject, subtopic, count)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            answer = VALUES(answer),
+            keyword = VALUES(keyword),
+            difficulty_level = VALUES(difficulty_level),
+            subject = VALUES(subject),
+            subtopic = VALUES(subtopic),
+            count = VALUES(count)
+        """
+    
+    # Execute the insert query for all sanitized rows
+        cursor.executemany(insert_query, sanitized_data)
+    
+    # Commit the transaction
+        connection.commit()
+        
+        cursor.close()
+
+        return jsonify({"message": "Data inserted successfully", "rows": 200}), 200
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({"message": "Server error", "error": str(e)}), 500 
+
+@app.route('/delete', methods=['POST'])
+def delete():
+    try:
+        # Parse the JSON data
+        data = request.json.get('data')
+        cursor = conn.cursor()
+
+        if not data or not isinstance(data, list):
+            return jsonify({"message": "Invalid data format"}), 400
+
+        
+        cursor.executemany("delete from question_bank where 1=1")
+    
+    # Commit the transaction
+        connection.commit()
+        
+        cursor.close()
+
+        return jsonify({"message": "Data inserted successfully", "rows": 200}), 200
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({"message": "Server error", "error": str(e)}), 500
+    
+
+
+@app.route('/checkresult', methods=['POST'])
+def checkresult():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid or missing JSON data"}), 400
+
+        test_id = data.get('testid')
+        print(test_id)
+        if not test_id:
+            return jsonify({"error": "Missing test ID"}), 400
+
+        result = []
+        try:
+            cursor = conn.cursor()  # Enable dictionary output
+
+            # Query the history table
+            cursor.execute("SELECT * FROM history WHERE test_id = %s", (test_id,))
+            rows = cursor.fetchall()
+            print("Rows fetched from history:", rows)  # Debugging log
+
+            if not rows:
+                print(f"No history found for test_id: {test_id}")
+                return jsonify({"error": "No data found for the given test ID"}), 404
+
+            for row in rows:
+                # Retrieve the question ID safely
+                qid = row.get('question')
+                if not qid:
+                    print(f"Invalid QID in row: {row}")
+                    continue
+
+                # Query the question table
+                cursor.execute("SELECT question, answer, keyword FROM question_bank WHERE id = %s", (qid,))
+                question_data = cursor.fetchone()
+                print(f"Question data for QID {qid}:", question_data)  # Debugging log
+
+                if question_data:
+                    result.append({
+                        "test_id": row['test_id'],
+                        "question": question_data['question'],
+                        "reference_answer": question_data['answer'],
+                        "answer": row['answer'],
+                        "keyword": question_data['keyword']
+                    })
+#-------------------postman pass
+            return jsonify(result), 200
+
+        except Exception as e:
+            print(f"Database Error: {e}")  # Detailed error
+            return jsonify({"error": "Database error occurred"}), 500
+
+    except Exception as e:
+        print(f"Error: {e}")  # Detailed error
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/topics', methods=['GET'])
 def get_topics():
+    cursor = conn.cursor()
+    
     cursor.execute("SELECT DISTINCT subject FROM question_bank")
     result = cursor.fetchall()
 
     # Collect distinct subjects into a list
     topics = [row['subject'] for row in result]
-    
-    return jsonify({"topics": topics})   
-
-@app.route('/start-test')
-def start_test():
-    session['completed'] = False  # Mark the user as not completed initially
-    session.modified = True  # Make sure the session is marked as modified
-    # Reset the user data at the start of the test
-    user_data['answers'] = []
-    user_data['reference_answers'] = []
-    user_data['questions'] = []
-    user_data['scores'] = []
-    return jsonify({"message": "Test started!"})
-
-@app.route('/complete-test')
-def complete_test():
-    session['completed'] = True  # Mark the user as completed
-    session.modified = True  # Make sure the session is marked as modified
-    return redirect(url_for('completion_page'))
-
-@app.route('/completion-page', methods=['GET'])
-def completion_page():
-    mark = 0
-    evaluations = []
-    global api
-
-    print("------- Test Completion -------")
-    gra = check_grammar(user_data["answers"][0])
-    gra = round(float(gra) if isinstance(gra, (int, float)) else 0.0, 2)
-    llm, expl = check_introduction_relevance(user_data["answers"][0],api)
-    llm = round(float(llm) if isinstance(llm, (int, float)) else 0.0, 2)
-    expl = expl if isinstance(expl, str) else "No explanation provided."
-    avg_score = round((gra * 0.3 + llm * 0.7) / 5, 2)
-    evaluations.append({
-        "question": "introduce yourself",
-        "reference_answer": """
-    Frontend Developer role requiring skills in React, JavaScript, HTML, CSS, 
-    and experience with REST APIs. The ideal candidate should have a strong understanding 
-    of responsive design, cross-browser compatibility, and state management tools like Redux. 
-    Preferred skills include knowledge of TypeScript, CI/CD pipelines, and cloud services.
-    """,
-        "user_answer": user_data["answers"][0],
-        "grammar_score": gra,
-        "cosine_similarity_score": 0,
-        "keyword_score": 0,
-        "llm_relevance_score": llm,
-        "total_score": avg_score,
-        "explanation": expl
-    })
-    if avg_score < 0:
-        avg_score = 0
-    mark += avg_score
-
-    # Iterate over each question and calculate the scores
-    for idx in range(1, len(user_data["questions"])):
-        question = user_data["questions"][idx]
-        reference_answer = user_data["reference_answers"][idx]
-        user_answer = user_data["answers"][idx]
-
-        cos = calculate_cosine_similarity(reference_answer, user_answer)
-        cos = round(float(cos) if isinstance(cos, (int, float)) else 0.0, 2)
-        
-        keyscore, common_keywords = calculate_keyword_score(user_answer, reference_answer)
-        keyscore = round(float(keyscore) if isinstance(keyscore, (int, float)) else 0.0, 2)
-        
-        gra = check_grammar(user_answer)
-        gra = round(float(gra) if isinstance(gra, (int, float)) else 0.0, 2)
-        
-        llm, expl = check_relevance(question, reference_answer, user_answer,api)
-        llm = round(float(llm) if isinstance(llm, (int, float)) else 0.0, 2)
-        expl = expl if isinstance(expl, str) else "No explanation provided."
-
-        avg_score = round((cos * 0.15 + keyscore * 0.2 + gra * 0.15 + llm * 0.5) / 5, 2)
-        
-        if avg_score < 0:
-            avg_score = 0
-        mark += avg_score
-
-        evaluations.append({
-            "question": question,
-            "reference_answer": reference_answer,
-            "user_answer": user_answer,
-            "grammar_score": gra,
-            "cosine_similarity_score": cos,
-            "keyword_score": keyscore,
-            "llm_relevance_score": llm,
-            "total_score": avg_score,
-            "explanation": expl
-        })
-
-
-    append_evaluation_to_file(evaluations, mark)
-
-    final_score = round((mark / len(user_data["questions"])) * 100, 2)
-    print("\nTotal Test Score: {}%".format(final_score))
-
+    cursor.close()
+    return jsonify({"topics": topics})  
+@app.route('/viewresult', methods=['GET'])#------------------------postman pass
+def viewresult():
     try:
-        result_data = {  # Replace with actual user ID
-            "test_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "final_score": final_score,
-            "evaluations": evaluations
-        }
-        collection.insert_one(result_data)
-        print("Results successfully uploaded to MongoDB.")
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid or missing JSON data"}), 400
+
+        # Extract test ID from the request
+        test_id = data.get('testid')
+        if not test_id:
+            return jsonify({"error": "Missing test ID"}), 400
+
+        cursor = conn.cursor()
+
+        # Fetch the results from the history table
+        cursor.execute("SELECT * FROM history WHERE test_id = %s", (test_id,))
+        result = cursor.fetchall()
+
+        # Replace the question ID with the actual question text and reference answer
+        for row in result:
+            question_id = row["question"]
+            cursor.execute(
+                "SELECT question, answer FROM question_bank WHERE id = %s", 
+                (question_id,)
+            )
+            question_data = cursor.fetchone()
+            if question_data:
+                row["question"] = question_data["question"]
+                row["reference_answer"] = question_data["answer"]
+            else:
+                row["question"] = None
+                row["reference_answer"] = None
+
+        return jsonify({"result": result}), 200
+
     except Exception as e:
-        print("Error uploading results to MongoDB: {}".format(e))
+        return jsonify({"error": str(e)}), 500
 
-    
-    return jsonify({
-        "message": "Score: {}".format(final_score),
-        "final_score": final_score,
-        "evaluations": evaluations
-    })
+    finally:
+        # Ensure the cursor is closed
+        if 'cursor' in locals():
+            cursor.close()
 
 
 
-@app.route('/home')
-def home():
-    return jsonify({"message": "Welcome to the home page!"})
-
-@app.route('/api/send-answer', methods=['POST', 'OPTIONS'])
-def submit_answer():
-    global count, diff, mark, ans, ques, key, total, question_counter,tot_no
-
-    # Handle the preflight OPTIONS request
-    if request.method == 'OPTIONS':
-        response = jsonify({})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        return response
-
-    # Process the POST request
-    data = request.get_json()  # Parse JSON data from the request
-    if not data or 'answer' not in data:
-        return jsonify({"error": "Invalid data"}), 400
-
-    answer = data['answer']
-    print("Received answer: {}".format(answer))  # Log the received answer for debugging
- # Log the received answer for debugging
-
-    # Store the current answer, question, and reference answer
-    user_data['answers'].append(answer)
-    user_data['questions'].append(ques)
-    user_data['reference_answers'].append(ans)
-
-    # Check if we've reached the question limit
-    if question_counter["count"] >= tot_no:
-        print("2")
-        return jsonify({"redirect": True, "url": "/complete-test"})
-
-    # Increment the counter and generate the next question
-    question_counter["count"] += 1
-        
-    print(mark, count, total, question_counter["count"])
-
-    if count == easy_no:
-        diff = "Medium"
-    if count == medium_no:
-        diff = "Hard"
-    
-    # Fetch new questions for the next round
-    new_questions = get_least_asked_questions(diff)
-    count += 1
-    print(new_questions)
-    ans = ','.join(new_questions["Answer"])
-    ques = ','.join(new_questions["Question"])
-    key = ','.join(new_questions["Keyword"])
-
-    # Respond with the new question
-    return jsonify({"question": ', '.join(new_questions["Question"])})
-
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    email = data.get('email', '')
-    password = data.get('password', '')
-    print(email,password)
-
-    # Log the received email and password
-    print("Email: {}".format(email))
-    print("Password: {}".format(password))
+#------------------------------------ THE KING MASTER  JAVA----------------------------------------------
 
 
-    # Example validation (replace with your own logic)
-    if email == 'test@example.com' and password == 'password123':
-        session['user'] = {
-            'email': email,
-            'role': 'admin'  # You can dynamically set user role or other details
-        }
-        return jsonify({"message": "Login successful!"}), 200
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
+
+#------------------------------------ the work yet to complete 
+# check result
+# dowload  
+# convert questionbank to question issue question in questionbank is varchar which support unique and question in question is text or longtext not support unique -------------------------------------------------------------------------------------------- 
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+
+
+# Get Completed and Incomplete Tests Endpoint
+# @app.route('/test_completed', methods=['POST'])
+# def test_completed():
+#     try:
+#         data = request.get_json()
+#         if not data:
+#             return jsonify({"error": "Invalid or missing JSON data"}), 400
+
+#         roll_no = data.get('rollno')
+#         test_id = data.get('testid')
+#         answers = data.get('answers')
+#         print(answers)
+
+#         if not roll_no or not answers:
+#             return jsonify({"error": "Missing rollno or answers"}), 400
+
+#         return jsonify(answers), 200
+
+#     except Exception as e:
+#         # Handle any errors
+#         return jsonify({"error": str(e)}), 500
+
+    # try:
+    #     cursor = conn.cursor()
+
+    #     # Retrieve completed tests
+    #     cursor.execute("SELECT * FROM test WHERE iscompleted = TRUE")
+    #     completed_tests = cursor.fetchall()
+
+    #     # Retrieve incomplete tests
+    #     cursor.execute("SELECT * FROM test WHERE iscompleted = FALSE")
+    #     incomplete_tests = cursor.fetchall()
+
+    #     return jsonify({
+    #         'completed_tests': completed_tests,
+    #         'incomplete_tests': incomplete_tests
+    #     }), 200
+    # except Exception as e:
+    #     return jsonify({'error': str(e)}), 400
+    # finally:
+    #     cursor.close()
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)

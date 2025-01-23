@@ -6,7 +6,11 @@ import HomePage from "./pages/home-page/HomePage.tsx";
 import CompletionPage from "./pages/completion-page/CompletionPage.tsx";
 import LoginPage from "./pages/login-page/LoginPage.tsx";
 import Details from './pages/details-page/Details.tsx';
+import SignPage from './pages/signup-page/signup-page.tsx';
+import Dashboardpage from './pages/dashboard-page/dashboardpage.tsx';
 import reportWebVitals from "./reportWebVitals";
+import ViewResultPage from "./pages/viewresult/viewresult.tsx";
+import Resultlist from "./pages/resultlist/resultlist.tsx";
 
 const NetworkStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -58,10 +62,16 @@ const App = () => (
     <NetworkStatus />
     <Routes>
       <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/complete-test" element={<CompletionPage />} />
       <Route path="/completion-page" element={<CompletionPage />} />
       <Route path="/collect-details-page" element={<Details />} />
+      <Route path="/sign-up" element={<SignPage />} />
+      <Route path="/dashborad" element={<Dashboardpage />} />
+      <Route path="/view-result" element={<ViewResultPage />} />
+      <Route path="/resultlist" element={<Resultlist />} />
+
     </Routes>
   </Router>
 );
