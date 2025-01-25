@@ -12,8 +12,8 @@ import reportWebVitals from "./reportWebVitals";
 import ViewResultPage from "./pages/viewresult/viewresult.tsx";
 import Resultlist from "./pages/resultlist/resultlist.tsx";
 import Upload from "./pages/upload/UploadCsv";
-
 import Admin from "./pages/adminpage/admin";
+import Questions from "./pages/Questionpage/questionpage";
 
 const NetworkStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -76,6 +76,7 @@ const App = () => (
       <Route path="/resultlist" element={<Resultlist />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/upload" element={<Upload />} />
+      <Route path="/question" element={<Questions />} />
 
     </Routes>
   </Router>

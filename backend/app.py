@@ -426,6 +426,102 @@ def download_csv():
     finally:
         cursor.close()
 
+@app.route('/api/records', methods=['GET'])
+def get_data():
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM question_bank")
+        rows = cursor.fetchall()
+        return jsonify(rows)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
+
+@app.route('/api/records/<int:id>', methods=['PUT'])
+def update_data(id):
+    data = request.json
+    try:
+        cursor = conn.cursor()
+        sql = """
+            UPDATE question_bank 
+            SET question = %s, answer = %s, keyword = %s, difficulty_level = %s, 
+                subject = %s, subtopic = %s, count = %s
+            WHERE id = %s
+        """
+        cursor.execute(sql, (
+            data['question'], data['answer'], data['keyword'], data['difficulty_level'],
+            data['subject'], data['subtopic'], data['count'], id
+        ))
+        conn.commit()
+        return jsonify({'message': 'Data updated successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
+
+@app.route('/api/records/<int:id>', methods=['DELETE'])
+def delete_record(id):
+    try:
+        cursor = conn.cursor()
+        sql = "DELETE FROM question_bank WHERE id = %s"
+        cursor.execute(sql, (id,))
+        conn.commit()
+        return jsonify({'message': 'Record deleted successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
+
+# Add a new record
+@app.route('/api/records', methods=['POST'])
+def add_record():
+    data = request.json
+    required_fields = ['question', 'answer', 'keyword', 'difficulty_level', 'subject', 'subtopic']
+
+    # Check for missing required fields
+    missing_fields = [field for field in required_fields if not data.get(field)]
+    if missing_fields:
+        return jsonify({'error': f"The following fields are required and cannot be empty: {', '.join(missing_fields)}"}), 400
+
+    try:
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO question_bank (question, answer, keyword, difficulty_level, subject, subtopic, count)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (
+            data['question'], 
+            data['answer'], 
+            data['keyword'], 
+            data['difficulty_level'], 
+            data['subject'], 
+            data['subtopic'], 
+            data.get('count', 0)  # Default count to 0 if not provided
+        ))
+        conn.commit()
+        return jsonify({'message': 'Record added successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+
+
+@app.route('/api/records/filter', methods=['GET'])
+def filter_data():
+    field = request.args.get('field')
+    value = request.args.get('value')
+    try:
+        cursor = conn.cursor()
+        sql = f"SELECT * FROM question_bank WHERE LOWER({field}) LIKE LOWER(%s)"
+        cursor.execute(sql, (f"%{value}%",))
+        rows = cursor.fetchall()
+        return jsonify(rows)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
+
 @app.route('/resume', methods=['POST'])
 def resume_test():
     data = request.get_json()
@@ -638,63 +734,6 @@ def viewresult():
         # Ensure the cursor is closed
         if 'cursor' in locals():
             cursor.close()
-
-
-
-
-#------------------------------------ THE KING MASTER  JAVA----------------------------------------------
-
-
-
-#------------------------------------ the work yet to complete 
-# check result
-# dowload  
-# convert questionbank to question issue question in questionbank is varchar which support unique and question in question is text or longtext not support unique -------------------------------------------------------------------------------------------- 
-
-
-
-
-# Get Completed and Incomplete Tests Endpoint
-# @app.route('/test_completed', methods=['POST'])
-# def test_completed():
-#     try:
-#         data = request.get_json()
-#         if not data:
-#             return jsonify({"error": "Invalid or missing JSON data"}), 400
-
-#         roll_no = data.get('rollno')
-#         test_id = data.get('testid')
-#         answers = data.get('answers')
-#         print(answers)
-
-#         if not roll_no or not answers:
-#             return jsonify({"error": "Missing rollno or answers"}), 400
-
-#         return jsonify(answers), 200
-
-#     except Exception as e:
-#         # Handle any errors
-#         return jsonify({"error": str(e)}), 500
-
-    # try:
-    #     cursor = conn.cursor()
-
-    #     # Retrieve completed tests
-    #     cursor.execute("SELECT * FROM test WHERE iscompleted = TRUE")
-    #     completed_tests = cursor.fetchall()
-
-    #     # Retrieve incomplete tests
-    #     cursor.execute("SELECT * FROM test WHERE iscompleted = FALSE")
-    #     incomplete_tests = cursor.fetchall()
-
-    #     return jsonify({
-    #         'completed_tests': completed_tests,
-    #         'incomplete_tests': incomplete_tests
-    #     }), 200
-    # except Exception as e:
-    #     return jsonify({'error': str(e)}), 400
-    # finally:
-    #     cursor.close()
-
+            
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

@@ -9,6 +9,10 @@ const AdminPage: React.FC = () => {
     navigate('/upload'); // Navigate to the upload page
   };
 
+  const handleViewClick = () => {
+    navigate('/question'); // Navigate to the upload page
+  };
+
   // Function to handle the "Delete" button click
   const handleDeleteClick = async () => {
     try {
@@ -62,6 +66,9 @@ const AdminPage: React.FC = () => {
         </button>
         <button onClick={handleDownloadClick} className="action-button">
           Download CSV
+        </button>
+        <button onClick={handleViewClick} className="action-button">
+          View Dataset
         </button>
       </div>
     </div>
