@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'; // For navigation
 import './login-page.css'; // Custom CSS for styling
 import Header from '../../components/Header/Header'; // Header component
 import Footer from '../../components/Footer/Footer'; // Footer component
-// import axios from 'axios'; // For API requests
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>(''); // State for email input
@@ -33,18 +32,25 @@ const LoginPage: React.FC = () => {
       // Send login credentials to the Flask API
       const response = await fetch(
         'http://localhost:5000/login_user', // Corrected endpoint
-        {method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),} // Ensures cookies are included
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload), // Ensures cookies are included
+        }
       );
 
       if (response.status === 200) {
         alert('Login successful!'); // Show success message
-        
+
         // Store the email in local storage
         localStorage.setItem('userEmail', email);
 
-        navigate('/dashborad'); // Redirect to the home page
+        // Check user type and navigate accordingly
+        if (userType === 'admin') {
+          navigate('/admin'); // Redirect to admin dashboard
+        } else {
+          navigate('/dashborad'); // Redirect to student dashboard
+        }
       }
     } catch (error: any) {
       console.error('Login failed:', error);
@@ -118,8 +124,8 @@ const LoginPage: React.FC = () => {
           >
             {isSubmitting ? 'Logging in...' : 'Login'}
           </button>
-          <br></br>
-          <br></br>
+          <br />
+          <br />
           <button
             type="button"
             onClick={() => navigate('/sign-up')} // Redirect to signup page

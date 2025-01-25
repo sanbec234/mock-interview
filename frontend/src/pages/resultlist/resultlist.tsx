@@ -5,12 +5,12 @@ import "./result-list-page.css";
 import { useNavigate } from "react-router-dom";
 
 const ResultListPage: React.FC = () => {
-    interface TestData {
-        incomplete_tests: number[];
-        tests_with_pending_results: number[];
-        tests_with_results: number[];
-      }
-      
+  interface TestData {
+    incomplete_tests: number[];
+    tests_with_pending_results: number[];
+    tests_with_results: number[];
+  }
+
   const [testData, setTestData] = useState<TestData>({
     incomplete_tests: [],
     tests_with_pending_results: [],
@@ -39,14 +39,21 @@ const ResultListPage: React.FC = () => {
         if (isMounted) {
           if (response.ok) {
             const data = await response.json();
-            setTestData(data);
+
+            // Ensure `null` values are replaced with empty arrays
+            setTestData({
+              incomplete_tests: data.incomplete_tests || [],
+              tests_with_pending_results: data.tests_with_pending_results || [],
+              tests_with_results: data.tests_with_results || [],
+            });
           } else {
             const error = await response.json();
             setMessage(`Error: ${error.error || "Failed to fetch test data."}`);
           }
         }
-      } catch (err:any) {
-        if (isMounted) setMessage(`Error: ${err.message || "Something went wrong."}`);
+      } catch (err: any) {
+        if (isMounted)
+          setMessage(`Error: ${err.message || "Something went wrong."}`);
       }
     };
 
@@ -103,7 +110,7 @@ const ResultListPage: React.FC = () => {
         const error = await response.json();
         setMessage(`Error: ${error.error || "Failed to perform action."}`);
       }
-    } catch (err:any) {
+    } catch (err: any) {
       setMessage(`Error: ${err.message || "Something went wrong."}`);
     }
   };

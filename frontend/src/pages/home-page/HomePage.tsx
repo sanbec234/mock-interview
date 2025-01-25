@@ -169,7 +169,9 @@ const HomePage: React.FC = () => {
                 title={isListening ? 'Click to stop recording' : 'Click to start recording'}
                 onClick={handleMicClick}
               >
-                🎤
+                <span role="img" aria-label="Microphone">
+    🎤
+  </span>
               </button>
               <button onClick={handleAnswerSubmit} className="submit-button">
                 {currentQuestionIndex === questions.length - 1 ? 'Finish Test' : 'Next Question'}

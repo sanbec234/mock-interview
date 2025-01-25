@@ -70,56 +70,92 @@ def create_user():
 @app.route('/login_user', methods=['POST'])
 def login_user():
     data = request.json
-    print(data)
     try:
         cursor = conn.cursor()
 
-        print(data['userType'])
-        cursor.execute("SELECT * FROM user WHERE email = %s", (data['email'],))
-        user = cursor.fetchone()
-        if user and check_password_hash(user['password'], data['password']):
-            return jsonify({'message': 'Login successful', 'user': user["email"]}), 200
+        # Check if userType is 'admin'
+        if data['userType'] == 'admin':
+            if data['email'] == 'admin@gmail.com' and data['password'] == 'jasss':
+                return jsonify({'message': 'Admin login successful', 'user': 'admin'}), 200
+            else:
+                return jsonify({'error': 'Invalid admin credentials'}), 401
         else:
-            return jsonify({'error': 'Invalid credentials'}), 401
+            # Handle normal user login
+            cursor.execute("SELECT * FROM user WHERE email = %s", (data['email'],))
+            user = cursor.fetchone()
+            if user and check_password_hash(user['password'], data['password']):
+                return jsonify({'message': 'Login successful', 'user': user["email"]}), 200
+            else:
+                return jsonify({'error': 'Invalid user credentials'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 400
     finally:
-        cursor.close()
+        cursor.close()# Start Test Endpoint
 
-# Start Test Endpoint
+
 @app.route('/start_test', methods=['POST'])
 def start_test():
-    data = request.get_json()
-    roll_no = data.get('email')
-    num_questions = data.get('numQuestions')
-    selected_topics = data.get('selectedTopics')
-    questions_indices = create_question_indices(num_questions, selected_topics)
-    question_ids_str = ','.join(map(str, questions_indices))
-    roll_no="22i434"
-    print(data)
-    # code to insert a new test record in DB
-    cursor = conn.cursor()
-    sql = """INSERT INTO test (rollno, question_indices) VALUES (%s, %s)"""
-    values = (roll_no, question_ids_str)
-    cursor.execute(sql, values)
-    test_id = cursor.lastrowid
-    print(test_id)
-    conn.commit()
+    try:
+        data = request.get_json()
 
-    # Convert the list of question IDs into a string format for the query
-    cursor.execute(f"SELECT id, question FROM question_bank WHERE id IN ({question_ids_str})")
-    completed_tests = cursor.fetchall()
+        # Extract data from the request
+        email = data.get('email')
+        num_questions = data.get('numQuestions')
+        selected_topics = data.get('selectedTopics')
 
-    questions_list = []
+        # Validate input data
+        if not email or not num_questions or not selected_topics:
+            return jsonify({'message': 'Invalid input data'}), 400
 
-    for test in completed_tests:
-        questions_list.append({'id': test['id'], 'question': test['question']})
+        # Fetch roll number for the given email
+        cursor = conn.cursor()
+        cursor.execute("SELECT rollno FROM user WHERE email = %s", (email,))
+        user = cursor.fetchone()
 
-    if len(questions_indices) == 0:
-      return jsonify({'message' : 'Failed to fetch questions'}), 201
-    
-    return jsonify({'message': 'New test created', 'questions_id': questions_list, "test_id": test_id}), 201
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
 
+        roll_no = user['rollno']
+
+        # Generate question indices
+        questions_indices = create_question_indices(num_questions, selected_topics)
+
+        if len(questions_indices) == 0:
+            return jsonify({'message': 'Failed to generate question indices'}), 400
+
+        # Convert the list of question IDs into a comma-separated string
+        question_ids_str = ','.join(map(str, questions_indices))
+
+        # Insert a new test record into the database
+        sql = """INSERT INTO test (rollno, question_indices) VALUES (%s, %s)"""
+        values = (roll_no, question_ids_str)
+        cursor.execute(sql, values)
+        test_id = cursor.lastrowid
+        conn.commit()
+
+        # Fetch questions from the question bank
+        cursor.execute(
+            f"SELECT id, question FROM question_bank WHERE id IN ({question_ids_str})"
+        )
+        questions = cursor.fetchall()
+
+        questions_list = [
+            {'id': question['id'], 'question': question['question']}
+            for question in questions
+        ]
+
+        # Return response with test and questions data
+        return jsonify({
+            'message': 'New test created',
+            'questions_id': questions_list,
+            'test_id': test_id
+        }), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
 
 def create_question_indices(num_questions, selected_topics):
     questions_indices = []
@@ -189,7 +225,7 @@ def resultlist():
             return jsonify({"error": "Invalid or missing JSON data"}), 400
         
         roll_no = data.get('rollno')
-        roll_no="22i434"
+        roll_no="21z111"
         if not roll_no:
             return jsonify({"error": "Missing rollno"}), 400
 
@@ -212,10 +248,11 @@ def resultlist():
         result_dict = json.loads(result)
         print(result_dict)
         formatted_result = {
-            "incomplete_tests": result_dict["incomplete_tests"],
-            "tests_with_pending_results": result_dict["tests_with_pending_results"],
-            "tests_with_results": result_dict["tests_with_results"]
+        "incomplete_tests": result_dict.get("incomplete_tests", []),
+        "tests_with_pending_results": result_dict.get("tests_with_pending_results", []),
+        "tests_with_results": result_dict.get("tests_with_results", []),
         }
+
         print("dtfyghj",formatted_result)
         return jsonify(formatted_result), 200
 
@@ -274,7 +311,8 @@ def submit_answers():
                 continue  # Skip invalid entries
 
             cursor.execute(sql, ( test_id, question_id, answer_text))
-
+        update_query = "UPDATE test SET iscompleted = 1 WHERE test_id = %s"
+        cursor.execute(update_query, (test_id,))
         # Commit the transaction
         conn.commit()
 
@@ -539,8 +577,7 @@ def checkresult():
 
         test_id = data.get('testId')
         api="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"
-        print(test_id)
-        test_id=4
+        
         if not test_id:
             return jsonify({"error": "Missing test ID"}), 400
 
@@ -599,7 +636,8 @@ def checkresult():
                 str(question['qid'])
             )
             cursor.execute(sql, values)
-
+        update_query = "UPDATE test SET isresult = 1 WHERE test_id = %s"
+        cursor.execute(update_query, (test_id,))
         conn.commit()
         return jsonify([{"message": "Evaluation completed and data saved successfully"}]), 200
 
@@ -634,7 +672,6 @@ def viewresult():
 
         # Extract test ID from the request
         test_id = data.get('testid')
-        test_id=4
         if not test_id:
             return jsonify({"error": "Missing test ID"}), 400
 
@@ -734,6 +771,6 @@ def viewresult():
         # Ensure the cursor is closed
         if 'cursor' in locals():
             cursor.close()
-            
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
