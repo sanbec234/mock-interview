@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation
 import './dashboard.css'; // Custom CSS for styling
-import Header from '../../components/Header/Header.tsx'; // Header component
-import Footer from '../../components/Footer/Footer.tsx'; // Footer component
+import Header from './../../components/Header/Header'; // Header component
+import Footer from './../../components/Footer/Footer'; // Footer component
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate(); // Initialize the useNavigate hook

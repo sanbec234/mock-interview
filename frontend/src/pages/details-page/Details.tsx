@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import './details.css';
-import Header from './../../components/Header/Header.tsx';
-import Footer from './../../components/Footer/Footer.tsx';
+import Header from './../../components/Header/Header';
+import Footer from './../../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom'; // Use the navigate function
 
 const DetailsPage: React.FC = () => {
@@ -55,13 +55,22 @@ const DetailsPage: React.FC = () => {
       alert('User email not found. Please log in again.');
       return;
     }
-  
+
+    if (!numQuestions || selectedTopics.length === 0) {
+      alert('Please specify the number of questions and select at least one topic.');
+      return;
+    }
+
+    // Save data to localStorage
+    localStorage.setItem('numQuestions', numQuestions.toString());
+    localStorage.setItem('selectedTopics', JSON.stringify(selectedTopics));
+
     const formData = {
       email, // Include email in the payload
       numQuestions,
       selectedTopics,
     };
-  
+
     try {
       const response = await fetch('http://127.0.0.1:5000/start_test', {
         method: 'POST',
@@ -70,22 +79,28 @@ const DetailsPage: React.FC = () => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to submit data');
       }
-  
+
       const result = await response.json();
       console.log('Form submitted successfully:', result);
+
+      // Store test_id in localStorage (optional, if backend sends it)
+      if (result.test_id) {
+        localStorage.setItem('test_id', result.test_id);
+      }
+
       alert('Form submitted successfully!');
       navigate('/home');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error);
       alert(error.message || 'Failed to submit form');
     }
   };
-  
+
   return (
     <div className="App">
       <Header />

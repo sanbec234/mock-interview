@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "./../../components/Header/Header.tsx";
-import Footer from "./../../components/Footer/Footer.tsx";
+import Header from "./../../components/Header/Header";
+import Footer from "./../../components/Footer/Footer";
 import "./view-result-page.css"; // Custom CSS for the result page
 
 const ViewResultPage: React.FC = () => {

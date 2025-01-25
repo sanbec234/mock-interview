@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {  useParams } from 'react-router-dom';
-import Header from '../../components/Header/Header.tsx';
-import Footer from '../../components/Footer/Footer.tsx';
+import Header from './../../components/Header/Header';
+import Footer from './../../components/Footer/Footer';
 import './../completion-page/completionpage.css';
 
 interface Evaluation {

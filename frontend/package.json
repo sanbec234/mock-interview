@@ -6,14 +6,17 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
+    "@remix-run/router": "^1.21.1",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "file-saver": "^2.0.5",
+    "papaparse": "^5.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1",
-    "react-scripts": "^5.0.1",
+    "react-router-dom": "^6.28.2",
+    "react-scripts": "^3.0.1",
     "tailwindcss": "^3.4.17",
     "web-vitals": "^4.2.4"
   },
@@ -42,6 +45,6 @@
     ]
   },
   "devDependencies": {
-    "typescript": "^4.9.5"
+    "typescript": "^5.7.3"
   }
 }

@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 import mysql.connector
 from flask_cors import CORS
 import json
 import evaluation 
+import io
+import csv
 
 
 app = Flask(__name__)
@@ -292,10 +294,9 @@ def submit_answers():
 @app.route('/upload', methods=['POST'])
 def upload_csv():
     try:
-        # Parse the JSON data
         data = request.json.get('data')
-        cursor = conn.cursor()
-
+        print("Data received from frontend:", data)  # Debugging: Check what data is being received
+        
         if not data or not isinstance(data, list):
             return jsonify({"message": "Invalid data format"}), 400
 
@@ -317,8 +318,14 @@ def upload_csv():
                 item['Subtopic'],
                 item.get('count', 0)
             ))
-        
 
+        # Debug: Print the sanitized data to ensure correctness
+        print("Sanitized data to insert:", sanitized_data)
+
+        # Assuming you have a valid DB connection here
+        cursor = conn.cursor()
+
+        # Check the number of columns in your table and match with the data structure
         insert_query = """
         INSERT INTO question_bank (question, answer, keyword, difficulty_level, subject, subtopic, count)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -330,45 +337,95 @@ def upload_csv():
             subtopic = VALUES(subtopic),
             count = VALUES(count)
         """
-    
-    # Execute the insert query for all sanitized rows
-        cursor.executemany(insert_query, sanitized_data)
-    
-    # Commit the transaction
-        connection.commit()
         
+        cursor.executemany(insert_query, sanitized_data)
+        conn.commit()
         cursor.close()
 
-        return jsonify({"message": "Data inserted successfully", "rows": 200}), 200
+        return jsonify({"message": "Data inserted successfully", "rows": len(sanitized_data)}), 200
 
     except Exception as e:
         print("Error:", str(e))
-        return jsonify({"message": "Server error", "error": str(e)}), 500 
+        return jsonify({"message": "Server error", "error": str(e)}), 500
 
-@app.route('/delete', methods=['POST'])
+@app.route('/delete', methods=['DELETE'])  # Ensure DELETE method is used
 def delete():
     try:
-        # Parse the JSON data
-        data = request.json.get('data')
+        # Connect to the database
         cursor = conn.cursor()
 
-        if not data or not isinstance(data, list):
-            return jsonify({"message": "Invalid data format"}), 400
+        # Execute the delete query
+        cursor.execute("DELETE FROM question_bank WHERE 1=1")  # Deletes all records from the 'question' table
+        
+        # Commit the transaction
+        conn.commit()
 
-        
-        cursor.executemany("delete from question_bank where 1=1")
-    
-    # Commit the transaction
-        connection.commit()
-        
+        # Close the connection
         cursor.close()
 
-        return jsonify({"message": "Data inserted successfully", "rows": 200}), 200
+        return jsonify({"message": "All data deleted successfully"}), 200
 
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"message": "Server error", "error": str(e)}), 500
     
+@app.route('/download_csv', methods=['GET'])
+def download_csv():
+    if conn is None:
+        return jsonify({"message": "Database connection failed."}), 500
+    try:
+        # Database connection (adjust for your database)
+        
+        cursor = conn.cursor()
+
+        # Query to select all data from the history table
+        cursor.execute("SELECT * FROM history")
+        
+        rows = cursor.fetchall()
+        
+        rows = [
+            [
+                field if field is not None else ""  # Replace None with empty string
+                for field in row.values()  # row.values() ensures we're using the actual data
+            ]
+            for row in rows
+        ]
+        print(rows)
+        # Get column names
+        column_names = [i[0] for i in cursor.description]
+
+        # Create an in-memory buffer to hold the CSV data
+        output = io.StringIO()  # Use StringIO for text mode
+        csv_writer = csv.writer(output)
+
+        # Write the header (column names)
+        csv_writer.writerow(column_names)
+
+        # Write the data
+        csv_writer.writerows(rows)
+
+        # Reset the buffer's position to the start before sending it
+        output.seek(0)
+
+        # Ensure the response is not prematurely closed
+        response = send_file(
+            output,
+            as_attachment=True,
+            download_name="history_data.csv",
+            mimetype="text/csv"
+        )
+
+        # Keep the connection open until the response is fully sent
+        response.cache_control.no_store = True
+        response.direct_passthrough = True
+        return response
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+
+        return jsonify({"message": "Server error", "error": str(e)}), 500
+    finally:
+        cursor.close()
+
 @app.route('/resume', methods=['POST'])
 def resume_test():
     data = request.get_json()
@@ -448,7 +505,6 @@ def checkresult():
             cursor.execute(sql, values)
 
         conn.commit()
-        print("hj")
         return jsonify([{"message": "Evaluation completed and data saved successfully"}]), 200
 
     except Exception as e:

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Header from "./../../components/Header/Header.tsx";
-import Footer from "./../../components/Footer/Footer.tsx";
+import Header from "./../../components/Header/Header";
+import Footer from "./../../components/Footer/Footer";
 import "./result-list-page.css";
 import { useNavigate } from "react-router-dom";
 
 const ResultListPage: React.FC = () => {
-  const [testData, setTestData] = useState({
+    interface TestData {
+        incomplete_tests: number[];
+        tests_with_pending_results: number[];
+        tests_with_results: number[];
+      }
+      
+  const [testData, setTestData] = useState<TestData>({
     incomplete_tests: [],
     tests_with_pending_results: [],
     tests_with_results: [],
@@ -39,7 +45,7 @@ const ResultListPage: React.FC = () => {
             setMessage(`Error: ${error.error || "Failed to fetch test data."}`);
           }
         }
-      } catch (err) {
+      } catch (err:any) {
         if (isMounted) setMessage(`Error: ${err.message || "Something went wrong."}`);
       }
     };
@@ -97,7 +103,7 @@ const ResultListPage: React.FC = () => {
         const error = await response.json();
         setMessage(`Error: ${error.error || "Failed to perform action."}`);
       }
-    } catch (err) {
+    } catch (err:any) {
       setMessage(`Error: ${err.message || "Something went wrong."}`);
     }
   };

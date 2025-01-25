@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation
 import './login-page.css'; // Custom CSS for styling
-import Header from '../../components/Header/Header.tsx'; // Header component
-import Footer from '../../components/Footer/Footer.tsx'; // Footer component
+import Header from '../../components/Header/Header'; // Header component
+import Footer from '../../components/Footer/Footer'; // Footer component
 // import axios from 'axios'; // For API requests
 
 const LoginPage: React.FC = () => {

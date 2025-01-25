@@ -1,24 +1,67 @@
-import React, { useState, useRef } from 'react';
-import Header from '../../components/Header/Header.tsx';
-import Footer from '../../components/Footer/Footer.tsx';
-import { sendAnswerToBackend } from '../../utils/api.js'; // Import the API logic
-import './homepage.css'; // Import the global styles for App
+import React, { useState, useEffect, useRef } from 'react';
+import Header from './../../components/Header/Header';
+import Footer from './../../components/Footer/Footer';
+import './homepage.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const HomePage: React.FC = () => {
-  const [answer, setAnswer] = useState<string>(''); // State for the answer text
-  const [question, setQuestion] = useState<string>('Introduce yourself'); // State for the question
-  const [isListening, setIsListening] = useState<boolean>(false); // State to track if the mic is active
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // State to manage the "Send" button status
-  const recognitionRef = useRef<any>(null); // Ref to store the SpeechRecognition instance
+  const [questions, setQuestions] = useState<{ id: number; question: string }[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  const [answer, setAnswer] = useState<string>(''); // Current answer text
+  const [answers, setAnswers] = useState<{ id: number; answer: string }[]>([]);
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const recognitionRef = useRef<any>(null);
+  const navigate = useNavigate();
 
-  // Initialize SpeechRecognition only once
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const email = localStorage.getItem('userEmail'); // Get user email from localStorage
+      const numQuestions = localStorage.getItem('numQuestions'); // Number of questions from DetailsPage
+      const selectedTopics = JSON.parse(localStorage.getItem('selectedTopics') || '[]'); // Selected topics from DetailsPage
+
+      if (!email || !numQuestions || selectedTopics.length === 0) {
+        alert('Required details are missing. Please go back to the details page.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/start_test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            numQuestions: parseInt(numQuestions),
+            selectedTopics,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setQuestions(data.questions_id || []);
+          localStorage.setItem('test_id', data.test_id); // Store test ID in localStorage
+        } else {
+          console.error('Failed to fetch questions');
+          alert('Failed to fetch questions. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+        alert('An error occurred while fetching questions.');
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  // Initialize speech recognition
   if (!recognitionRef.current && 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
     recognition.lang = 'en-US';
     recognition.interimResults = false;
-    recognition.continuous = true; // Allow continuous speech
+    recognition.continuous = true;
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -32,14 +75,14 @@ const HomePage: React.FC = () => {
       const transcript = Array.from(event.results)
         .map((result) => result[0].transcript)
         .join(' ');
-      setAnswer((prevAnswer) => prevAnswer + ' ' + transcript); // Append the recognized speech to existing text
+      setAnswer((prev) => prev + ' ' + transcript); // Append recognized speech to the answer
     };
 
     recognition.onerror = () => {
       setIsListening(false);
     };
 
-    recognitionRef.current = recognition; // Store the instance
+    recognitionRef.current = recognition; // Save the instance
   }
 
   const handleMicClick = () => {
@@ -49,33 +92,57 @@ const HomePage: React.FC = () => {
     }
 
     if (isListening) {
-      recognitionRef.current.stop(); // Stop recognition if already listening
+      recognitionRef.current.stop();
     } else {
-      recognitionRef.current.start(); // Start recognition if not listening
+      recognitionRef.current.start();
     }
   };
 
-  const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswer(e.target.value); // Allow manual editing of the text box
-  };
-
-  const handleSend = async () => {
-    if (isSubmitting) return; // Prevent further clicks if submitting
-
+  const handleAnswerSubmit = () => {
+    const currentQuestion = questions[currentQuestionIndex];
     if (answer.trim() === '') {
-      alert('Please enter an answer or type "N/A" if you don\'t know the answer.');
+      alert('Please provide an answer before moving to the next question.');
       return;
     }
 
-    setIsSubmitting(true); // Set submitting state to true to disable the button
+    // Save the current answer
+    setAnswers((prev) => [...prev, { id: currentQuestion.id, answer }]);
+    setAnswer(''); // Clear the current answer input
+
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1); // Move to the next question
+    } else {
+      // All questions answered, submit answers to backend
+      submitAnswersToBackend();
+    }
+  };
+
+  const submitAnswersToBackend = async () => {
+    const rollno = localStorage.getItem('userEmail');
+    const test_id = localStorage.getItem('test_id');
+
     try {
-      const nextQuestion = await sendAnswerToBackend(answer); // Call the utility function
-      setQuestion(nextQuestion); // Update the question
-      setAnswer(''); // Clear the answer field
+      const response = await fetch('http://127.0.0.1:5000/submit_answers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rollno,
+          testid: test_id,
+          answers,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Answers submitted successfully!');
+        navigate('/dashborad'); // Navigate to the dashboard
+
+      } else {
+        console.error('Failed to submit answers');
+        alert('Failed to submit answers. Please try again.');
+      }
     } catch (error) {
-      console.error('Error sending answer:', error);
-    } finally {
-      setIsSubmitting(false); // Set submitting state back to false after processing
+      console.error('Error submitting answers:', error);
+      alert('An error occurred while submitting answers.');
     }
   };
 
@@ -83,32 +150,35 @@ const HomePage: React.FC = () => {
     <div className="App">
       <Header />
       <div className="main-content">
-        <div className="question-window">
-          <h2>{question}</h2>
-        </div>
-        <div className="response-container">
-          <input
-            type="text"
-            value={answer}
-            onChange={handleAnswerChange}
-            className="answer-textbox"
-            placeholder="Type your answer here..."
-          />
-          <button
-            className={`mic-button ${isListening ? 'active' : ''}`}
-            title={isListening ? 'Click to stop recording' : 'Click to start recording'}
-            onClick={handleMicClick}
-          >
-            🎤
-          </button>
-          <button
-            onClick={handleSend}
-            className="send-button"
-            disabled={isSubmitting} // Disable the button if submitting
-          >
-            Send
-          </button>
-        </div>
+        {questions.length > 0 ? (
+          <div className="question-container">
+            <h2>Question {currentQuestionIndex + 1}</h2>
+            <p>{questions[currentQuestionIndex].question}</p>
+
+            <input
+              type="text"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              className="answer-textbox"
+              placeholder="Type your answer here..."
+            />
+
+            <div className="controls">
+              <button
+                className={`mic-button ${isListening ? 'active' : ''}`}
+                title={isListening ? 'Click to stop recording' : 'Click to start recording'}
+                onClick={handleMicClick}
+              >
+                🎤
+              </button>
+              <button onClick={handleAnswerSubmit} className="submit-button">
+                {currentQuestionIndex === questions.length - 1 ? 'Finish Test' : 'Next Question'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p>Loading questions...</p>
+        )}
       </div>
       <Footer />
     </div>
