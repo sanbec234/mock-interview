@@ -1,24 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from '../../components/Header/Header.tsx';
 import Footer from '../../components/Footer/Footer.tsx';
-import { sendAnswerToBackend } from '../../utils/api.js'; // Import the API logic
-import './homepage.css'; // Import the global styles for App
+import { sendAnswerToBackend } from '../../utils/api.js'; 
+import './homepage.css'; 
 
 const HomePage: React.FC = () => {
-  const [answer, setAnswer] = useState<string>(''); // State for the answer text
-  const [question, setQuestion] = useState<string>('Are you ready?'); // State for the question
-  const [isListening, setIsListening] = useState<boolean>(false); // State to track if the mic is active
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // State to manage the "Send" button status
-  const recognitionRef = useRef<any>(null); // Ref to store the SpeechRecognition instance
+  const [answer, setAnswer] = useState<string>(''); 
+  const [question, setQuestion] = useState<string>('Are you ready?'); 
+  const [isListening, setIsListening] = useState<boolean>(false); 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); 
+  const [isTTSenabled, setIsTTSenabled] = useState<boolean>(true); 
+  const recognitionRef = useRef<any>(null); 
 
-  // Initialize SpeechRecognition only once
+  
   if (!recognitionRef.current && 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
     recognition.lang = 'en-US';
     recognition.interimResults = false;
-    recognition.continuous = true; // Allow continuous speech
+    recognition.continuous = true; 
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -32,14 +33,14 @@ const HomePage: React.FC = () => {
       const transcript = Array.from(event.results)
         .map((result) => result[0].transcript)
         .join(' ');
-      setAnswer((prevAnswer) => prevAnswer + ' ' + transcript); // Append the recognized speech to existing text
+      setAnswer((prevAnswer) => prevAnswer + ' ' + transcript); 
     };
 
     recognition.onerror = () => {
       setIsListening(false);
     };
 
-    recognitionRef.current = recognition; // Store the instance
+    recognitionRef.current = recognition; 
   }
 
   const handleMicClick = () => {
@@ -49,35 +50,58 @@ const HomePage: React.FC = () => {
     }
 
     if (isListening) {
-      recognitionRef.current.stop(); // Stop recognition if already listening
+      recognitionRef.current.stop(); 
     } else {
-      recognitionRef.current.start(); // Start recognition if not listening
+      recognitionRef.current.start(); 
     }
   };
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswer(e.target.value); // Allow manual editing of the text box
+    setAnswer(e.target.value); 
   };
 
   const handleSend = async () => {
-    if (isSubmitting) return; // Prevent further clicks if submitting
+    if (isSubmitting) return; 
 
     if (answer.trim() === '') {
       alert('Please enter an answer or type "N/A" if you don\'t know the answer.');
       return;
     }
 
-    setIsSubmitting(true); // Set submitting state to true to disable the button
+    setIsSubmitting(true); 
     try {
-      const nextQuestion = await sendAnswerToBackend(answer); // Call the utility function
-      setQuestion(nextQuestion); // Update the question
-      setAnswer(''); // Clear the answer field
+      const nextQuestion = await sendAnswerToBackend(answer); 
+      setQuestion(nextQuestion); 
+      setAnswer(''); 
     } catch (error) {
       console.error('Error sending answer:', error);
     } finally {
-      setIsSubmitting(false); // Set submitting state back to false after processing
+      setIsSubmitting(false); 
     }
   };
+
+  const handleTextToSpeech = () => {
+    if (isTTSenabled && 'speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(question); 
+      utterance.lang = 'en-US'; 
+      speechSynthesis.speak(utterance); 
+    } else if (!isTTSenabled) {
+      alert('Text-to-Speech is currently disabled.');
+    } else {
+      alert('Text-to-Speech is not supported in this browser.');
+    }
+  };
+
+  const toggleTTS = () => {
+    setIsTTSenabled((prev) => !prev); 
+  };
+
+  
+  useEffect(() => {
+    if (isTTSenabled) {
+      handleTextToSpeech(); 
+    }
+  }, [question, isTTSenabled, handleTextToSpeech]); 
 
   return (
     <div className="App">
@@ -85,6 +109,24 @@ const HomePage: React.FC = () => {
       <div className="main-content">
         <div className="question-window">
           <h2>{question}</h2>
+          <button
+            className="tts-button"
+            onClick={handleTextToSpeech}
+            title={isTTSenabled ? 'Click to hear the question' : 'TTS is disabled'}
+            disabled={!isTTSenabled} 
+          >
+            🔊
+          </button>
+          <div className="tts-toggle">
+            <label>
+              Text-to-speech:
+              <input
+                type="checkbox"
+                checked={isTTSenabled}
+                onChange={toggleTTS}
+              />
+            </label>
+          </div>
         </div>
         <div className="response-container">
           <input
@@ -104,7 +146,7 @@ const HomePage: React.FC = () => {
           <button
             onClick={handleSend}
             className="send-button"
-            disabled={isSubmitting} // Disable the button if submitting
+            disabled={isSubmitting} 
           >
             Send
           </button>

@@ -118,7 +118,45 @@ body, html {
   }
   
   .mic-button.active {
-    background-color: red; /* Change to red when recording */
-    color: white; /* Change text color to white */
+    background-color: red; 
+    color: white; 
   }
+
+  .tts-button {
+    background-color: #5dbb60; 
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .tts-button:disabled {
+    background-color: #9e9e9e; 
+    cursor: not-allowed;
+  }
+  
+  .tts-toggle {
+    display: flex; 
+    align-items: center; 
+    margin-top: 10px;
+  }
+  
+  .tts-toggle label {
+    font-size: 16px; 
+  }
+  
+  .tts-toggle input {
+    margin-left: 10px; 
+  }
+
+  .tts-button:hover {
+    background-color: #5dbb60;
+    transform: scale(1.1);
+  }
+  
+  
+  
   
