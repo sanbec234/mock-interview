@@ -29,4 +29,23 @@ header {
   header nav a:hover {
     color: #ddd;
   }
+
+  .offline-notification {
+    background-color: rgba(220, 98, 89, 0.9); 
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-weight: bold;
+  }
+  
   
