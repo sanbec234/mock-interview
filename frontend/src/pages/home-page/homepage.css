@@ -1,0 +1,124 @@
+/* Global styles for the HomePage */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure the body and html take the full viewport height */
+    overflow: hidden; /* Prevent scrolling */
+  }
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure content stretches across the full width */
+    justify-content: space-between; /* Ensure the header and footer are spaced out properly */
+    min-height: 100vh; /* Full viewport height */
+    background-color: #f1f1f1;
+  }
+  header {
+    width: 100%;
+    background-color: #4CAF50; /* Or your custom header color */
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+  .main-content {
+  margin-top: 120px; /* Give space for the fixed header */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden; /* Prevent scrolling in main content */
+}
+  /* Question window styling */
+  .question-window {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .question-window h2 {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  /* Styling for the response container (text box and send button) */
+  .response-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    position: fixed;
+    bottom: 200px; /* Position the response container at the bottom */
+  }
+  
+  .answer-textbox {
+    width: 70%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    outline: none;
+  }
+  
+  .answer-textbox:focus {
+    border-color: #4CAF50;
+  }
+  
+  .send-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .send-button:hover {
+    background-color: #45a049;
+  }
+  
+  footer {
+    width: 100%;
+    background-color: #4CAF50;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .mic-button {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .mic-button:hover {
+    background-color: #d0d0d0;
+    transform: scale(1.1);
+  }
+  
+  .mic-button.active {
+    background-color: red; /* Change to red when recording */
+    color: white; /* Change text color to white */
+  }
+  

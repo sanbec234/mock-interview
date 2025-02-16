@@ -1,0 +1,20 @@
+# Use a slim Node.js image
+FROM node:14-slim
+
+# Set the working directory
+WORKDIR /frontend
+
+# Copy dependencies file
+COPY package*.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose the frontend port
+EXPOSE 3000
+
+# Command to run the Node.js application
+CMD ["npm", "start"]
