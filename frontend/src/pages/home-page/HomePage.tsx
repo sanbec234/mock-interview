@@ -12,6 +12,8 @@ const HomePage: React.FC = () => {
   const [answer, setAnswer] = useState<string>(""); // Current answer text
   const [answers, setAnswers] = useState<{ id: number; answer: string }[]>([]);
   const [isListening, setIsListening] = useState<boolean>(false);
+  const [isTTSActive, setIsTTSActive] = useState<boolean>(true); 
+  const [hasSpoken, setHasSpoken] = useState<boolean>(false); 
   const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
 
@@ -90,6 +92,21 @@ const HomePage: React.FC = () => {
     recognitionRef.current = recognition; // Save the instance
   }
 
+  
+  const speakText = (text: string) => {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
+  };
+
+  useEffect(() => {
+    if (isTTSActive && questions.length > 0 && !hasSpoken) {
+      speakText(questions[currentQuestionIndex].question);
+      setHasSpoken(true); 
+    }
+  }, [currentQuestionIndex, questions, isTTSActive, hasSpoken]);
+  
+
   const handleMicClick = () => {
     if (!recognitionRef.current) {
       alert("Speech recognition is not supported in this browser.");
@@ -105,6 +122,12 @@ const HomePage: React.FC = () => {
 
   const handleAnswerSubmit = () => {
     const currentQuestion = questions[currentQuestionIndex];
+
+    if (!navigator.onLine) {
+      alert("Internet not connected. Please re-submit your answers.");
+      return;
+    } 
+
     if (answer.trim() === "") {
       alert("Please provide an answer before moving to the next question.");
       return;
@@ -116,6 +139,7 @@ const HomePage: React.FC = () => {
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1); // Move to the next question
+      setHasSpoken(false);
     } else {
       // All questions answered, submit answers to backend
       submitAnswersToBackend();
@@ -167,6 +191,15 @@ const HomePage: React.FC = () => {
               placeholder="Type your answer here..."
             />
 
+<button
+  onClick={() => {
+    speakText(questions[currentQuestionIndex].question);
+  }}
+  className="speaker-button"
+>
+  <span role="img" aria-label="Speaker">🔊</span>
+</button>
+
             <div className="controls">
               <button
                 className={`mic-button ${isListening ? "active" : ""}`}
@@ -185,6 +218,13 @@ const HomePage: React.FC = () => {
                 {currentQuestionIndex === questions.length - 1
                   ? "Finish Test"
                   : "Next Question"}
+              </button>
+              <br></br>
+              <button
+                onClick={() => setIsTTSActive(!isTTSActive)}
+                className="tts-toggle-button"
+              >
+                  {isTTSActive ? "Disable Text-to-Speech" : "Enable Text-to-Speech"}
               </button>
             </div>
           </div>
