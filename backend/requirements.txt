@@ -8,3 +8,4 @@ numpy
 pandas
 tzdata
 mysql-connector
+pymysql
