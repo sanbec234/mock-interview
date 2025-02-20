@@ -1,0 +1,60 @@
+/* Container for the flex layout */
+.form-flex-container {
+  display: flex;
+  justify-content: space-between; /* Align columns with space between */
+  gap: 20px; /* Gap between columns */
+}
+
+/* Column styles */
+.form-group-column {
+  flex: 1; /* Make both columns equal in size */
+  max-width: 48%; /* Optional: Limit the column width */
+}
+
+/* General form group styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Button styles */
+.login-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .form-flex-container {
+    flex-direction: column; /* Stack the columns vertically */
+  }
+
+  .form-group-column {
+    max-width: 100%; /* Full width for smaller screens */
+  }
+}
