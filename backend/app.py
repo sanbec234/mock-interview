@@ -57,9 +57,9 @@ def create_user():
         cursor = conn.cursor()
 
         hashed_password = generate_password_hash(data['password'])
-        sql = """INSERT INTO user (rollno, name, email, password, department, year, cgpa) 
-                 VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-        values = (data['rollno'], data['name'], data['email'], hashed_password, data['department'], data['year'], data['cgpa'])
+        sql = """INSERT INTO user (rollno, name, email, password, department, year, cgpa,college) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s,%s)"""
+        values = (data['rollno'], data['name'], data['email'], hashed_password, data['department'], data['year'], data['cgpa'],data['college'])
         cursor.execute(sql, values)
         conn.commit()
         return jsonify({'message': 'User created successfully'}), 201
@@ -264,7 +264,7 @@ def resultlist():
         roll_no="21z111"
         if not roll_no:
             return jsonify({"error": "Missing rollno"}), 400
-
+        
         # Call stored procedure
         cursor = conn.cursor()
         if cursor:
