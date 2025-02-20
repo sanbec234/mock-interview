@@ -129,6 +129,7 @@ const ResultListPage: React.FC = () => {
             testData.incomplete_tests.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
+                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "resume")}
                   className="action-button"
@@ -146,6 +147,7 @@ const ResultListPage: React.FC = () => {
             testData.tests_with_pending_results.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
+                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "check_result")}
                   className="action-button"
@@ -163,6 +165,7 @@ const ResultListPage: React.FC = () => {
             testData.tests_with_results.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
+                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "view_result")}
                   className="action-button"
