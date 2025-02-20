@@ -11,6 +11,7 @@ const SignUpPage: React.FC = () => {
   const [year, setYear] = useState<string>("");
   const [cgpa, setCgpa] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [college,setCollege]=useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null); // State for feedback messages
   const navigate = useNavigate(); // Hook for navigation
@@ -26,6 +27,7 @@ const SignUpPage: React.FC = () => {
       year,
       cgpa,
       email,
+      college,
       password,
     };
 
@@ -101,6 +103,17 @@ const SignUpPage: React.FC = () => {
                     required
                   />
                 </div>
+                <div className="form-group">
+                  <label htmlFor="college">College</label>
+                  <input
+                    type="text"
+                    id="college"
+                    value={college}
+                    onChange={(e) => setCollege(e.target.value)}
+                    placeholder="Enter your College Name"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="form-group-column">
@@ -137,6 +150,7 @@ const SignUpPage: React.FC = () => {
                     required
                   />
                 </div>
+                
               </div>
             </div>
 
