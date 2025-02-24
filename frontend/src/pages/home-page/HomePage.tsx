@@ -14,6 +14,9 @@ const HomePage: React.FC = () => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isTTSActive, setIsTTSActive] = useState<boolean>(true); 
   const [hasSpoken, setHasSpoken] = useState<boolean>(false); 
+  const [isTestFinished, setIsTestFinished] = useState<boolean>(false); 
+  const [feedback1, setFeedback1] = useState<string>('');
+  const [feedback2, setFeedback2] = useState<string>('');
   const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
 
@@ -163,7 +166,8 @@ const HomePage: React.FC = () => {
 
       if (response.ok) {
         alert("Answers submitted successfully!");
-        navigate("/dashborad"); // Navigate to the dashboard
+        setIsTestFinished(true);
+        
       } else {
         console.error("Failed to submit answers");
         alert("Failed to submit answers. Please try again.");
@@ -174,10 +178,78 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleFeedbackSubmit = () => {
+    if (feedback1.trim() === "" || feedback2.trim() === "") {
+      alert("Please provide the feedback.");
+      return;
+    }
+    submitFeedback();
+  };
+
+  const submitFeedback = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/submit_feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          feedback1: feedback1,
+          feedback2: feedback2,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Thank you for the feedback!");
+        navigate("/dashborad"); 
+        
+      } else {
+        console.error("Failed to submit Feedback");
+        alert("Failed to submit Feedback. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting Feedback:", error);
+      alert("An error occurred while submitting Feedback.");
+    }
+  };
+
+  const handleFeedbackSkip = () => {
+    navigate("/dashborad"); 
+  };
+
   return (
     <div className="App">
       <Header />
       <div className="main-content">
+      { isTestFinished ?
+      (
+          <div className="feedback-form">
+            <h2>Feedback Form</h2>
+            <div>
+              <label>
+              How helpful did you find the mock interview system in preparing for real interviews?
+                <input
+                  type="text"
+                  value={feedback1}
+                  onChange={(e) => setFeedback1(e.target.value)}
+                  placeholder="Enter your feedback"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+              Do you have any suggestions or improvements for enhancing the mock interview system?
+                <input
+                  type="text"
+                  value={feedback2}
+                  onChange={(e) => setFeedback2(e.target.value)}
+                  placeholder="Enter your feedback"
+                />
+              </label>
+            </div>
+            <button onClick={handleFeedbackSubmit}>Submit Feedback</button> <br></br> <br></br>
+            <button onClick={handleFeedbackSkip}>Skip</button>
+          </div>
+        ) : (
+        <>
         {questions.length > 0 ? (
           <div className="question-container">
             <h2>Question {currentQuestionIndex + 1}</h2>
@@ -191,14 +263,14 @@ const HomePage: React.FC = () => {
               placeholder="Type your answer here..."
             />
 
-<button
-  onClick={() => {
-    speakText(questions[currentQuestionIndex].question);
-  }}
-  className="speaker-button"
->
-  <span role="img" aria-label="Speaker">🔊</span>
-</button>
+            <button
+              onClick={() => {
+                speakText(questions[currentQuestionIndex].question);
+              }}
+              className="speaker-button"
+            >
+            <span role="img" aria-label="Speaker">🔊</span>
+            </button>
 
             <div className="controls">
               <button
@@ -230,7 +302,9 @@ const HomePage: React.FC = () => {
           </div>
         ) : (
           <p>Loading questions...</p>
-        )}
+        )} 
+        </>
+      )}
       </div>
       <Footer />
     </div>
