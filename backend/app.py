@@ -868,6 +868,25 @@ def viewresult():
         if 'cursor' in locals():
             cursor.close()
 
+@app.route('/submit_feedback', methods=['POST'])
+def submitFeedback():
+
+    try:
+        data = request.get_json()
+        cursor = conn.cursor()
+        feedback1 = data.get('feedback1')
+        feedback2 = data.get('feedback2')
+        cursor.execute("INSERT INTO user_feedback (feedback1, feedback2) VALUES (%s, %s)", (feedback1, feedback2))
+        conn.commit()
+        return jsonify({"message": "Feedback submitted successfully"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+
 if __name__ == '__main__':
     # app.run(host="0.0.0.0", port=5000)
     app.run(host="0.0.0.0", port=5000, debug=True)
