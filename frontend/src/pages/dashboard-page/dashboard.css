@@ -1,0 +1,136 @@
+/* General Styles */
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+/* Flex container for layout */
+.dashboard-content {
+  margin: 0 ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 40px;
+  flex-wrap: wrap;
+}
+
+/* Image Styling */
+.dashboard-image img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+/* Centering Container */
+.dashboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Title */
+.dashboard-container h2 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: black;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+}
+
+/* Buttons Container */
+.dashboard-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+/* Modern Buttons */
+.dashboard-button {
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: slideUp 1s ease-in-out forwards;
+}
+
+/* Button Hover Effect */
+.dashboard-button:hover {
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255, 75, 43, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .dashboard-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .dashboard-image img {
+    max-width: 90%;
+  }
+
+  .dashboard-container {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .dashboard-buttons {
+    flex-direction: column;
+  }
+
+  .dashboard-button {
+    width: 100%;
+  }
+}

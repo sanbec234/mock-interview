@@ -1,0 +1,54 @@
+.main-content {
+    padding: 20px;
+  }
+  
+  .result-form-container {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .results-container {
+    margin-top: 20px;
+  }
+  
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .results-table th,
+  .results-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .results-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .feedback-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .fetch-button,
+  .home-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .fetch-button:hover,
+  .home-button:hover {
+    background-color: #0056b3;
+  }
+  

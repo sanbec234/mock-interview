@@ -1,0 +1,237 @@
+/* General Styles */
+.login-page {
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  position: relative; /* Ensure the header and footer are positioned correctly */
+}
+.login-content{
+  display: flex;
+  align-items: center;
+  height: 90vh;
+}
+/* Left Column (Image and Title) */
+.left-column {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.left-column img {
+  width: 100%; /* Ensure the image covers the left side fully */
+  max-width: 600px; /* Limit the image size */
+  height: auto;
+  border-radius: 12px; /* Optional: Add rounded corners */
+}
+
+.left-column h1 {
+  margin-top: 1.5rem;
+  font-size: 2rem;
+  color: #6c63ff; /* Matching the gradient color */
+  text-align: center;
+}
+
+/* Right Column (Login Form) */
+.right-column {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.login-container {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+/* Form Group Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #6c63ff; /* Matching the gradient color */
+  box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
+}
+
+/* Radio Button Styles */
+.radio-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.radio-options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* Reduced gap for compactness */
+  align-items: center;
+}
+
+.radio-options div {
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem; /* Smaller font size for radio labels */
+}
+
+.radio-options input {
+  margin-right: 0.5rem;
+}
+
+/* Button Styles */
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #6c63ff; /* Matching the gradient color */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.login-button:hover:not(:disabled) {
+  background-color: #5a52e0; /* Slightly darker on hover */
+}
+
+/* Sign Up Button Styles */
+.signup-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6c63ff;
+  background-color: transparent;
+  border: 2px solid #6c63ff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.signup-button:hover {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+/* Header Styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(-45deg, #6c63ff, #ff6584);
+  padding: 10px 20px;
+  color: white;
+  padding-right: 3rem;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header nav {
+  display: flex;
+  gap: 15px;
+  padding-right: 3rem;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+header nav a:hover {
+  color: #ddd;
+}
+
+/* Footer Styles */
+footer {
+  width: 100%;
+  background: linear-gradient(45deg, #6c63ff, #ff6584);
+  padding: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+footer p {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+footer:hover p {
+  transform: translateY(-2px);
+}
+
+footer::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+footer:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
