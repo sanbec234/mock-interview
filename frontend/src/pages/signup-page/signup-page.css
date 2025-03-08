@@ -1,3 +1,67 @@
+/* General Styles */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  position: relative; /* Ensure the header and footer are positioned correctly */
+  width: 100vw;
+}
+
+.signup-content {
+  max-width: 100vw;
+  align-items: center;
+  display: flex;
+  flex-direction: row;  
+  justify-content: space-between;
+  height: 8+0vh;
+  width: 100%;
+  padding: 2rem;
+}
+
+.left-column {
+  flex: 1; /* Takes half the space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.right-column {
+  flex: 1; /* Takes half the space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Right Column (Signup Form) */
+.right-column {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.login-form-container {
+  max-width: 500px; /* Slightly wider for the signup form */
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+.left-column h1 {
+  margin-top: 1.5rem;
+  font-size: 2rem;
+  color: #6c63ff; /* Matching the gradient color */
+  text-align: center;
+}
+
 /* Container for the flex layout */
 .form-flex-container {
   display: flex;
@@ -46,6 +110,13 @@
 
 .login-button:hover {
   background-color: #0056b3;
+}
+
+/* Feedback message */
+.feedback-message {
+  margin-top: 1rem;
+  color: #28a745; /* Green for success messages */
+  font-weight: bold;
 }
 
 /* Responsive design for smaller screens */

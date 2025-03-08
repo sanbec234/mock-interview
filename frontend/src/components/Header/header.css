@@ -6,9 +6,11 @@ header {
   padding: 10px 20px;
   color: white;
   padding-right: 3rem;
+  position: fixed;
 }
 
 header h1 {
+  color: #fff;
   margin: 0;
   font-size: 1.5rem;
 }

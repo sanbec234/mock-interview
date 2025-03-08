@@ -69,71 +69,86 @@ const LoginPage: React.FC = () => {
   return (
     <div className="login-page">
       <Header /> {/* Custom Header component */}
-      <div className="login-container">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-          <div className="form-group radio-buttons">
-            <label>User Type</label>
-            <div className="radio-options">
-              <label>
-                <input
-                  type="radio"
-                  value="admin"
-                  checked={userType === 'admin'}
-                  onChange={(e) => setUserType(e.target.value)}
-                />
-                Admin
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="student"
-                  checked={userType === 'student'}
-                  onChange={(e) => setUserType(e.target.value)}
-                />
-                Student
-              </label>
+      <div className='login-content'>
+      <div className="left-column">
+      <img src="/image.jpg" alt="Mock Interview" />
+      <h1>Mock Interview</h1>
+      </div>
+      <hr />
+      <div className="right-column">
+        <div className="login-container">
+          <h2>Login</h2>
+          <form onSubmit={handleLogin} className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
             </div>
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="login-button"
-          >
-            {isSubmitting ? 'Logging in...' : 'Login'}
-          </button>
-          <br />
-          <br />
-          <button
-            type="button"
-            onClick={() => navigate('/sign-up')} // Redirect to signup page
-            className="login-button"
-          >
-            Sign Up
-          </button>
-        </form>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <div className="form-group radio-buttons">
+              <label>User Type</label>
+              <div className="radio-options">
+                <div>
+                <input
+                    type="radio"
+                    value="admin"
+                    checked={userType === 'admin'}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
+                <label>
+                  Admin
+                </label>
+                </div>
+              <div>
+              <input
+                    type="radio"
+                    value="student"
+                    checked={userType === 'student'}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
+                <label>
+                  Student
+                </label>
+              </div>
+                
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="login-button"
+            >
+              {isSubmitting ? 'Logging in...' : 'Login'}
+            </button>
+            <br />
+            <br />
+            <button
+              type="button"
+              onClick={() => navigate('/sign-up')} // Redirect to signup page
+              className="signup-button"
+            >
+              Sign Up
+            </button>
+          </form>
+        </div>
+      </div>
+      
       </div>
       <Footer /> {/* Custom Footer component */}
     </div>

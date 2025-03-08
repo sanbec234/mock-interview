@@ -2,16 +2,15 @@
 body, html {
     margin: 0;
     padding: 0;
-    height: 100%; /* Ensure the body and html take the full viewport height */
-    overflow: hidden; /* Prevent scrolling */
+   
   }
   .App {
     display: flex;
     flex-direction: column;
     align-items: stretch; /* Ensure content stretches across the full width */
-    justify-content: space-between; /* Ensure the header and footer are spaced out properly */
     min-height: 100vh; /* Full viewport height */
     background-color: #f1f1f1;
+
   }
   header {
     width: 100%;
@@ -21,8 +20,7 @@ body, html {
     text-align: center;
     font-size: 1.5rem;
   }
-  .main-content {
-  margin-top: 120px; /* Give space for the fixed header */
+  .input-container {
   display: flex;
   flex-direction: column;
   align-items: center;

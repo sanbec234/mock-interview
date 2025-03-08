@@ -216,9 +216,9 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="App">
+    <div className="home">
       <Header />
-      <div className="main-content">
+      <div className="home-content">
       { isTestFinished ?
       (
           <div className="feedback-form">
@@ -254,7 +254,8 @@ const HomePage: React.FC = () => {
           <div className="question-container">
             <h2>Question {currentQuestionIndex + 1}</h2>
             <p>{questions[currentQuestionIndex].question}</p>
-
+            <div className="input-speaker">
+              
             <input
               type="text"
               value={answer}
@@ -271,6 +272,8 @@ const HomePage: React.FC = () => {
             >
             <span role="img" aria-label="Speaker">🔊</span>
             </button>
+            </div>
+            
 
             <div className="controls">
               <button
@@ -305,6 +308,8 @@ const HomePage: React.FC = () => {
         )} 
         </>
       )}
+      <img src="/AIbot.jpg" alt="Visual Representation" className="question-image" />
+
       </div>
       <Footer />
     </div>

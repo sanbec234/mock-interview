@@ -10,7 +10,9 @@ const Header: React.FC = () => {
   };
 
   return (
+    
     <header>
+      <img src="/icon.jpg" alt=""  style={{ width: "40px", height: "40px" }} />
       <h1>Mock Interview</h1>
       <nav>
         <span onClick={logoutHandler}>Log out</span>
