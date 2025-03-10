@@ -1,124 +1,234 @@
-/* Global styles for the HomePage */
+/* Reset Styles */
 body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%; /* Ensure the body and html take the full viewport height */
-    overflow: hidden; /* Prevent scrolling */
-  }
-  .App {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; /* Ensure content stretches across the full width */
-    justify-content: space-between; /* Ensure the header and footer are spaced out properly */
-    min-height: 100vh; /* Full viewport height */
-    background-color: #f1f1f1;
-  }
-  header {
-    width: 100%;
-    background-color: #4CAF50; /* Or your custom header color */
-    padding: 20px;
-    color: white;
-    text-align: center;
-    font-size: 1.5rem;
-  }
-  .main-content {
-  margin-top: 120px; /* Give space for the fixed header */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f1f1f1;
+}
+
+/* Home Page Layout */
+.home {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  min-height: 10vh; /* Full viewport height */
+}
+
+/* Header */
+header {
+  width: 100%;
+  background-color: #4CAF50;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* Two-Column Layout */
+.home-content {
+  margin-top: 120px; /* Space for fixed header */
+  display: flex;
+  flex-direction: row; /* Arrange items in a row */
+  justify-content: center;
   align-items: center;
   flex-grow: 1;
-  justify-content: center;
   padding: 20px;
-  overflow: hidden; /* Prevent scrolling in main content */
+  width: 100%;
+  gap: 40px; /* Space between columns */
 }
-  /* Question window styling */
-  .question-window {
-    background-color: #ffffff;
-    width: 100%;
-    max-width: 600px;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .question-window h2 {
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  /* Styling for the response container (text box and send button) */
-  .response-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-    padding: 10px;
-    position: fixed;
-    bottom: 200px; /* Position the response container at the bottom */
-  }
-  
-  .answer-textbox {
-    width: 70%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-    outline: none;
-  }
-  
-  .answer-textbox:focus {
-    border-color: #4CAF50;
-  }
-  
-  .send-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .send-button:hover {
-    background-color: #45a049;
-  }
-  
-  footer {
-    width: 100%;
-    background-color: #4CAF50;
-    padding: 20px;
-    color: white;
-    text-align: center;
-    font-size: 1rem;
+
+/* Left Column - Question Window */
+.question-container {
+  flex: 1; /* Take equal space */
+  background-color: #ffffff;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.question-container h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Right Column - Image */
+.question-image {
+  flex: 1; /* Take equal space */
+  max-width: 400px; /* Adjust image size */
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Response Input & Buttons */
+.input-speaker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.answer-textbox {
+  width: 70%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.answer-textbox:focus {
+  border-color: #4CAF50;
+}
+
+/* Microphone Button */
+.mic-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.mic-button:hover {
+  background-color: #d0d0d0;
+  transform: scale(1.1);
+}
+
+.mic-button.active {
+  background-color: red;
+  color: white;
+}
+
+/* Speaker Button */
+.speaker-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.speaker-button:hover {
+  background-color: #45a049;
+}
+
+/* Submit and Control Buttons */
+.controls {
+  margin-top: 20px;
+}
+
+.submit-button, .tts-toggle-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.tts-toggle-button {
+  background-color: #2196F3;
+  color: white;
+}
+
+.tts-toggle-button:hover {
+  background-color: #1E88E5;
+}
+
+/* Feedback Form */
+.feedback-form {
+  background-color: #ffffff;
+  justify-content: center;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+height: 50vh;
+}
+
+.feedback-form h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.feedback-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.feedback-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.feedback-form button:hover {
+  background-color: #45a049;
+}
+
+/* Footer */
+footer {
+  width: 100%;
+  background-color: #4CAF50;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .home-content {
+      flex-direction: column; /* Stack on smaller screens */
+      align-items: center;
   }
 
-  .mic-button {
-    background-color: #e0e0e0;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 10px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  .question-container, .question-image {
+      max-width: 100%;
   }
-  
-  .mic-button:hover {
-    background-color: #d0d0d0;
-    transform: scale(1.1);
+
+  .question-image {
+      max-width: 300px; /* Reduce image size */
   }
-  
-  .mic-button.active {
-    background-color: red; /* Change to red when recording */
-    color: white; /* Change text color to white */
+}
+
+@media (max-width: 768px) {
+  .answer-textbox {
+      width: 100%;
   }
-  
+
+  .question-image {
+      max-width: 250px;
+  }
+}

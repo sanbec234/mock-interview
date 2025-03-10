@@ -11,7 +11,7 @@ const SignUpPage: React.FC = () => {
   const [year, setYear] = useState<string>("");
   const [cgpa, setCgpa] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [college,setCollege]=useState<string>("");
+  const [college, setCollege] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null); // State for feedback messages
   const navigate = useNavigate(); // Hook for navigation
@@ -64,119 +64,124 @@ const SignUpPage: React.FC = () => {
   return (
     <div className="App">
       <Header />
-      <div className="main-content">
-        <div className="login-form-container">
-          <h2>Sign Up</h2>
-          <form onSubmit={handleSignUp}>
-            <div className="form-flex-container">
-              <div className="form-group-column">
-                <div className="form-group">
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
-                    required
-                  />
+      <div className="signup-content">
+        <div className="left-column">
+          <img src='img1.jpg' alt="Mock Interview" />
+          <h1>Mock Interview</h1>
+        </div>
+        <div className="right-column">
+          <div className="login-form-container">
+            <h2>Sign Up</h2>
+            <form onSubmit={handleSignUp}>
+              <div className="form-flex-container">
+                <div className="form-group-column">
+                  <div className="form-group">
+                    <label htmlFor="name">Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your name"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="rollNumber">Roll Number</label>
+                    <input
+                      type="text"
+                      id="rollNumber"
+                      value={rollNumber}
+                      onChange={(e) => setRollNumber(e.target.value)}
+                      placeholder="Enter your roll number"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input
+                      type="text"
+                      id="department"
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                      placeholder="Enter your department"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="college">College</label>
+                    <input
+                      type="text"
+                      id="college"
+                      value={college}
+                      onChange={(e) => setCollege(e.target.value)}
+                      placeholder="Enter your College Name"
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="rollNumber">Roll Number</label>
-                  <input
-                    type="text"
-                    id="rollNumber"
-                    value={rollNumber}
-                    onChange={(e) => setRollNumber(e.target.value)}
-                    placeholder="Enter your roll number"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="department">Department</label>
-                  <input
-                    type="text"
-                    id="department"
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                    placeholder="Enter your department"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="college">College</label>
-                  <input
-                    type="text"
-                    id="college"
-                    value={college}
-                    onChange={(e) => setCollege(e.target.value)}
-                    placeholder="Enter your College Name"
-                    required
-                  />
+
+                <div className="form-group-column">
+                  <div className="form-group">
+                    <label htmlFor="year">Year</label>
+                    <input
+                      type="text"
+                      id="year"
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                      placeholder="Enter your year"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="cgpa">CGPA</label>
+                    <input
+                      type="text"
+                      id="cgpa"
+                      value={cgpa}
+                      onChange={(e) => setCgpa(e.target.value)}
+                      placeholder="Enter your CGPA"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="form-group-column">
-                <div className="form-group">
-                  <label htmlFor="year">Year</label>
-                  <input
-                    type="text"
-                    id="year"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    placeholder="Enter your year"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="cgpa">CGPA</label>
-                  <input
-                    type="text"
-                    id="cgpa"
-                    value={cgpa}
-                    onChange={(e) => setCgpa(e.target.value)}
-                    placeholder="Enter your CGPA"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="email">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-                
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                />
               </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-            </div >
-            <button type="submit" className="login-button">
-              Sign Up
+              <button type="submit" className="login-button">
+                Sign Up
+              </button>
+            </form>
+            {message && <p className="feedback-message">{message}</p>}
+            <br />
+            <button
+              className="login-button"
+              onClick={goToLoginPage}
+            >
+              Go to Login Page
             </button>
-          </form>
-          {message && <p className="feedback-message">{message}</p>}
-          <br></br>
-          <button 
-            className="login-button"
-            onClick={goToLoginPage}
-          >
-            Go to Login Page
-          </button>
+          </div>
         </div>
       </div>
       <Footer />

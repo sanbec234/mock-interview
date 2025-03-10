@@ -118,8 +118,8 @@ const ResultListPage: React.FC = () => {
   return (
     <div className="App">
       <Header />
-      <div className="main-content">
-        <h2>Test Status</h2>
+      <div className="main-content" style={{ marginTop: "60px" }}>
+      <h2>Test Status</h2>
 
         {message && <p className="feedback-message">{message}</p>}
 
@@ -129,7 +129,6 @@ const ResultListPage: React.FC = () => {
             testData.incomplete_tests.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
-                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "resume")}
                   className="action-button"
@@ -147,7 +146,6 @@ const ResultListPage: React.FC = () => {
             testData.tests_with_pending_results.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
-                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "check_result")}
                   className="action-button"
@@ -165,7 +163,6 @@ const ResultListPage: React.FC = () => {
             testData.tests_with_results.map((testId) => (
               <div key={testId} className="test-item">
                 <span>Test ID: {testId}</span>
-                <span>Created at:</span>
                 <button
                   onClick={() => handleAction(testId, "view_result")}
                   className="action-button"
