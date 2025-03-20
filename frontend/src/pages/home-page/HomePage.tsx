@@ -221,7 +221,9 @@ const HomePage: React.FC = () => {
       <div className="home-content">
       { isTestFinished ?
       (
+          
           <div className="feedback-form">
+            
             <h2>Feedback Form</h2>
             <div>
               <label>

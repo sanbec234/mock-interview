@@ -8,14 +8,11 @@ const DetailsPage: React.FC = () => {
   const [apiUrl, setApiUrl] = useState<string>("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [topics, setTopics] = useState<string[]>([]); // Topics fetched from the backend
-  const [topicDifficulties, setTopicDifficulties] = useState<{
-    [topic: string]: string;
-  }>({});
+  const [topicDifficulties, setTopicDifficulties] = useState<{ [topic: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fetch topics from the backend
   useEffect(() => {
     const fetchTopics = async () => {
       try {
@@ -35,27 +32,31 @@ const DetailsPage: React.FC = () => {
     fetchTopics();
   }, []);
 
-  // Handle number of questions change
-  const handleNumQuestionsChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-  };
-
-  // Handle topic selection
   const handleTopicChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = event.target.value;
-    setSelectedTopics((prevTopics) =>
-      prevTopics.includes(selectedOption)
+  
+    if (!selectedOption) {
+      return; // Prevents updating if no valid selection is made
+    }
+  
+    setSelectedTopics((prevTopics) => {
+      const updatedTopics = prevTopics.includes(selectedOption)
         ? prevTopics.filter((topic) => topic !== selectedOption)
-        : [...prevTopics, selectedOption]
-    );
-
-    setTopicDifficulties((prev) => ({
-      ...prev,
-      [selectedOption]: prev[selectedOption] || "", // Initialize if not already set
-    }));
+        : [...prevTopics, selectedOption];
+  
+      setTopicDifficulties((prev) => ({
+        ...prev,
+        [selectedOption]: prev[selectedOption] || "Medium", // Default to Medium
+      }));
+  
+      return updatedTopics;
+    });
+  
+    // Reset dropdown selection to "Choose a topic" after selection
+    event.target.value = "";
   };
+  
 
-  // Handle difficulty selection for each topic
   const handleTopicDifficultyChange = (topic: string, difficulty: string) => {
     setTopicDifficulties((prev) => ({
       ...prev,
@@ -63,7 +64,6 @@ const DetailsPage: React.FC = () => {
     }));
   };
 
-  // Remove topic from selection
   const removeTopic = (topic: string) => {
     setSelectedTopics((prev) => prev.filter((t) => t !== topic));
     setTopicDifficulties((prev) => {
@@ -73,9 +73,8 @@ const DetailsPage: React.FC = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
-    const email = localStorage.getItem("userEmail"); // Get email from local storage
+    const email = localStorage.getItem("userEmail");
     if (!email) {
       alert("User email not found. Please log in again.");
       return;
@@ -88,10 +87,7 @@ const DetailsPage: React.FC = () => {
 
     const numQuestionLen = selectedTopics.length * 3;
     localStorage.setItem("numQuestions", numQuestionLen.toString());
-    localStorage.setItem(
-      "selectedTopics",
-      JSON.stringify(topicsWithDifficulty)
-    );
+    localStorage.setItem("selectedTopics", JSON.stringify(topicsWithDifficulty));
 
     const formData = {
       email,
@@ -100,106 +96,78 @@ const DetailsPage: React.FC = () => {
     };
 
     navigate("/home");
-
-    // try {
-    //   const response = await fetch("http://127.0.0.1:5000/start_test", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(formData),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error("Failed to submit data");
-    //   }
-
-    //   const result = await response.json();
-    //   console.log("Form submitted successfully:", result);
-    //   alert("Form submitted successfully!");
-
-    //   if (result.test_id) {
-    //     localStorage.setItem("test_id", result.test_id);
-    //   }
-
-    //   alert("Form submitted successfully!");
-    // } catch (error) {
-    //   console.error("Error submitting form:", error);
-    //   alert("Failed to submit form");
-    // }
   };
 
   return (
     <div className="App">
       <Header />
+      <div className="details-container">
+        <div className="image-container">
+          <img src="/choose.jpg" alt="Choose Topics" />
+        </div>
+        <div className="input-container">
+          <h2>Choose Your Topics</h2>
 
-      <div className="input-container">
-        <label htmlFor="multi-select">Select Topics:</label>
-        {loading ? (
-          <p>Loading topics...</p>
-        ) : error ? (
-          <p className="error-message">{error}</p>
-        ) : (
-          <select
-            id="multi-select"
-            className="multi-select"
-            onChange={handleTopicChange}
-          >
-            <option value="" disabled>
-              Choose a topic
-            </option>
-            {topics.map((topic) => (
-              <option key={topic} value={topic}>
-                {topic}
-              </option>
-            ))}
-          </select>
-        )}
+          <label htmlFor="multi-select">Select Topics:</label>
+          {loading ? (
+            <p>Loading topics...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : (
+            <select id="multi-select" className="multi-select" onChange={handleTopicChange}>
+  <option value="" disabled selected  >
+    Choose one or more topic
+  </option>
+  {topics.map((topic) => (
+    <option key={topic} value={topic}>
+      {topic}
+    </option>
+  ))}
+</select>
 
-        {/* Display selected topics and difficulty selection */}
-        {selectedTopics.length > 0 && (
-          <div className="selected-topics">
-            {selectedTopics.map((topic) => (
-              <div key={topic} className="topic-difficulty-container">
-                <span className="topic-pill" onClick={() => removeTopic(topic)}>
-                  {topic} &times;
-                </span>
-                <label htmlFor={`difficulty-${topic}`}>
-                  Difficulty for {topic}:
-                </label>
-                <select
-                  id={`difficulty-${topic}`}
-                  className="difficulty-select"
-                  value={topicDifficulties[topic] || ""}
-                  onChange={(e) =>
-                    handleTopicDifficultyChange(topic, e.target.value)
-                  }
-                >
-                  <option value="" disabled>
-                    Select difficulty
-                  </option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </select>
-              </div>
-            ))}
-          </div>
-        )}
+          )}
 
-        <label htmlFor="api-url">API URL:</label>
-        <input
-          id="api-url"
-          type="text"
-          className="api-input"
-          value={apiUrl}
-          onChange={(e) => setApiUrl(e.target.value)}
-          placeholder="Enter API URL"
-        />
+          {selectedTopics.length > 0 && (
+            <div className="selected-topics">
+              {selectedTopics.map((topic) => (
+                <div key={topic} className="topic-difficulty-container">
+                  <span className="topic-pill" onClick={() => removeTopic(topic)}>
+                    {topic} &times;
+                  </span>
+                  <label htmlFor={`difficulty-${topic}`}>Difficulty for {topic}:</label>
+                  <select
+                    id={`difficulty-${topic}`}
+                    className="difficulty-select"
+                    value={topicDifficulties[topic] || ""}
+                    onChange={(e) => handleTopicDifficultyChange(topic, e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select difficulty
+                    </option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          )}
 
-        <button className="submit-form-button" onClick={handleSubmit}>
-          Submit
-        </button>
+          <label htmlFor="api-url">API URL:</label>
+          <input
+            id="api-url"
+            type="text"
+            className="api-input"
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+            placeholder="Enter API URL"
+          />
+
+          <button className="submit-form-button" onClick={handleSubmit}>
+            Submit
+          </button>
+        </div>
       </div>
-
       <Footer />
     </div>
   );

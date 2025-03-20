@@ -12,6 +12,52 @@ body, html {
     background-color: #f1f1f1;
 
   }
+  .details-container {
+    display: flex;
+    align-items: center; /* Align image and form vertically */
+    justify-content: center;
+    gap: 30px; /* Space between image and content */
+    padding: 40px;
+  }
+  
+  .image-container {
+    flex: 1; /* Allow image to take less space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-container img {
+    max-width: 100%; /* Prevent image overflow */
+    height: auto;
+    border-radius: 10px; /* Optional: rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-container {
+    flex: 2; /* Allow form to take more space */
+    max-width: 600px; /* Control width */
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .details-container {
+      flex-direction: column; /* Stack elements on smaller screens */
+      align-items: center;
+    }
+  
+    .image-container img {
+      width: 80%; /* Adjust image size for smaller screens */
+    }
+  
+    .input-container {
+      width: 90%;
+    }
+  }
+  
   header {
     width: 100%;
     background-color: #4CAF50; /* Or your custom header color */

@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
-import Header from "./../../components/Header/Header";
-import Footer from "./../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 import "./result-list-page.css";
 import { useNavigate } from "react-router-dom";
 
-const ResultListPage: React.FC = () => {
-  interface TestData {
-    incomplete_tests: number[];
-    tests_with_pending_results: number[];
-    tests_with_results: number[];
-  }
+type Test = {
+  test_id: number;
+  created_at: string;
+  topics: string;
+};
 
+type TestData = {
+  incomplete_tests: Test[];
+  tests_with_pending_results: Test[];
+  tests_with_results: Test[];
+};
+
+const ResultListPage: React.FC = () => {
   const [testData, setTestData] = useState<TestData>({
     incomplete_tests: [],
     tests_with_pending_results: [],
     tests_with_results: [],
   });
   const [message, setMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("incomplete");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,27 +31,25 @@ const ResultListPage: React.FC = () => {
 
     const fetchTestData = async () => {
       try {
-        const rollno = localStorage.getItem("userEmail");
-        if (!rollno) {
-          if (isMounted) setMessage("Roll number not found. Please log in.");
+        const email = localStorage.getItem("userEmail");
+        if (!email) {
+          if (isMounted) setMessage("Email not found. Please log in.");
           return;
         }
 
         const response = await fetch("http://localhost:5000/resultlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rollno }),
+          body: JSON.stringify({ email }),
         });
 
         if (isMounted) {
           if (response.ok) {
-            const data = await response.json();
-
-            // Ensure `null` values are replaced with empty arrays
+            const data: Partial<TestData> = await response.json();
             setTestData({
-              incomplete_tests: data.incomplete_tests || [],
-              tests_with_pending_results: data.tests_with_pending_results || [],
-              tests_with_results: data.tests_with_results || [],
+              incomplete_tests: data.incomplete_tests ?? [],
+              tests_with_pending_results: data.tests_with_pending_results ?? [],
+              tests_with_results: data.tests_with_results ?? [],
             });
           } else {
             const error = await response.json();
@@ -52,129 +57,101 @@ const ResultListPage: React.FC = () => {
           }
         }
       } catch (err: any) {
-        if (isMounted)
-          setMessage(`Error: ${err.message || "Something went wrong."}`);
+        if (isMounted) setMessage(`Error: ${err.message || "Something went wrong."}`);
       }
     };
 
     fetchTestData();
 
+    // Refresh results every 5 seconds
+    const interval = setInterval(fetchTestData, 5000);
+
     return () => {
       isMounted = false;
+      clearInterval(interval);
     };
   }, []);
 
   const handleAction = async (testId: number, action: string) => {
-    try {
-      if (action === "view_result") {
-        // Save testId to local storage
-        localStorage.setItem("test_id", testId.toString());
-        // Navigate to the completion page
-        navigate("/completion-page");
-        return;
-      }
-
-      const endpoint =
-        action === "resume"
-          ? "http://localhost:5000/resume"
-          : action === "check_result"
-          ? "http://localhost:5000/check_result"
-          : "";
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ testId }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-
-        if (action === "check_result") {
-          if (Array.isArray(result) && result.length > 0) {
-            // If check_result succeeds, move the test to 'tests_with_results'
-            setTestData((prev) => ({
-              ...prev,
-              tests_with_pending_results: prev.tests_with_pending_results.filter(
-                (id) => id !== testId
-              ),
-              tests_with_results: [...prev.tests_with_results, testId],
-            }));
-          } else {
-            setMessage("No results available for this test yet.");
-          }
-        } else {
-          setMessage(result.message || "Action completed successfully.");
-        }
-      } else {
-        const error = await response.json();
-        setMessage(`Error: ${error.error || "Failed to perform action."}`);
-      }
-    } catch (err: any) {
-      setMessage(`Error: ${err.message || "Something went wrong."}`);
+    if (action === "view_result") {
+      localStorage.setItem("test_id", testId.toString());
+      navigate("/completion-page");
+      return;
     }
+  };
+
+  const renderTests = () => {
+    let tests: Test[] = [];
+    let actionLabel = "";
+    let actionType = "";
+
+    if (activeTab === "incomplete") {
+      tests = testData.incomplete_tests;
+      actionLabel = "Resume your Test";
+      actionType = "resume";
+    } else if (activeTab === "pending") {
+      tests = testData.tests_with_pending_results;
+      actionLabel = "Evaluate your Test ";
+      actionType = "check_result";
+    } else {
+      tests = testData.tests_with_results;
+      actionLabel = "View Result";
+      actionType = "view_result";
+    }
+
+    return tests.length > 0 ? (
+      <table className="test-table">
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Topics</th>
+            <th>Created At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tests.map((test) => (
+            <tr key={test.test_id}>
+              <td>{test.test_id}</td>
+              <td>{test.topics}</td>
+              <td>{test.created_at}</td>
+              <td>
+                <button
+                  onClick={() => handleAction(test.test_id, actionType)}
+                  className="action-button"
+                >
+                  {actionLabel}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p>No {activeTab} tests available.</p>
+    );
   };
 
   return (
     <div className="App">
       <Header />
-      <div className="main-content" style={{ marginTop: "60px" }}>
-      <h2>Test Status</h2>
-
+      <div className="result-container">
+        <h2>Test Status</h2>
         {message && <p className="feedback-message">{message}</p>}
 
-        <div className="test-list">
-          <h3>Incomplete Tests</h3>
-          {testData.incomplete_tests.length > 0 ? (
-            testData.incomplete_tests.map((testId) => (
-              <div key={testId} className="test-item">
-                <span>Test ID: {testId}</span>
-                <button
-                  onClick={() => handleAction(testId, "resume")}
-                  className="action-button"
-                >
-                  Resume
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No incomplete tests.</p>
-          )}
-
-          <h3>Tests with Pending Results</h3>
-          {testData.tests_with_pending_results.length > 0 ? (
-            testData.tests_with_pending_results.map((testId) => (
-              <div key={testId} className="test-item">
-                <span>Test ID: {testId}</span>
-                <button
-                  onClick={() => handleAction(testId, "check_result")}
-                  className="action-button"
-                >
-                  Check Result
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No tests with pending results.</p>
-          )}
-
-          <h3>Tests with Results</h3>
-          {testData.tests_with_results.length > 0 ? (
-            testData.tests_with_results.map((testId) => (
-              <div key={testId} className="test-item">
-                <span>Test ID: {testId}</span>
-                <button
-                  onClick={() => handleAction(testId, "view_result")}
-                  className="action-button"
-                >
-                  View Result
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No tests with results.</p>
-          )}
+        <div className="tab-buttons">
+          <button className={`tab-button ${activeTab === "incomplete" ? "active" : ""}`} onClick={() => setActiveTab("incomplete")}>
+            Incomplete Tests
+          </button>
+          <button className={`tab-button ${activeTab === "pending" ? "active" : ""}`} onClick={() => setActiveTab("pending")}>
+            Pending Tests
+          </button>
+          <button className={`tab-button ${activeTab === "results" ? "active" : ""}`} onClick={() => setActiveTab("results")}>
+            Results
+          </button>
         </div>
+
+        <div className="test-list">{renderTests()}</div>
       </div>
       <Footer />
     </div>

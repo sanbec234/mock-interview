@@ -14,7 +14,7 @@ import Resultlist from "./pages/resultlist/resultlist.tsx";
 import Upload from "./pages/upload/UploadCsv";
 import Admin from "./pages/adminpage/admin";
 import Questions from "./pages/Questionpage/questionpage";
-
+import PerformanceCharts from "./pages/add-charts/add-charts";
 const NetworkStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showMessage, setShowMessage] = useState(false);
@@ -77,6 +77,8 @@ const App = () => (
       <Route path="/admin" element={<Admin />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="/question" element={<Questions />} />
+      <Route path="/addCharts" element={<PerformanceCharts />} />
+
     </Routes>
   </Router>
 );

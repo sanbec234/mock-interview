@@ -5,49 +5,32 @@ from groq import Groq
 import re
 
 def calculate_cosine_similarity(reference_answer, user_answer):
-    # Create the vectorizer
     vectorizer = TfidfVectorizer()
-
-    # Combine both the answers into a list
     answers = [reference_answer, user_answer]
-
-    # Convert the answers into tf-idf vectors
     tfidf_matrix = vectorizer.fit_transform(answers)
-
-    # Compute the cosine similarity between the two answers
     cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-
-    # Return the cosine similarity score (between 0 and 1)
-    return cosine_sim[0][0]
+    return round(cosine_sim[0][0] * 100, 2) 
 
 
 def calculate_keyword_score(user_answer, keywords):
-    # Extract keywords from the user answer
-    user_answer_keywords = set(re.findall(r'\b\w+\b', user_answer.lower()))
-     # Return 0 score and an empty list of common keywords if no keywords are provided
-
-    # Find the common keywords between the user answer and the predefined keywords
-    common_keywords = set(keywords).intersection(user_answer_keywords)
-
-    # Calculate the keyword score as a fraction of the common keywords over the total number of predefined keywords
-    keyword_score = len(common_keywords) / len(keywords)
-
-    return keyword_score, common_keywords
-
-
-
-def check_grammar(user_answer): 
-    tool = language_tool_python.LanguageToolPublicAPI('es') # use the public API, language Spanish
-
+    if not keywords:
+        return 0, []
+    print(user_answer)
+    print(keywords)
+    user_keywords = set(re.findall(r'\b\w+\b', user_answer.lower()))
+    predefined_keywords = set(kw.lower().strip() for kw in keywords)
     
-    # Check grammar using LanguageTool
+    common_keywords = user_keywords.intersection(predefined_keywords)
+    keyword_score = (len(common_keywords) / len(predefined_keywords)) * 100 if predefined_keywords else 0
+    print(user_keywords,predefined_keywords,common_keywords,sep="\n\n\n")
+    return round(keyword_score, 2), list(common_keywords)
+
+
+def check_grammar(user_answer):
+    tool = language_tool_python.LanguageToolPublicAPI('en')  # English grammar checking
     matches = tool.check(user_answer)
-    
-    # Grammar score is calculated as 1 minus the number of errors divided by the total number of words in the answer
-    grammar_score = 1 - len(matches) / max(len(user_answer.split()), 1)
-    
-    return grammar_score
-    
+    grammar_score = (1 - len(matches) / max(len(user_answer.split()), 1))  # Scale to percentage
+    return round(grammar_score, 2)
 
 from groq import Groq  # Assuming Groq has such an import structure (Replace with correct one if not)
 

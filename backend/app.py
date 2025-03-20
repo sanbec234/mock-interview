@@ -88,6 +88,7 @@ def login_user():
             user = cursor.fetchone()
             if user and check_password_hash(user['password'], data['password']):
                 print("Login Success - Student")
+                
                 return jsonify({'message': 'Login successful', 'user': user["email"]}), 200
             else:
                 return jsonify({'error': 'Invalid user credentials'}), 401
@@ -253,48 +254,263 @@ def create_question_indices(num_questions, selected_topics):
 #     ]
 # }
 
+
+# @app.route('/resultlist', methods=['POST'])
+# def resultlist():
+#     conn = get_db_connection()
+#     if conn is None:
+#         return jsonify({"error": "Database connection failed"}), 500
+
+#     cursor = conn.cursor()
+
+#     try:
+#         data = request.get_json()
+#         if not data or "email" not in data:
+#             return jsonify({"error": "Missing email"}), 400
+
+#         email = data['email']
+#         print(f"📩 Received request with email: {email}")
+
+#         # Fetch user roll number
+#         cursor.execute("SELECT rollno FROM user WHERE email = %s", (email,))
+#         user = cursor.fetchone()
+
+#         if not user:
+#             return jsonify({"error": "User not found"}), 404
+        
+#         roll_no = user['rollno']  # Correct extraction
+#         print(f"🎯 User Roll Number: {roll_no}")
+
+#         # Fetch test results
+#         cursor.execute("""
+#             SELECT test_id, created_at, iscompleted, isresult
+#             FROM test WHERE rollno = %s;
+#         """, (roll_no,))
+#         results = cursor.fetchall()
+
+#         print(f"📊 Test Results: {results}")
+
+#         if not results:
+#             return jsonify({"tests": []}), 200  # Return empty list if no tests exist
+
+#         # Process results
+#         incomplete_tests = []
+#         pending_tests = []
+#         completed_tests = []
+
+#         for row in results:
+#             test_id = row['test_id']
+#             created_at = row['created_at'].strftime('%Y-%m-%d %H:%M:%S') if row['created_at'] else None
+#             iscompleted = row['iscompleted']
+#             isresult = row['isresult']
+
+#             test_entry = {
+#                 "test_id": test_id,
+#                 "created_at": created_at
+#             }
+
+#             if iscompleted == 0:
+#                 incomplete_tests.append(test_entry)
+#             elif iscompleted == 1 and isresult == 0:
+#                 pending_tests.append(test_entry)
+#             elif iscompleted == 1 and isresult == 1:
+#                 completed_tests.append(test_entry)
+
+#         response_data = {
+#             "incomplete_tests": incomplete_tests,
+#             "tests_with_pending_results": pending_tests,
+#             "tests_with_results": completed_tests
+#         }
+
+#         return jsonify(response_data), 200
+
+#     except mysql.connector.Error as db_error:
+#         print(f"❌ Database Error: {db_error}")
+#         return jsonify({'error': f"Database error: {db_error}"}), 500
+#     except Exception as e:
+#         print(f"❌ Unexpected error: {e}")
+#         return jsonify({'error': f"Unexpected error: {e}"}), 500
+
+#     finally:
+#         if cursor:
+#             cursor.close()
+#         if conn:
+#             conn.close()
 @app.route('/resultlist', methods=['POST'])
 def resultlist():
+    conn = get_db_connection()
+    if conn is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cursor = conn.cursor()
+
+    try:
+        data = request.get_json()
+        if not data or "email" not in data:
+            return jsonify({"error": "Missing email"}), 400
+
+        email = data['email']
+        print(f"📩 Received request with email: {email}")
+
+        # Fetch user roll number
+        cursor.execute("SELECT rollno FROM user WHERE email = %s", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        roll_no = user['rollno']  # Correct extraction
+        print(f"🎯 User Roll Number: {roll_no}")
+
+        # Fetch test results with topics
+        cursor.execute("""
+            SELECT 
+                t.test_id, 
+                t.created_at, 
+                t.iscompleted, 
+                t.isresult, 
+                GROUP_CONCAT(DISTINCT qb.subject ORDER BY qb.subject SEPARATOR ', ') AS topics
+            FROM test t
+            LEFT JOIN question_bank qb ON FIND_IN_SET(qb.id, t.question_indices) > 0
+            WHERE t.rollno = %s
+            GROUP BY t.test_id;
+        """, (roll_no,))
+        results = cursor.fetchall()
+
+        print(f"📊 Test Results: {results}")
+
+        if not results:
+            return jsonify({"tests": []}), 200  # Return empty list if no tests exist
+
+        # Process results
+        incomplete_tests = []
+        pending_tests = []
+        completed_tests = []
+
+        for row in results:
+            test_id = row['test_id']
+            created_at = row['created_at'].strftime('%Y-%m-%d %H:%M:%S') if row['created_at'] else None
+            iscompleted = row['iscompleted']
+            isresult = row['isresult']
+            topics = row['topics'] or "No topics"  # Handle case where topics are null
+
+            test_entry = {
+                "test_id": test_id,
+                "created_at": created_at,
+                "topics": topics
+            }
+
+            if iscompleted == 0:
+                incomplete_tests.append(test_entry)
+            elif iscompleted == 1 and isresult == 0:
+                pending_tests.append(test_entry)
+            elif iscompleted == 1 and isresult == 1:
+                completed_tests.append(test_entry)
+
+        response_data = {
+            "incomplete_tests": incomplete_tests[::-1],
+            "tests_with_pending_results": pending_tests[::-1],
+            "tests_with_results": completed_tests[::-1]
+        }
+
+        return jsonify(response_data), 200
+
+    except mysql.connector.Error as db_error:
+        print(f"❌ Database Error: {db_error}")
+        return jsonify({'error': f"Database error: {db_error}"}), 500
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+        return jsonify({'error': f"Unexpected error: {e}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+@app.route('/check_result', methods=['POST'])
+def checkresult():
     try:
         data = request.get_json()
         if not data:
             return jsonify({"error": "Invalid or missing JSON data"}), 400
+
+        test_id = data.get('testId')
+        api_key = "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"
         
-        roll_no = data.get('rollno')
-        roll_no="21z111"
-        if not roll_no:
-            return jsonify({"error": "Missing rollno"}), 400
-        
-        # Call stored procedure
+        if not test_id:
+            return jsonify({"error": "Missing test ID"}), 400
+
+        # Ensure DB connection is active
+        get_db_connection()
+        if conn is None:
+            return jsonify({"error": "Database connection issue"}), 500
+
+        result = []
         cursor = conn.cursor()
-        if cursor:
-            print("True")
-        cursor.execute("CALL GetTestResults(%s)", (roll_no,))
-        result = cursor.fetchone()
-        
-        if result is None:
-            return jsonify({"error": "No results found for the given rollno"}), 404
 
-        # Check for unexpected output
-        if result == (0, 0, 0):
-            return jsonify({"error": "Unexpected result returned from stored procedure"}), 500
-        result=result["""JSON_OBJECT('incomplete_tests', incomplete_tests,\n                       'tests_with_pending_results', tests_with_pending_results,\n                       'tests_with_results', tests_with_results)"""]
-        # Format the result
-        result_dict = json.loads(result)
-        formatted_result = {
-        "incomplete_tests": result_dict.get("incomplete_tests", []),
-        "tests_with_pending_results": result_dict.get("tests_with_pending_results", []),
-        "tests_with_results": result_dict.get("tests_with_results", []),
-        }
+        cursor.execute("SELECT * FROM history WHERE test_id = %s", (test_id,))
+        rows = cursor.fetchall()
+        print("Rows fetched from history:", rows)
 
-        return jsonify(formatted_result), 200
+        if not rows:
+            return jsonify({"error": "No data found for the given test ID"}), 404
+
+        for row in rows:
+            qid = row.get('question')
+            if not qid:
+                continue
+
+            cursor.execute("SELECT question, answer, keyword FROM question_bank WHERE id = %s", (qid,))
+            question_data = cursor.fetchone()
+
+            if question_data:
+                result.append({
+                    "qid": qid,
+                    "test_id": row['test_id'],
+                    "question": question_data['question'],
+                    "reference_answer": question_data['answer'],
+                    "answer": row['answer'],
+                    "keyword": question_data['keyword']
+                })
+
+        feedback_list = []
+        for question in result:
+            similarity_score = evaluation.calculate_cosine_similarity(question['reference_answer'], question['answer'])
+            grammar_check = evaluation.check_grammar(question['answer'])
+            llm_score, reason = evaluation.check_relevance(question['question'], question['reference_answer'], question['answer'], api_key)
+            keywords_score, _ = evaluation.calculate_keyword_score(question['answer'], question['keyword'].split(", "))
+
+            feedback_list.append(reason)
+
+            cursor.execute(
+                """UPDATE history SET similarity_score = %s, keyword_matching = %s, grammar_check = %s, 
+                llm_score = %s, feedback = %s WHERE test_id = %s AND question = %s""",
+                (str(similarity_score), str(keywords_score), str(grammar_check), str(llm_score), reason, str(question['test_id']), str(question['qid']))
+            )
+
+        df = pd.DataFrame(result)
+        df["feedback"] = feedback_list
+        overall_feedback = get_overall_feedback(df, test_id, api_key)
+
+        cursor.execute("UPDATE test SET isresult = 1, overall_feedback = %s WHERE test_id = %s", (overall_feedback, test_id))
+        conn.commit()
+
+        return jsonify([{"message": "Evaluation completed and data saved successfully", "overall_feedback": overall_feedback}]), 200
+
+    except pymysql.Error as db_error:
+        print(f"Database error: {db_error}")
+        conn.rollback()
+        return jsonify({"error": f"Database error: {db_error}"}), 500
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        print(f"Unexpected error: {e}")
+        return jsonify({"error": f"Unexpected error: {e}"}), 500
 
     finally:
-        if 'cursor' in locals():
+        if 'cursor' in locals() and cursor:
             cursor.close()
+
 
 @app.route('/submit_answers', methods=['POST'])#--------------------postman pass
 #{
@@ -639,99 +855,6 @@ def get_overall_feedback(df, test_id, api_key):
     return completion.choices[0].message.content
 
 
-@app.route('/check_result', methods=['POST'])
-def checkresult():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "Invalid or missing JSON data"}), 400
-
-        test_id = data.get('testId')
-        api_key = "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"
-        
-        if not test_id:
-            return jsonify({"error": "Missing test ID"}), 400
-
-        result = []
-        cursor = conn.cursor()
-
-        # Query the history table
-        cursor.execute("SELECT * FROM history WHERE test_id = %s", (test_id,))
-        rows = cursor.fetchall()
-        print("Rows fetched from history:", rows)  # Debugging log
-
-        if not rows:
-            print(f"No history found for test_id: {test_id}")
-            return jsonify({"error": "No data found for the given test ID"}), 404
-
-        for row in rows:
-            qid = row.get('question')
-            if not qid:
-                print(f"Invalid QID in row: {row}")
-                continue
-
-            # Query the question table
-            cursor.execute("SELECT question, answer, keyword FROM question_bank WHERE id = %s", (qid,))
-            question_data = cursor.fetchone()
-
-            if question_data:
-                result.append({
-                    "qid": qid,
-                    "test_id": row['test_id'],
-                    "question": question_data['question'],
-                    "reference_answer": question_data['answer'],
-                    "answer": row['answer'],
-                    "keyword": question_data['keyword']
-                })
-
-        # List to store feedback
-        feedback_list = []
-
-        for question in result:
-            similarity_score = evaluation.calculate_cosine_similarity(question['reference_answer'], question['answer'])
-            grammar_check = evaluation.check_grammar(question['answer'])
-            llm_score, reason = evaluation.check_relevance(question['question'], question['reference_answer'], question['answer'], api_key)
-            keywords_score, _ = evaluation.calculate_keyword_score(question['answer'], question['keyword'].split(", "))
-
-            feedback_list.append(reason)
-
-            sql = """
-                UPDATE history
-                SET similarity_score = %s, keyword_matching = %s, grammar_check = %s, llm_score = %s, feedback = %s
-                WHERE test_id = %s AND question = %s
-            """
-            values = (
-                str(similarity_score),
-                str(keywords_score),
-                str(grammar_check),
-                str(llm_score),
-                reason,
-                str(question['test_id']),
-                str(question['qid'])
-            )
-            cursor.execute(sql, values)
-
-        # Convert to DataFrame for LLM evaluation
-        df = pd.DataFrame(result)
-        df["feedback"] = feedback_list
-
-        # Get overall feedback
-        overall_feedback = get_overall_feedback(df, test_id, api_key)
-
-        # Store overall feedback in the test table
-        update_query = "UPDATE test SET isresult = 1, overall_feedback = %s WHERE test_id = %s"
-        cursor.execute(update_query, (overall_feedback, test_id))
-
-        conn.commit()
-        return jsonify([{"message": "Evaluation completed and data saved successfully", "overall_feedback": overall_feedback}]), 200
-
-    except Exception as e:
-        conn.rollback()
-        return jsonify({"error": str(e)}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
 
 
 @app.route('/api/topics', methods=['GET'])
@@ -749,19 +872,16 @@ def get_topics():
 @app.route('/view_result', methods=['POST'])
 def viewresult():
     try:
-        # Get JSON data from the request
         data = request.get_json()
         if not data:
             return jsonify({"error": "Invalid or missing JSON data"}), 400
 
-        # Extract test ID from the request
         test_id = data.get('testid')
         if not test_id:
             return jsonify({"error": "Missing test ID"}), 400
 
         cursor = conn.cursor()
 
-        # Fetch the results from the history table for the given test_id
         cursor.execute("""
             SELECT 
                 h.test_id, h.question, h.answer AS user_answer, 
@@ -781,7 +901,6 @@ def viewresult():
         evaluations = []
         total_score = 0
 
-        # Replace the question ID with the actual question text and reference answer
         for row in history_rows:
             question_id = row["question"]
             user_answer = row["user_answer"]
@@ -791,7 +910,6 @@ def viewresult():
             llm_relevance_score = row["llm_relevance_score"]
             feedback = row["feedback"]
 
-            # Fetch question and reference answer
             cursor.execute(
                 "SELECT question, answer, subject, subtopic, difficulty_level FROM question_bank WHERE id = %s", 
                 (question_id,)
@@ -805,17 +923,14 @@ def viewresult():
                 subject = question_data["subject"]
                 subtopic = question_data["subtopic"]
 
-                # Calculate average total score
-                avg_score = (grammar_score + similarity_score + keyword_score + llm_relevance_score) / 4
-
-                # Explanation generation
-                expl = (
-                    f"Your answer was evaluated with {grammar_score}% grammar accuracy, "
-                    f"{similarity_score}% semantic similarity, {keyword_score}% keyword match, and "
-                    f"{llm_relevance_score}% relevance to the question. Feedback: {feedback}"
-                )
-
+                avg_score = (grammar_score * 100 + similarity_score + keyword_score + (llm_relevance_score * 20)) / 4
                 total_score += avg_score
+
+                explanation = (
+                    f"Your answer was evaluated with {grammar_score*100:.2f}% grammar accuracy, "
+                    f"{similarity_score:.2f}% semantic similarity, {keyword_score:.2f}% keyword match, and "
+                    f"{llm_relevance_score * 20:.2f}% relevance to the question. Feedback: {feedback}"
+                )
 
                 evaluations.append({
                     "question": question,
@@ -824,15 +939,14 @@ def viewresult():
                     "subtopic": subtopic,
                     "reference_answer": reference_answer,
                     "user_answer": user_answer,
-                    "grammar_score": grammar_score,
-                    "cosine_similarity_score": similarity_score,
-                    "keyword_score": keyword_score,
-                    "llm_relevance_score": llm_relevance_score,
-                    "total_score": avg_score,
-                    "explanation": expl
+                    "grammar_score": round(grammar_score * 100, 2),
+                    "cosine_similarity_score": round(similarity_score, 2),
+                    "keyword_score": round(keyword_score, 2),
+                    "llm_relevance_score": round(llm_relevance_score * 20, 2),
+                    "total_score": round(avg_score, 2),
+                    "explanation": explanation
                 })
             else:
-                # In case the question data isn't found
                 evaluations.append({
                     "question": None,
                     "reference_answer": None,
@@ -840,20 +954,20 @@ def viewresult():
                     "subject": None,
                     "subtopic": None,
                     "user_answer": user_answer,
-                    "grammar_score": grammar_score,
-                    "cosine_similarity_score": similarity_score,
-                    "keyword_score": keyword_score,
-                    "llm_relevance_score": llm_relevance_score,
-                    "total_score": (grammar_score + similarity_score + keyword_score + llm_relevance_score) / 4,
+                    "grammar_score": round(grammar_score * 100, 2),
+                    "cosine_similarity_score": round(similarity_score, 2),
+                    "keyword_score": round(keyword_score, 2),
+                    "llm_relevance_score": round(llm_relevance_score * 20, 2),
+                    "total_score": round((grammar_score * 100 + similarity_score + keyword_score + (llm_relevance_score * 20)) / 4, 2),
                     "explanation": f"Feedback: {feedback}"
                 })
 
-        # Calculate the final score as a percentage
         cursor.execute("SELECT overall_feedback FROM test WHERE test_id = %s", (test_id,))
         test_feedback = cursor.fetchone()
-        overall_feedback = test_feedback["overall_feedback"] if test_feedback else "No overall feedback available."
-        print(overall_feedback)
-        final_score = total_score / len(evaluations)
+        overall_feedback = test_feedback["overall_feedback"] if test_feedback and "overall_feedback" in test_feedback else "No overall feedback available."
+
+        final_score = round((total_score / len(evaluations)), 2)
+
         return jsonify({
             "message": f"Score: {final_score:.2f}%",
             "final_score": overall_feedback,
@@ -864,9 +978,9 @@ def viewresult():
         return jsonify({"error": str(e)}), 500
 
     finally:
-        # Ensure the cursor is closed
         if 'cursor' in locals():
             cursor.close()
+
 
 @app.route('/submit_feedback', methods=['POST'])
 def submitFeedback():

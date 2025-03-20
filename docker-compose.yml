@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: ./backend  # Ensure this path exists
+      dockerfile: Dockerfile-python  # Explicitly mention the Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - ./backend:/app
+    restart: always  # Ensures the container restarts on failure
+
+  frontend:
+    build:
+      context: ./frontend  # Ensure this path exists
+      dockerfile: Dockerfile-node  # Explicitly mention the Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/frontend
+    depends_on:
+      - backend
+    restart: always  # Ensures the container restarts on failure
