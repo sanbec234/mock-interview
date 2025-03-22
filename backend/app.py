@@ -9,6 +9,8 @@ import io
 import csv
 from groq import Groq 
 import pandas as pd
+from collections import defaultdict
+
 
 
 app = Flask(__name__)
@@ -898,7 +900,71 @@ def get_overall_feedback(df, test_id, api_key):
 
     return completion.choices[0].message.content
 
+@app.route('/students', methods=['GET'])
+def get_students():
+    try:
+        cursor = conn.cursor()  # ✅ Use dictionary cursor
 
+        # Fetch student data
+        student_query = """
+            SELECT classuser, rollno AS id, name, yearuser, email, department 
+            FROM user
+            ORDER BY classuser, rollno;
+        """
+        cursor.execute(student_query)
+        students = cursor.fetchall()
+
+        if not students:
+            return jsonify({"error": "No students found"}), 404
+
+        # Fetch test data (Only completed tests with results)
+        test_query = """
+            SELECT test.test_id, test.rollno AS student_id, test.created_at,
+                   (history.similarity_score * 0.15 + history.keyword_matching * 0.15 + 
+                    history.grammar_check * 0.20 + history.llm_score * 0.50) AS total_score
+            FROM test
+            JOIN history ON test.test_id = history.test_id
+            WHERE test.iscompleted = 1 AND test.isresult = 1
+        """
+        cursor.execute(test_query)
+        tests = cursor.fetchall()
+
+        # Organize test data by student_id
+        student_tests = defaultdict(list)
+        for test in tests:
+            student_tests[test["student_id"]].append({
+                "test_id": test["test_id"],
+                "created_at": test["created_at"].strftime("%Y-%m-%d %H:%M:%S"),  # ✅ Format timestamp
+                "mark": round(test["total_score"], 2)  # ✅ Round score for better readability
+            })
+
+        # Group students by class
+        students_dict = defaultdict(list)
+
+        for student in students:
+            class_name = student["classuser"] or "Unknown Class"  # ✅ Handle NULL values
+            student_id = student["id"]
+
+            student_info = {
+                "id": student_id,
+                "name": student["name"] or "Unknown",
+                "yearuser": f"{student['yearuser']}th" if student["yearuser"] else "N/A",
+                "email": student["email"] or "N/A",
+                "department": student["department"] or "N/A",
+                "tests": student_tests.get(student_id, [])  # ✅ Add test list
+            }
+            students_dict[class_name].append(student_info)
+
+        return jsonify(dict(students_dict)), 200  # ✅ Convert defaultdict to dict
+
+    except mysql.connector.Error as db_error:
+        return jsonify({"error": f"Database error: {db_error}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {e}"}), 500
+
+    finally:
+        if "cursor" in locals():
+            cursor.close()
 
 
 @app.route('/api/topics', methods=['GET'])
