@@ -1,0 +1,453 @@
+:root {
+  --ai-primary: #6366f1; /* Professional purple */
+  --ai-secondary: #3b82f6; /* Trustworthy blue */
+  --ai-accent: #10b981; /* Positive green */
+  --ai-background: #0f172a; /* Deep space blue */
+  --ai-surface: #1e293b; /* Card background */
+  --ai-text: #f8fafc; /* Clean white */
+  --ai-border: #334155; /* Subtle borders */
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--ai-background);
+  color: var(--ai-text);
+  margin: 0;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Main container styling */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--ai-surface);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--ai-border);
+}
+
+h1,
+h2 {
+  color: var(--ai-text);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(45deg, var(--ai-primary), var(--ai-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Scroll container for classes */
+.scroll-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #1a2335, #151d2b);
+  border: 1px solid var(--ai-border);
+}
+
+/* Custom scrollbar */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--ai-surface);
+  border-radius: 12px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--ai-primary);
+  border-radius: 12px;
+}
+
+/* Class container styling */
+.class-container {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.class-container:hover {
+  transform: translateY(-2px);
+}
+
+.class-header {
+  padding: 1.5rem;
+  background: linear-gradient(90deg, var(--ai-primary), var(--ai-secondary));
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.class-header:hover {
+  opacity: 0.95;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.arrow {
+  font-size: 1.2em;
+  transition: transform 0.2s ease;
+}
+
+.class-header.active .arrow {
+  transform: rotate(180deg);
+}
+
+/* Student list styling */
+.student-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.student-item {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--ai-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  background: var(--ai-surface);
+}
+
+.student-item:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(59, 130, 246, 0.1) 100%
+  );
+  padding-left: 1.5rem;
+}
+
+.student-item:last-child {
+  border-bottom: none;
+}
+
+.student-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: var(--ai-accent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.student-item:hover::before {
+  opacity: 1;
+}
+
+/* 
+Original Profile Detail / Dashboard styles (commented out)
+-------------------------------------------------------------
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #0f172a;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.profile-card {
+  width: 400px;
+  background: linear-gradient(145deg, #1e293b, #334155);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 15px rgba(0, 255, 255, 0.2);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-card:hover {
+  transform: scale(1.02);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #0ef;
+  background-color: #fff;
+}
+
+.grade {
+  font-size: 16px;
+  color: #0ef;
+}
+
+.profile-details {
+  text-align: left;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.profile-details p {
+  font-size: 16px;
+  margin: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 5px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: #0ef;
+  color: #0f172a;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #08d;
+}
+-------------------------------------------------------------
+*/
+
+/* New Profile Layout for Student Detail Page */
+/* Top Section: Two-column layout */
+.profile-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Left Column: Profile card (cover, picture, name, year) */
+.profile-left {
+  width: 40%;
+}
+
+.cover-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info {
+  position: relative;
+  background: var(--ai-surface);
+  padding: 1rem;
+  margin-top: -40px; /* Adjust this value if needed */
+  border-radius: 8px;
+  text-align: center;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background-color: #fff;
+  margin: 0 auto;
+}
+
+.profile-info h1 {
+  margin-top: 0.75rem;
+  font-size: 1.75rem;
+  color: var(--ai-text);
+}
+
+.profile-info p {
+  font-size: 1rem;
+  color: var(--ai-secondary);
+}
+
+/* Right Column: Additional Details */
+.profile-right {
+  width: 55%;
+  background: var(--ai-surface);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.profile-right .profile-details {
+  font-size: 1.1rem;
+  color: var(--ai-text);
+}
+
+.profile-right .profile-details p {
+  margin: 0.75rem 0;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+/* Scrollable tests container (middle section) */
+.tests-container {
+  margin: 2rem auto;
+  max-width: 900px;
+  background: var(--ai-surface);
+  border: 1px solid var(--ai-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.tests-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.tests-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.back-btn {
+  display: block; /* Make it block-level */
+  width: fit-content; /* Adjust width to content, or set a fixed width if preferred */
+  margin: 2rem auto 0; /* Center horizontally and add top margin */
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  color: var(--ai-text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: linear-gradient(45deg, var(--ai-primary), var(--ai-secondary));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+/* Loading Animation (for future API integration) */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading-state {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 10px;
+  background: var(--ai-background);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input {
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.search-container input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+}
+
+.search-container button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-container button:hover {
+  background: #357abd;
+}
+
+/* Suggestions Dropdown */
+.suggestions-list {
+  position: absolute;
+  width: calc(100% - 40px);
+  max-width: 460px;
+  background: var(--ai-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  padding: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  list-style: none;
+  z-index: 1000;
+}
+
+.suggestions-list li {
+  padding: 12px;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.suggestions-list li:last-child {
+  border-bottom: none;
+}
+
+.suggestions-list li:hover {
+  background: var(--ai-surface);
+}
+
+/* Test Tile Styles */
+.test-item {
+  background: var(--ai-surface); /* Uses your card background color */
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.test-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.test-item strong {
+  color: var(--ai-primary);
+}
