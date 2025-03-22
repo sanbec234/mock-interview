@@ -1,1 +1,0 @@
-/api/send-answer
