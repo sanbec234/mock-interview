@@ -57,18 +57,17 @@ const ResultListPage: React.FC = () => {
           }
         }
       } catch (err: any) {
-        if (isMounted) setMessage(`Error: ${err.message || "Something went wrong."}`);
+        if (isMounted) {
+          console.error("Fetch Test Data Error:", err);
+          setMessage(`Error: ${err.message || "Something went wrong."}`);
+        }
       }
     };
 
     fetchTestData();
 
-    // Refresh results every 5 seconds
-    const interval = setInterval(fetchTestData, 5000);
-
     return () => {
       isMounted = false;
-      clearInterval(interval);
     };
   }, []);
 
@@ -76,7 +75,67 @@ const ResultListPage: React.FC = () => {
     if (action === "view_result") {
       localStorage.setItem("test_id", testId.toString());
       navigate("/completion-page");
-      return;
+    } else if (action === "check_result") {
+      try {
+        const response = await fetch("http://localhost:5000/check_result", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ testId }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const overallFeedback = data.overall_feedback || "No feedback available.";
+
+          alert(`Test Evaluated! Feedback: ${overallFeedback}`);
+
+          setTestData((prev) => {
+            const pendingTests = prev.tests_with_pending_results.filter(
+              (test) => test.test_id !== testId
+            );
+            const evaluatedTest = prev.tests_with_pending_results.find(
+              (test) => test.test_id === testId
+            );
+
+            if (evaluatedTest) {
+              return {
+                ...prev,
+                tests_with_pending_results: pendingTests,
+                tests_with_results: [...prev.tests_with_results, evaluatedTest],
+              };
+            }
+
+            return prev;
+          });
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.error || "Failed to evaluate the test."}`);
+        }
+      } catch (err) {
+        console.error("Error evaluating test:", err);
+        alert("An error occurred while evaluating the test.");
+      }
+    } else if (action === "resume") {
+      try {
+        const response = await fetch("http://localhost:5000/resume", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ testId }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Resume Test Data:", data);
+          localStorage.setItem("resume_test_data", JSON.stringify(data));
+          navigate("/home");
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.error || "Failed to resume the test."}`);
+        }
+      } catch (err) {
+        console.error("Error resuming test:", err);
+        alert("An error occurred while resuming the test.");
+      }
     }
   };
 
@@ -91,7 +150,7 @@ const ResultListPage: React.FC = () => {
       actionType = "resume";
     } else if (activeTab === "pending") {
       tests = testData.tests_with_pending_results;
-      actionLabel = "Evaluate your Test ";
+      actionLabel = "Check Result";
       actionType = "check_result";
     } else {
       tests = testData.tests_with_results;
@@ -140,13 +199,22 @@ const ResultListPage: React.FC = () => {
         {message && <p className="feedback-message">{message}</p>}
 
         <div className="tab-buttons">
-          <button className={`tab-button ${activeTab === "incomplete" ? "active" : ""}`} onClick={() => setActiveTab("incomplete")}>
+          <button
+            className={`tab-button ${activeTab === "incomplete" ? "active" : ""}`}
+            onClick={() => setActiveTab("incomplete")}
+          >
             Incomplete Tests
           </button>
-          <button className={`tab-button ${activeTab === "pending" ? "active" : ""}`} onClick={() => setActiveTab("pending")}>
+          <button
+            className={`tab-button ${activeTab === "pending" ? "active" : ""}`}
+            onClick={() => setActiveTab("pending")}
+          >
             Pending Tests
           </button>
-          <button className={`tab-button ${activeTab === "results" ? "active" : ""}`} onClick={() => setActiveTab("results")}>
+          <button
+            className={`tab-button ${activeTab === "results" ? "active" : ""}`}
+            onClick={() => setActiveTab("results")}
+          >
             Results
           </button>
         </div>

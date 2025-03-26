@@ -17,6 +17,11 @@ const AdminPage: React.FC = () => {
   };
 
   const handleDeleteClick = async () => {
+    const isConfirmed = window.confirm("Are you sure you want to delete the question bank? This action cannot be undone.");
+    console.log(isConfirmed)
+  if (!isConfirmed) {
+    return; 
+  }
     try {
       const response = await fetch("http://localhost:5000/delete", {
         method: "DELETE",
@@ -36,6 +41,11 @@ const AdminPage: React.FC = () => {
   };
 
   const handleDownloadClick = async () => {
+    const isConfirmed = window.confirm("Are you sure you want to Download all records? This action cannot be undone.");
+    console.log(isConfirmed)
+  if (!isConfirmed) {
+    return; 
+  }
     try {
       const response = await fetch('http://localhost:5000/download_csv');
       if (!response.ok) {

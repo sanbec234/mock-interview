@@ -10,6 +10,7 @@ import {
   Pie,
   Cell,
   Legend,
+  ResponsiveContainer
 } from "recharts";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
@@ -28,29 +29,40 @@ interface Evaluation {
   keyword_score: number;
   llm_relevance_score: number;
   total_score: number;
+  time_taken: number;
 }
 
-const staticSubjectScores = [
-  { subject: "Computer networks ", total_score: 85 },
-  { subject: "Data structures", total_score: 75 },
-  { subject: "OOPS", total_score: 90 },
-  { subject: "DBMS", total_score: 80 },
-  { subject: "Operating System", total_score: 70 },
-];
+interface SubjectPerformance {
+  subject: string;
+  total_score: number;
+}
 
-const staticPieData = [
-  { name: "Easy", value: 5 },
-  { name: "Medium", value: 10 },
-  { name: "Hard", value: 3 },
-];
+interface DifficultyDistribution {
+  name: string;
+  value: number;
+}
+
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+
+// Subject abbreviation mapping
+const subjectAbbreviations: Record<string, string> = {
+  "Computer Networks": "CN",
+  "Operating Systems": "OS",
+  "Data Structures": "DSA",
+  "Database Systems": "DBMS",
+  "Object Oriented Programming": "OOP"
+};
 
 const CompletionPage: React.FC = () => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [finalScore, setFinalScore] = useState<number>(0);
-  const [message, setMessage] = useState<string>("");
+  const [overallFeedback, setOverallFeedback] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalTimeTaken, setTotalTimeTaken] = useState<number>(0);
+  const [subjectPerformance, setSubjectPerformance] = useState<SubjectPerformance[]>([]);
+  const [difficultyDistribution, setDifficultyDistribution] = useState<DifficultyDistribution[]>([]);
+  
   const { testid: paramTestId } = useParams();
 
   useEffect(() => {
@@ -72,7 +84,10 @@ const CompletionPage: React.FC = () => {
         if (response.ok) {
           setEvaluations(data.evaluations);
           setFinalScore(data.final_score);
-          setMessage(data.message);
+          setOverallFeedback(data.overall_feedback);
+          setTotalTimeTaken(data.total_time_taken);
+          setSubjectPerformance(data.subject_performance || []);
+          setDifficultyDistribution(data.difficulty_distribution || []);
         } else {
           setError(data.error || "Failed to load completion data.");
         }
@@ -88,71 +103,216 @@ const CompletionPage: React.FC = () => {
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
+  const formatOverallFeedback = (feedback: string) => {
+    const sections = feedback.split("**");
+    return sections.map((section, index) => {
+      const points = section.trim().split("*");
+      if (section.trim() === "") return null;
+      if(index%2!==0) return null;
+      return (
+        <div key={index} className="feedback-section">
+          <h4>{sections[index - 1]?.trim()}</h4>
+          <ul>
+            {points.map((point, i) => (
+              point.trim() && <li key={i}>{point.trim()}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    });
+  };
+  const formatTimeDisplay = (seconds: number): string => {
+    seconds=seconds*60;
+    if (seconds >= 60) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return remainingSeconds > 0 
+        ? `${minutes}m ${remainingSeconds}s`
+        : `${minutes}m`;
+    }
+    return `${Math.floor(seconds)}s`;
+  };
+  const getSubjectColor = (subject: string) => {
+    const colors: Record<string, string> = {
+      "Computer Networks": "#FFD700",
+      "Operating Systems": "#FFA500",
+      "Data Structures and Algorithms": "#FF6347",
+      "Database Systems": "#20B2AA",
+      "Object Oriented Programming": "#9370DB"
+    };
+    return colors[subject] || "#6495ED";
+  };
+
+  // Format subject names for the bar chart
+  const formatSubjectName = (subject: string) => {
+    return subjectAbbreviations[subject] || subject.substring(0, 3).toUpperCase();
+  };
+
   return (
-    <div className="App">
+    <div className="completion-page">
       <Header />
-      <div className="cmain-content two-column-layout">
-        <div className="charts-column">
-          <h2>Performance Analysis</h2>
-          <div className="chart-container">
-            <h3>Subject Total Scores</h3>
-            <BarChart width={500} height={300} data={staticSubjectScores}>
-              <XAxis dataKey="subject" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="total_score" fill="#8884d8" />
-            </BarChart>
+      <div className="completion-container">
+        {/* Performance Summary Section */}
+        <div className="performance-summary">
+          <div className="score-card">
+            <p className="score-label2">Overall Score</p>
+            <h2 className="final-score">{finalScore}%</h2>
+            <div className="time-taken">
+              
+              <span className="time-icon">⏱️</span>
+              
+              <span>{formatTimeDisplay(totalTimeTaken)}</span>
+            </div>
           </div>
-          <div className="chart-container">
-            <h3>Difficulty Distribution</h3>
-            <PieChart width={400} height={400}>
-              <Pie data={staticPieData} cx="50%" cy="50%" outerRadius={100} dataKey="value">
-                {staticPieData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
+          
+          <div className="feedback-card">
+            <h3>Performance Summary</h3>
+            <div className="feedback-content">
+              {formatOverallFeedback(overallFeedback)}
+            </div>
           </div>
         </div>
-        <div className="evaluations-column">
-          <h3>Score:45.55%</h3>
-          <h5>Overall Score: {finalScore}</h5>
-          {evaluations.map((evaluation, index) => (
-            <div key={index} className="evaluation">
-              <div>
-                <span className="subject">{evaluation.subject}</span>
-                <span className="subtopic">{evaluation.subtopic}</span>
-                <span
-  className="difficulty"
-  // style={{
-  //   backgroundColor:
-  //     evaluation.difficulty?.toLowerCase() === "easy"
-  //       ? "green"
-  //       : evaluation.difficulty?.toLowerCase() === "hard"
-  //       ? "red"
-  //       : "yellow",
-  // }}
->
-  {/* {evaluation.difficulty || "Unknown"} */}
-</span>
 
+        {/* Charts Section */}
+        <div className="charts-section">
+          <h2 className="section-title">Performance Analysis</h2>
+          <div className="charts-grid">
+            {subjectPerformance.length > 0 && (
+              <div className="chart-card">
+                <h3>Subject Performance</h3>
+                <div className="chart-wrapper">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={subjectPerformance}>
+                      <XAxis 
+                        dataKey="subject" 
+                        tickFormatter={formatSubjectName}
+                      />
+                      <YAxis domain={[0, 100]} />
+                      <Tooltip 
+                        formatter={(value: number) => [`${value}%`, "Score"]}
+                        labelFormatter={(label) => `Subject: ${label}`}
+                      />
+                      <Bar 
+                        dataKey="total_score" 
+                        name="Score"
+                        fill="#4a6bdf"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-              <h4>Question {index + 1}: {evaluation.question}</h4>
-              <p><strong>Reference Answer:</strong> {evaluation.reference_answer}</p>
-              <p><strong>Your Answer:</strong> {evaluation.user_answer}</p>
-              <p><strong>Explanation:</strong> {evaluation.explanation}</p>
-              <div className="scores">
-                <p><strong>Grammar Score:</strong> {evaluation.grammar_score}</p>
-                <p><strong>Cosine Similarity Score:</strong> {evaluation.cosine_similarity_score}</p>
-                <p><strong>Keyword Score:</strong> {evaluation.keyword_score}</p>
-                <p><strong>LLM Relevance Score:</strong> {evaluation.llm_relevance_score}</p>
+            )}
+
+            {difficultyDistribution.length > 0 && (
+              <div className="chart-card">
+                <h3>Difficulty Distribution</h3>
+                <div className="chart-wrapper">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie 
+                        data={difficultyDistribution} 
+                        cx="50%" 
+                        cy="50%" 
+                        outerRadius={80} 
+                        innerRadius={60}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {difficultyDistribution.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number, name: string) => [`${value} questions`, name]}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-              <p><strong>Total Score:</strong> {evaluation.total_score}</p>
-              <hr />
-            </div>
-          ))}
+            )}
+          </div>
+        </div>
+
+        {/* Question Evaluations Section */}
+        <div className="evaluations-section">
+          <h2 className="section-title">Question-wise Evaluation</h2>
+          <div className="evaluations-list">
+            {evaluations.map((evaluation, index) => (
+              <div key={index} className="evaluation-card">
+                <div className="question-header">
+                  <div className="question-meta">
+                    <span className="question-number">Question {index + 1}</span>
+                    <span
+                      className="difficulty-badge"
+                      style={{
+                        backgroundColor:
+                          evaluation.difficulty?.toLowerCase() === "easy"
+                            ? "#4CAF50"
+                            : evaluation.difficulty?.toLowerCase() === "hard"
+                            ? "#F44336"
+                            : "#FF9800",
+                      }}
+                    >
+                      {evaluation.difficulty || "Unknown"}
+                    </span>
+                    <span
+                      className="subject-badge"
+                      style={{ backgroundColor: getSubjectColor(evaluation.subject) }}
+                    >
+                      {evaluation.subject}
+                    </span>
+                  </div>
+                  <h3 className="question-text">{evaluation.question}</h3>
+                  <p className="subtopic"><strong>Sub-Topic:</strong> {evaluation.subtopic}</p>
+                </div>
+
+                <div className="answer-section">
+                  <div className="answer-card">
+                    <h4>Your Answer</h4>
+                    <p>{evaluation.user_answer}</p>
+                  </div>
+                  <div className="answer-card reference">
+                    <h4>Reference Answer</h4>
+                    <p>{evaluation.reference_answer}</p>
+                  </div>
+                </div>
+
+                <div className="explanation-card">
+                  <h4>Explanation</h4>
+                  <p>{evaluation.explanation}</p>
+                </div>
+
+                <div className="scores-section">
+                  <div className="score-item">
+                    <span className="score-label">Grammar</span>
+                    <span className="score-value">{evaluation.grammar_score}%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Similarity</span>
+                    <span className="score-value">{evaluation.cosine_similarity_score}%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Keywords</span>
+                    <span className="score-value">{evaluation.keyword_score}%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Relevance</span>
+                    <span className="score-value">{evaluation.llm_relevance_score}%</span>
+                  </div>
+                  <div className="score-item total">
+                    <span className="score-label">Total</span>
+                    <span className="score-value">{evaluation.total_score}%</span>
+                  </div>
+                  <div className="score-item time">
+                    <span className="time-icon">⏱️</span>
+                    <span className="score-value">{formatTimeDisplay(evaluation.time_taken)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <Footer />

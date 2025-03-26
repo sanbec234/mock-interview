@@ -27,6 +27,7 @@ header {
 /* Two-Column Layout */
 .home-content {
   margin-top: 120px; /* Space for fixed header */
+  height: 70vh;
   display: flex;
   flex-direction: row; /* Arrange items in a row */
   justify-content: center;
@@ -125,6 +126,9 @@ header {
 
 /* Submit and Control Buttons */
 .controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
 }
 

@@ -18,7 +18,9 @@ def calculate_keyword_score(user_answer, keywords):
     print(user_answer)
     print(keywords)
     user_keywords = set(re.findall(r'\b\w+\b', user_answer.lower()))
-    predefined_keywords = set(kw.lower().strip() for kw in keywords)
+    predefined_keywords = set(re.findall(r'\b\w+\b', ' '.join(keywords).lower()))
+
+    #predefined_keywords = set(kw.lower().strip() for kw in keywords)
     
     common_keywords = user_keywords.intersection(predefined_keywords)
     keyword_score = (len(common_keywords) / len(predefined_keywords)) * 100 if predefined_keywords else 0
@@ -27,11 +29,50 @@ def calculate_keyword_score(user_answer, keywords):
 
 
 def check_grammar(user_answer):
-    tool = language_tool_python.LanguageToolPublicAPI('en')  # English grammar checking
-    matches = tool.check(user_answer)
-    grammar_score = (1 - len(matches) / max(len(user_answer.split()), 1))  # Scale to percentage
-    return round(grammar_score, 2)
+    """
+    Evaluate the grammar of a user's answer and return a grammar score.
 
+    Args:
+        user_answer (str): The user's answer to evaluate.
+
+    Returns:
+        float: A grammar score between 0 and 1, where 1 indicates perfect grammar.
+    """
+    if not user_answer.strip():
+        return 0.0  # Return 0 for empty or whitespace-only answers
+
+    # Initialize LanguageTool
+    tool = language_tool_python.LanguageToolPublicAPI('en')  # English grammar checking
+
+    # Check for grammar errors
+    matches = tool.check(user_answer)
+
+    # Calculate the number of words in the answer
+    words = user_answer.split()
+    num_words = len(words)
+
+    # Calculate the number of grammar errors
+    num_errors = len(matches)
+
+    # Minimum word count for a valid answer
+    MIN_WORD_COUNT = 5  # Adjust this threshold as needed
+
+    # Penalize short answers
+    if num_words < MIN_WORD_COUNT:
+        return max(0, 1 - (MIN_WORD_COUNT - num_words) / MIN_WORD_COUNT)
+
+    # Normalize the grammar score based on the number of errors and words
+    if num_words == 0:
+        return 0.0  # Avoid division by zero for empty answers
+
+    # Grammar score formula: 1 - (number of errors / number of words)
+    # This ensures the score is proportional to the error density
+    grammar_score = 1 - (num_errors / num_words)
+
+    # Ensure the score is within the range [0, 1]
+    grammar_score = max(0, min(1, grammar_score))
+
+    return round(grammar_score, 2)
 from groq import Groq  # Assuming Groq has such an import structure (Replace with correct one if not)
 
 def check_relevance(question, reference_answer, user_answer,api):
