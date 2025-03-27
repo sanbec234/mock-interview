@@ -107,11 +107,11 @@ export const ViewStudents: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container-2">
       <h1>Student Details</h1>
 
       {/* Search Bar */}
-      <div className="search-container">
+      <div className="search-container-2">
         <input
           type="text"
           value={searchTerm}
@@ -129,7 +129,7 @@ export const ViewStudents: React.FC = () => {
 
       {/* Suggestions Dropdown */}
       {suggestions.length > 0 && (
-        <ul className="suggestions-list">
+        <ul className="suggestions-list-2">
           {suggestions.map((item, index) => (
             <li
               key={index}
@@ -151,22 +151,22 @@ export const ViewStudents: React.FC = () => {
       )}
 
       {/* Class List */}
-      <div className="scroll-container">
+      <div className="scroll-container-2">
         {Object.keys(classData).map((cls) => (
-          <div key={cls} id={cls} className="class-container">
-            <div className="class-header" onClick={() => toggleClass(cls)}>
+          <div key={cls} id={cls} className="class-container-2">
+            <div className="class-header-2" onClick={() => toggleClass(cls)}>
               {cls}
               <span className="arrow">
                 {openClasses.includes(cls) ? "▲" : "▼"}
               </span>
             </div>
             {openClasses.includes(cls) && (
-              <ul className="student-list">
+              <ul className="student-list-2">
                 {classData[cls].map((student) => (
                   <li
                     key={student.id}
                     onClick={() => handleStudentClick(student)}
-                    className="student-item"
+                    className="student-item-2"
                   >
                     {student.name}
                   </li>
@@ -194,9 +194,9 @@ export const StudentDetail: React.FC = () => {
 
   if (!student) {
     return (
-      <div className="dashboard-container">
+      <div className="dashboard-container-2-2">
         <h2>Student not found</h2>
-        <Link to="/" className="back-btn">
+        <Link to="/" className="back-btn-2">
           Back to Home
         </Link>
       </div>
@@ -204,7 +204,7 @@ export const StudentDetail: React.FC = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container-2-2">
       {/* Top Section: Profile and Cover Photo */}
       <div className="profile-layout">
         <div className="profile-left">
@@ -245,7 +245,7 @@ export const StudentDetail: React.FC = () => {
 
       {/* Tests Taken Section */}
       {/* Tests Taken Section */}
-      <div className="tests-container">
+      <div className="tests-container-2">
         <h2>Tests Taken</h2>
         <div className="tests-scroll">
           {student.tests && student.tests.length > 0 ? (
@@ -278,7 +278,7 @@ export const StudentDetail: React.FC = () => {
         </div>
       </div>
 
-      <Link to="/" className="back-btn">
+      <Link to="/" className="back-btn-2">
         Back to Home
       </Link>
     </div>

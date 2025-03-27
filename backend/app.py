@@ -14,7 +14,6 @@ from collections import defaultdict
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
 # CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
-# Enable CORS with credentials
 CORS(app)
 
 
@@ -88,8 +87,6 @@ def login_user():
             cursor.execute("SELECT * FROM user WHERE email = %s", (data['email'],))
             user = cursor.fetchone()
             if user and check_password_hash(user['password'], data['password']):
-                print("Login Success - Student")
-                
                 return jsonify({'message': 'Login successful', 'user': user["email"]}), 200
             else:
                 return jsonify({'error': 'Invalid user credentials'}), 401
@@ -109,9 +106,6 @@ def start_test():
         email = data.get('email')
         apiURL = data.get('apiUrl')
         topics = data.get('selectedTopics')
-        # topics = [{'topic': 'Operating Systems', 'difficulty': 'hard'}, 
-        # {'topic': 'Data Structures and Algorithms', 'difficulty': 'medium'}
-        # , {'topic': 'Computer Networks', 'difficulty': 'medium'}]
         num_questions = 3
 
         # Validate input data
@@ -132,7 +126,6 @@ def start_test():
         question_ids = []
         for topic_data in topics:
             topic = topic_data.get('topic')
-            print(topic_data)
             difficulty = topic_data.get('difficulty')
 
             if not topic or not difficulty:
@@ -145,7 +138,6 @@ def start_test():
             fetched_questions = cursor.fetchall()
 
             # Collect question IDs
-            print(fetched_questions)
             question_ids.extend([q['id'] for q in fetched_questions])
 
         if not question_ids:
@@ -153,10 +145,6 @@ def start_test():
 
         # Convert list of question IDs into a comma-separated string
         question_ids_str = ','.join(map(str, question_ids))
-        print("---------------151----------")
-
-
-        # Insert a new test record into the database
         sql = "INSERT INTO test (rollno, question_indices) VALUES (%s, %s)"
         values = (roll_no, question_ids_str)
         cursor.execute(sql, values)
@@ -173,7 +161,6 @@ def start_test():
             {'id': question['id'], 'question': question['question']}
             for question in questions
         ]
-        print("---------------171----------")
         print({
             'message': 'New test created',
             'questions': questions_list,
@@ -223,120 +210,6 @@ def create_question_indices(num_questions, selected_topics):
             cursor.close()
     return questions_indices
 
-
-
-# --------------------------------- Above code completed ------------------ \
-
-
-
-
-# @app.route('/resultlist', methods=['POST'])#-------------------------------postman pass
-# {
-#   "rollno": "22i434"
-# }
-# {
-#     "incomplete_tests": [
-#         1,
-#         2,
-#         3,
-#         4,
-#         5,
-#         6,
-#         7,
-#         8,
-#         11
-#     ],
-#     "tests_with_pending_results": [
-#         9,
-#         12
-#     ],
-#     "tests_with_results": [
-#         10
-#     ]
-# }
-
-
-# @app.route('/resultlist', methods=['POST'])
-# def resultlist():
-#     conn = get_db_connection()
-#     if conn is None:
-#         return jsonify({"error": "Database connection failed"}), 500
-
-#     cursor = conn.cursor()
-
-#     try:
-#         data = request.get_json()
-#         if not data or "email" not in data:
-#             return jsonify({"error": "Missing email"}), 400
-
-#         email = data['email']
-#         print(f"📩 Received request with email: {email}")
-
-#         # Fetch user roll number
-#         cursor.execute("SELECT rollno FROM user WHERE email = %s", (email,))
-#         user = cursor.fetchone()
-
-#         if not user:
-#             return jsonify({"error": "User not found"}), 404
-        
-#         roll_no = user['rollno']  # Correct extraction
-#         print(f"🎯 User Roll Number: {roll_no}")
-
-#         # Fetch test results
-#         cursor.execute("""
-#             SELECT test_id, created_at, iscompleted, isresult
-#             FROM test WHERE rollno = %s;
-#         """, (roll_no,))
-#         results = cursor.fetchall()
-
-#         print(f"📊 Test Results: {results}")
-
-#         if not results:
-#             return jsonify({"tests": []}), 200  # Return empty list if no tests exist
-
-#         # Process results
-#         incomplete_tests = []
-#         pending_tests = []
-#         completed_tests = []
-
-#         for row in results:
-#             test_id = row['test_id']
-#             created_at = row['created_at'].strftime('%Y-%m-%d %H:%M:%S') if row['created_at'] else None
-#             iscompleted = row['iscompleted']
-#             isresult = row['isresult']
-
-#             test_entry = {
-#                 "test_id": test_id,
-#                 "created_at": created_at
-#             }
-
-#             if iscompleted == 0:
-#                 incomplete_tests.append(test_entry)
-#             elif iscompleted == 1 and isresult == 0:
-#                 pending_tests.append(test_entry)
-#             elif iscompleted == 1 and isresult == 1:
-#                 completed_tests.append(test_entry)
-
-#         response_data = {
-#             "incomplete_tests": incomplete_tests,
-#             "tests_with_pending_results": pending_tests,
-#             "tests_with_results": completed_tests
-#         }
-
-#         return jsonify(response_data), 200
-
-#     except mysql.connector.Error as db_error:
-#         print(f"❌ Database Error: {db_error}")
-#         return jsonify({'error': f"Database error: {db_error}"}), 500
-#     except Exception as e:
-#         print(f"❌ Unexpected error: {e}")
-#         return jsonify({'error': f"Unexpected error: {e}"}), 500
-
-#     finally:
-#         if cursor:
-#             cursor.close()
-#         if conn:
-#             conn.close()
 @app.route('/resultlist', methods=['POST'])
 def resultlist():
     conn = get_db_connection()
