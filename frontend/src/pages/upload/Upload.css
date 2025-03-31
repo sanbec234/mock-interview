@@ -1,0 +1,56 @@
+.upload-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: 100vh; /* Allow full height */
+}
+
+.upload-box {
+  margin-bottom: 20px;
+}
+
+.file-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.file-name {
+  margin-top: 10px;
+  color: #333;
+}
+
+.error-message {
+  color: red;
+}
+
+.preview {
+  max-height: 300px; /* Limit the height for preview section */
+  overflow-y: auto; /* Allow vertical scrolling if content exceeds max-height */
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
