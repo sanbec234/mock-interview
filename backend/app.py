@@ -796,7 +796,8 @@ def get_students():
         test_query = """
             SELECT test.test_id, test.rollno AS student_id, test.created_at,
                    (history.similarity_score * 0.15 + history.keyword_matching * 0.15 + 
-                    history.grammar_check * 0.20 + history.llm_score * 0.50) AS total_score
+                    history.grammar_check * 0.20 + history.llm_score * 0.50) AS total_score,
+                   COALESCE(history.time_taken, 99999) AS time_taken  # ✅ Handle NULL values
             FROM test
             JOIN history ON test.test_id = history.test_id
             WHERE test.iscompleted = 1 AND test.isresult = 1
@@ -806,18 +807,44 @@ def get_students():
 
         # Organize test data by student_id
         student_tests = defaultdict(list)
+        student_scores = defaultdict(list)  # Track scores for ranking
+        student_times = defaultdict(list)  # Track time taken for ranking
+
         for test in tests:
+            score = round(test["total_score"], 2)
+            time_taken = test["time_taken"] or 99999  # ✅ Default high value for ranking
             student_tests[test["student_id"]].append({
                 "test_id": test["test_id"],
-                "created_at": test["created_at"].strftime("%Y-%m-%d %H:%M:%S"),  # ✅ Format timestamp
-                "mark": round(test["total_score"], 2)  # ✅ Round score for better readability
+                "created_at": test["created_at"].strftime("%Y-%m-%d %H:%M:%S"),
+                "mark": score,
+                "time_taken": time_taken
             })
+            student_scores[test["student_id"]].append(score)
+            student_times[test["student_id"]].append(time_taken)
+
+        # Calculate average scores, total points, and average time taken
+        student_points = {}
+        for student_id, scores in student_scores.items():
+            avg_score = sum(scores) / len(scores) if scores else 0
+            total_points = sum(scores)  # Example: Points are the sum of all scores
+            avg_time = sum(student_times[student_id]) / len(student_times[student_id]) if student_times[student_id] else 99999
+            student_points[student_id] = (avg_score, total_points, avg_time)
+
+        # Rank students by average score (higher is better), tie-breaker: lower avg time
+        ranked_students = sorted(student_points.items(), key=lambda x: (-x[1][0], x[1][2]))
+
+        # Assign ranks
+        rank_dict = {}
+        current_rank = 1
+        for i, (student_id, (avg_score, total_points, avg_time)) in enumerate(ranked_students):
+            if i > 0 and (avg_score < ranked_students[i - 1][1][0] or avg_time > ranked_students[i - 1][1][2]):
+                current_rank = i + 1  # Update rank only when score decreases or time increases
+            rank_dict[student_id] = {"rank": current_rank, "points": total_points}
 
         # Group students by class
         students_dict = defaultdict(list)
-
         for student in students:
-            class_name = student["classuser"] or "Unknown Class"  # ✅ Handle NULL values
+            class_name = student["classuser"] or "Unknown Class"
             student_id = student["id"]
 
             student_info = {
@@ -826,19 +853,20 @@ def get_students():
                 "yearuser": f"{student['yearuser']}th" if student["yearuser"] else "N/A",
                 "email": student["email"] or "N/A",
                 "department": student["department"] or "N/A",
-                "tests": student_tests.get(student_id, [])  # ✅ Add test list
+                "tests": student_tests.get(student_id, []),
+                "rank": rank_dict.get(student_id, {}).get("rank", "N/A"),
+                "points": rank_dict.get(student_id, {}).get("points", 0)
             }
             students_dict[class_name].append(student_info)
 
-        return jsonify(dict(students_dict)), 200  # ✅ Convert defaultdict to dict
+        return jsonify(dict(students_dict)), 200
 
     except mysql.connector.Error as db_error:
         return jsonify({"error": f"Database error: {db_error}"}), 500
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {e}"}), 500
-
     finally:
-        if "cursor" in locals():
+        if 'cursor' in locals():
             cursor.close()
 
 
