@@ -1,14 +1,15 @@
 :root {
-  --ai-primary: #6366f1; /* Professional purple */
-  --ai-secondary: #3b82f6; /* Trustworthy blue */
-  --ai-accent: #10b981; /* Positive green */
+  --ai-primary: #6366f1;    /* Professional purple */
+  --ai-secondary: #3b82f6;  /* Trustworthy blue */
+  --ai-accent: #10b981;     /* Positive green */
   --ai-background: #0f172a; /* Deep space blue */
-  --ai-surface: #1e293b; /* Card background */
-  --ai-text: #f8fafc; /* Clean white */
-  --ai-border: #334155; /* Subtle borders */
+  --ai-surface: #1e293b;    /* Card background */
+  --ai-text: #f8fafc;       /* Clean white */
+  --ai-border: #334155;     /* Subtle borders */
 }
 
-body {
+/* Unique body wrapper for the student list app */
+.studentlist-body {
   font-family: "Inter", system-ui, sans-serif;
   background: var(--ai-background);
   color: var(--ai-text);
@@ -17,8 +18,12 @@ body {
   min-height: 100vh;
 }
 
-/* Main container-2 styling */
-.container-2 {
+.studentlist-html {
+  background: var(--ai-background);
+}
+
+/* Main container */
+.studentlist-container {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
@@ -28,8 +33,8 @@ body {
   border: 1px solid var(--ai-border);
 }
 
-h1,
-h2 {
+.studentlist-container h1,
+.studentlist-container h2 {
   color: var(--ai-text);
   text-align: center;
   margin-bottom: 2rem;
@@ -37,15 +42,15 @@ h2 {
   letter-spacing: -0.025em;
 }
 
-h1 {
+.studentlist-container h1 {
   font-size: 2.5rem;
   background: linear-gradient(45deg, var(--ai-primary), var(--ai-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Scroll container-2 for classes */
-.scroll-container-2 {
+/* Scroll container for classes */
+.studentlist-scroll-container {
   max-height: 70vh;
   overflow-y: auto;
   margin: 1.5rem 0;
@@ -55,33 +60,33 @@ h1 {
 }
 
 /* Custom scrollbar */
-.scroll-container-2::-webkit-scrollbar {
+.studentlist-scroll-container::-webkit-scrollbar {
   width: 8px;
 }
 
-.scroll-container-2::-webkit-scrollbar-track {
+.studentlist-scroll-container::-webkit-scrollbar-track {
   background: var(--ai-surface);
   border-radius: 12px;
 }
 
-.scroll-container-2::-webkit-scrollbar-thumb {
+.studentlist-scroll-container::-webkit-scrollbar-thumb {
   background: var(--ai-primary);
   border-radius: 12px;
 }
 
-/* Class container-2 styling */
-.class-container-2 {
+/* Class container styling */
+.studentlist-class-container {
   margin-bottom: 1rem;
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.2s ease;
 }
 
-.class-container-2:hover {
+.studentlist-class-container:hover {
   transform: translateY(-2px);
 }
 
-.class-header-2 {
+.studentlist-class-header {
   padding: 1.5rem;
   background: linear-gradient(90deg, var(--ai-primary), var(--ai-secondary));
   color: white;
@@ -93,29 +98,29 @@ h1 {
   transition: all 0.2s ease;
 }
 
-.class-header-2:hover {
+.studentlist-class-header:hover {
   opacity: 0.95;
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
 }
 
-.arrow {
+.studentlist-arrow {
   font-size: 1.2em;
   transition: transform 0.2s ease;
 }
 
-.class-header-2.active .arrow {
+.studentlist-class-header.active .studentlist-arrow {
   transform: rotate(180deg);
 }
 
 /* Student list styling */
-.student-list-2 {
+.studentlist-student-list {
   list-style: none;
   padding: 0;
   margin: 0;
   background: rgba(255, 255, 255, 0.02);
 }
 
-.student-item-2 {
+.studentlist-student-item {
   padding: 1.25rem;
   border-bottom: 1px solid var(--ai-border);
   cursor: pointer;
@@ -124,21 +129,20 @@ h1 {
   background: var(--ai-surface);
 }
 
-.student-item-2:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(99, 102, 241, 0.1) 0%,
+.studentlist-student-item:hover {
+  background: linear-gradient(90deg, 
+    rgba(99, 102, 241, 0.1) 0%, 
     rgba(59, 130, 246, 0.1) 100%
   );
   padding-left: 1.5rem;
 }
 
-.student-item-2:last-child {
+.studentlist-student-item:last-child {
   border-bottom: none;
 }
 
-.student-item-2::before {
-  content: "";
+.studentlist-student-item::before {
+  content: '';
   position: absolute;
   left: 0;
   top: 0;
@@ -149,13 +153,13 @@ h1 {
   transition: opacity 0.2s ease;
 }
 
-.student-item-2:hover::before {
+.studentlist-student-item:hover::before {
   opacity: 1;
 }
 
 /* New Profile Layout for Student Detail Page */
 /* Top Section: Two-column layout */
-.profile-layout {
+.studentlist-profile-layout {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -164,17 +168,17 @@ h1 {
 }
 
 /* Left Column: Profile card (cover, picture, name, year) */
-.profile-left {
+.studentlist-profile-left {
   width: 40%;
 }
 
-.cover-photo img {
+.studentlist-cover-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.profile-info {
+.studentlist-profile-info {
   position: relative;
   background: var(--ai-surface);
   padding: 1rem;
@@ -183,7 +187,7 @@ h1 {
   text-align: center;
 }
 
-.profile-pic {
+.studentlist-profile-pic {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -192,39 +196,39 @@ h1 {
   margin: 0 auto;
 }
 
-.profile-info h1 {
+.studentlist-profile-info h1 {
   margin-top: 0.75rem;
   font-size: 1.75rem;
   color: var(--ai-text);
 }
 
-.profile-info p {
+.studentlist-profile-info p {
   font-size: 1rem;
   color: var(--ai-secondary);
 }
 
 /* Right Column: Additional Details */
-.profile-right {
+.studentlist-profile-right {
   width: 55%;
   background: var(--ai-surface);
   padding: 1rem;
   border-radius: 8px;
 }
 
-.profile-right .profile-details {
+.studentlist-profile-right .studentlist-profile-details {
   font-size: 1.1rem;
   color: var(--ai-text);
 }
 
-.profile-right .profile-details p {
+.studentlist-profile-right .studentlist-profile-details p {
   margin: 0.75rem 0;
   padding: 0.5rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 6px;
 }
 
-/* Scrollable tests container-2 (middle section) */
-.tests-container-2 {
+/* Scrollable tests container (middle section) */
+.studentlist-tests-container {
   margin: 2rem auto;
   max-width: 900px;
   background: var(--ai-surface);
@@ -233,12 +237,12 @@ h1 {
   padding: 1rem;
 }
 
-.tests-container-2 h2 {
+.studentlist-tests-container h2 {
   text-align: center;
   margin-bottom: 1rem;
 }
 
-.tests-scroll {
+.studentlist-tests-scroll {
   max-height: 300px;
   overflow-y: auto;
   padding: 0.5rem;
@@ -246,10 +250,11 @@ h1 {
   background: rgba(255, 255, 255, 0.02);
 }
 
-.back-btn-2 {
-  display: block; /* Make it block-level */
-  width: fit-content; /* Adjust width to content, or set a fixed width if preferred */
-  margin: 2rem auto 0; /* Center horizontally and add top margin */
+/* Back Button */
+.studentlist-back-btn {
+  display: block;
+  width: fit-content;
+  margin: 2rem auto 0;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   color: var(--ai-text);
@@ -259,27 +264,23 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.back-btn-2:hover {
+.studentlist-back-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
 
-/* Loading Animation (for future API integration) */
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* Loading Animation */
+@keyframes studentlist-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
-.loading-state {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.studentlist-loading-state {
+  animation: studentlist-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.search-container-2 {
+/* Search Bar Styles */
+.studentlist-search-container {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -291,7 +292,7 @@ h1 {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-container-2 input {
+.studentlist-search-container input {
   flex: 1;
   padding: 12px;
   font-size: 1rem;
@@ -301,12 +302,12 @@ h1 {
   transition: border 0.3s ease;
 }
 
-.search-container-2 input:focus {
+.studentlist-search-container input:focus {
   border-color: #4a90e2;
   box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
 }
 
-.search-container-2 button {
+.studentlist-search-container button {
   padding: 10px 15px;
   font-size: 1rem;
   background: #4a90e2;
@@ -317,12 +318,12 @@ h1 {
   transition: background 0.3s ease;
 }
 
-.search-container-2 button:hover {
+.studentlist-search-container button:hover {
   background: #357abd;
 }
 
 /* Suggestions Dropdown */
-.suggestions-list-2 {
+.studentlist-suggestions-list {
   position: absolute;
   width: calc(100% - 40px);
   max-width: 460px;
@@ -337,7 +338,7 @@ h1 {
   z-index: 1000;
 }
 
-.suggestions-list-2 li {
+.studentlist-suggestions-list li {
   padding: 12px;
   font-size: 1rem;
   border-bottom: 1px solid #eee;
@@ -345,17 +346,17 @@ h1 {
   transition: background 0.2s ease;
 }
 
-.suggestions-list-2 li:last-child {
+.studentlist-suggestions-list li:last-child {
   border-bottom: none;
 }
 
-.suggestions-list-2 li:hover {
+.studentlist-suggestions-list li:hover {
   background: var(--ai-surface);
 }
 
 /* Test Tile Styles */
-.test-item {
-  background: var(--ai-surface); /* Uses your card background color */
+.studentlist-test-item {
+  background: var(--ai-surface);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 0.75rem;
@@ -363,11 +364,73 @@ h1 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.test-item:hover {
+.studentlist-test-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.test-item strong {
+.studentlist-test-item strong {
   color: var(--ai-primary);
+}
+
+/* Leaderboard Styles */
+.studentlist-leaderboard-container {
+  margin: 2rem auto;
+  max-width: 900px;
+  background: var(--ai-surface);
+  border: 1px solid var(--ai-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.studentlist-leaderboard-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: var(--ai-text);
+  background: linear-gradient(45deg, var(--ai-primary), var(--ai-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.studentlist-leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.studentlist-leaderboard-item {
+  display: flex;
+  align-items: center;
+  background: var(--ai-surface);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.studentlist-leaderboard-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.studentlist-leaderboard-rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ai-primary);
+  margin-right: 1rem;
+  width: 50px;
+  text-align: center;
+}
+
+.studentlist-leaderboard-info h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--ai-text);
+}
+
+.studentlist-leaderboard-info p {
+  margin: 0.25rem 0;
+  color: var(--ai-text);
 }

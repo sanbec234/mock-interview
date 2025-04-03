@@ -265,3 +265,11 @@ body, html {
   padding-right: 200px;
   padding-left: 200px;
 }
+
+.studentlist-tests-container, .studentlist-tests-container h2 {
+  color: #f1f1f1;
+}
+
+.studentlist-scroll-container {
+  color: #f1f1f1;
+}
