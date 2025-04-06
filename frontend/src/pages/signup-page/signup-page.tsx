@@ -12,6 +12,7 @@ const SignUpPage: React.FC = () => {
   const [cgpa, setCgpa] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [college, setCollege] = useState<string>("");
+  const [batch, setBatch] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null); // State for feedback messages
   const navigate = useNavigate(); // Hook for navigation
@@ -28,6 +29,7 @@ const SignUpPage: React.FC = () => {
       cgpa,
       email,
       college,
+      batch,
       password,
     };
 
@@ -47,6 +49,7 @@ const SignUpPage: React.FC = () => {
         setYear("");
         setCgpa("");
         setEmail("");
+        setBatch("");
         setPassword("");
       } else {
         const error = await response.json();
@@ -152,6 +155,17 @@ const SignUpPage: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="batch">Class</label>
+                    <input
+                      type="batch"
+                      id="batch"
+                      value={batch}
+                      onChange={(e) => setBatch(e.target.value)}
+                      placeholder="Enter your class"
                       required
                     />
                   </div>

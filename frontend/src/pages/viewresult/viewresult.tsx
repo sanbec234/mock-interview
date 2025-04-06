@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./view-result-page.css";
+import Popup from "../../components/PopUp/PopUp";
+
 
 const ViewResultPage: React.FC = () => {
+  const [apiUrl, setApiUrl] = useState<string>("");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [testId, setTestId] = useState<string>("");
   const [results, setResults] = useState<any[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  
 
   const fetchResults = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,10 +44,21 @@ const ViewResultPage: React.FC = () => {
       setMessage(`Error: ${err}`);
     }
   };
+  const handleSubmit = async () => {
+    const formData = {
+      apiUrl,
+    };
+  };
 
   return (
     <div className="App">
       <Header />
+      <div>
+        <Popup>
+          <h2>Hello Students!</h2>
+          <p>Please submit your api key before checking for your results</p>
+        </Popup>
+      </div>
       <div className="main-content">
         <div className="result-form-container">
           <h2>View Results</h2>
@@ -58,9 +74,24 @@ const ViewResultPage: React.FC = () => {
                 required
               />
             </div>
-            <button type="submit" className="fetch-butto==">
-              Fetch Results
-            </button>
+            <div>
+              <label htmlFor="api-url">API URL:</label>
+              <input
+                id="api-url"
+                type="text"
+                className="api-input"
+                value={apiUrl}
+                onChange={(e) => setApiUrl(e.target.value)}
+                placeholder="Enter API URL"
+              />
+            </div>
+            <div className="buttons-fetch-result">
+              <button className="submit-form-button" onClick={handleSubmit}>Submit API KEY</button>
+              <button type="submit" className="fetch-button-call">
+                Fetch Results
+              </button>
+            </div>
+           
           </form>
 
           {message && <p className="feedback-message">{message}</p>}

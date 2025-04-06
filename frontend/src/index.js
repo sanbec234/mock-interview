@@ -76,7 +76,7 @@ const App = () => (
       <Route path="/completion-page" element={<CompletionPage />} />
       <Route path="/collect-details-page" element={<Details />} />
       <Route path="/sign-up" element={<SignPage />} />
-      <Route path="/dashborad" element={<Dashboardpage />} />
+      <Route path="/dashboard" element={<Dashboardpage />} />
       <Route path="/view-result" element={<ViewResultPage />} />
       <Route path="/resultlist" element={<Resultlist />} />
       <Route path="/admin" element={<Admin />} />

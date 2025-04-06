@@ -5,7 +5,7 @@ import Footer from "../../components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 
 const DetailsPage: React.FC = () => {
-  const [apiUrl, setApiUrl] = useState<string>("");
+  // const [apiUrl, setApiUrl] = useState<string>("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [topics, setTopics] = useState<string[]>([]); // Topics fetched from the backend
   const [topicDifficulties, setTopicDifficulties] = useState<{
@@ -95,7 +95,7 @@ const DetailsPage: React.FC = () => {
 
     const formData = {
       email,
-      apiUrl,
+      // apiUrl,
       topics: topicsWithDifficulty,
     };
 
@@ -167,7 +167,7 @@ const DetailsPage: React.FC = () => {
             </div>
           )}
 
-          <label htmlFor="api-url">API URL:</label>
+          {/* <label htmlFor="api-url">API URL:</label>
           <input
             id="api-url"
             type="text"
@@ -175,7 +175,7 @@ const DetailsPage: React.FC = () => {
             value={apiUrl}
             onChange={(e) => setApiUrl(e.target.value)}
             placeholder="Enter API URL"
-          />
+          /> */}
 
           <button className="submit-form-button" onClick={handleSubmit}>
             Submit

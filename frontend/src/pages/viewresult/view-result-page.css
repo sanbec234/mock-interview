@@ -52,3 +52,16 @@
     background-color: #0056b3;
   }
   
+  .buttons-fetch-result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers children vertically within the parent */
+    align-items: center;
+  }
+
+  .submit-form-button, .fetch-button-call {
+    height: 50px;
+    width: 200px;
+    margin: 10px;
+    font-size: 18px;
+  }
