@@ -80,7 +80,7 @@ const UploadCsv = () => {
     console.log("Data being sent to backend:", processedData); // Debugging: Check data before sending
 
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch("http://localhost:5001/upload", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

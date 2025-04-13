@@ -79,7 +79,7 @@ const CompletionPage: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch("http://localhost:5000/view_result", {
+        const response = await fetch("http://localhost:5001/view_result", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ testid }),

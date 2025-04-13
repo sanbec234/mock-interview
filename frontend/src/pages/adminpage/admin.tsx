@@ -25,7 +25,7 @@ const AdminPage: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:5000/delete", {
+      const response = await fetch("http://localhost:5001/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const AdminPage: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:5000/download_csv");
+      const response = await fetch("http://localhost:5001/download_csv");
       if (!response.ok) {
         throw new Error("Failed to download CSV");
       }

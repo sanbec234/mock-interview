@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000"; // Backend base URL
+const BASE_URL = "http://127.0.0.1:5001"; // Backend base URL
 
 /**
  * Sends the user's answer to the backend and fetches the next question or redirects if test is complete.

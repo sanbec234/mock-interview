@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
     try {
       // Send login credentials to the Flask API
       const response = await fetch(
-        "http://localhost:5000/login_user", // Corrected endpoint
+        "http://localhost:5001/login_user", // Corrected endpoint
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

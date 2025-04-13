@@ -37,7 +37,7 @@
 
 //   // Fetch data from backend and process test data
 //   useEffect(() => {
-//     fetch("http://localhost:5000/students")
+//     fetch("http://localhost:5001/students")
 //       .then((response) => response.json())
 //       .then((jsonData: Data) => {
 //         // Ensure that each student has tests in the proper format
@@ -327,7 +327,7 @@ export const ViewStudents: React.FC = () => {
 
   // Fetch data from backend and process test data
   useEffect(() => {
-    fetch("http://localhost:5000/students")
+    fetch("http://localhost:5001/students")
       .then((response) => response.json())
       .then((jsonData: Data) => {
         // Ensure that each student has tests (and pass through leaderboard data)

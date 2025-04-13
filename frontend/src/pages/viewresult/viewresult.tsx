@@ -25,7 +25,7 @@ const ViewResultPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/view_result", {
+      const response = await fetch("http://localhost:5001/view_result", {
         method: "POST", // ✅ Corrected to POST
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ testid: testId }), // ✅ Send testId in body

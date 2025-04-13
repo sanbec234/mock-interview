@@ -34,7 +34,7 @@ const Questions_dash: React.FC = () => {
 
   const fetchRecords = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/api/records");
+      const response = await axios.get("http://127.0.0.1:5001/api/records");
       setRecords(response.data);
     } catch (error) {
       console.error("Error fetching records:", error);
@@ -51,7 +51,7 @@ const Questions_dash: React.FC = () => {
     }
 
     try {
-      await axios.post("http://127.0.0.1:5000/api/records", newRecord);
+      await axios.post("http://127.0.0.1:5001/api/records", newRecord);
       setSuccess("Question added successfully!");
       setError("");
       setNewRecord({
@@ -73,7 +73,7 @@ const Questions_dash: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`http://127.0.0.1:5000/api/records/${id}`);
+      await axios.delete(`http://127.0.0.1:5001/api/records/${id}`);
       setSuccess("Record deleted successfully!");
       setError("");
       fetchRecords();
@@ -90,7 +90,7 @@ const Questions_dash: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.get(`http://127.0.0.1:5000/api/records/filter`, {
+      const response = await axios.get(`http://127.0.0.1:5001/api/records/filter`, {
         params: filter,
       });
       setRecords(response.data);

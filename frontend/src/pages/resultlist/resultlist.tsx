@@ -37,7 +37,7 @@ const ResultListPage: React.FC = () => {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/resultlist", {
+        const response = await fetch("http://localhost:5001/resultlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
@@ -74,44 +74,92 @@ const ResultListPage: React.FC = () => {
   }, []);
 
   const handleAction = async (testId: number, action: string) => {
-    // if (action === "view_result") {
-    //   localStorage.setItem("test_id", testId.toString());
-    //   navigate("/completion-page");
-    // } 
     if (action === "view_result") {
-      const apiKey = prompt("Enter your API key to view the result:");
+      localStorage.setItem("test_id", testId.toString());
+      navigate("/completion-page");
+    } 
+    // if (action === "view_result") {
+    //   const apiKey = prompt("Enter your API key to view the result:");
     
-      if (!apiKey) {
-        alert("API key is required to view the result.");
-        return;
-      }
+    //   if (!apiKey) {
+    //     alert("API key is required to view the result.");
+    //     return;
+    //   }
     
-      try {
-        const response = await fetch("http://localhost:5000/view_result_auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ testId, apiKey }),
-        });
+    //   try {
+    //     const response = await fetch("http://localhost:5001/view_result_auth", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ testId, apiKey }),
+    //     });
     
-        if (response.ok) {
-          localStorage.setItem("test_id", testId.toString());
-          navigate("/completion-page");
-        } else {
-          const error = await response.json();
-          alert(`Error: ${error.error || "Invalid API key or failed request."}`);
-        }
-      } catch (err) {
-        console.error("Error viewing result:", err);
-        alert("An error occurred while trying to view the result.");
-      }
-    }
+    //     if (response.ok) {
+    //       localStorage.setItem("test_id", testId.toString());
+    //       navigate("/completion-page");
+    //     } else {
+    //       const error = await response.json();
+    //       alert(`Error: ${error.error || "Invalid API key or failed request."}`);
+    //     }
+    //   } catch (err) {
+    //     console.error("Error viewing result:", err);
+    //     alert("An error occurred while trying to view the result.");
+    //   }
+    // }
     
     else if (action === "check_result") {
+      // try {
+      //   const response = await fetch("http://localhost:5001/check_result", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ testId }),
+      //   });
+
+      //   if (response.ok) {
+      //     const data = await response.json();
+      //     const overallFeedback =
+      //       data.overall_feedback || "No feedback available.";
+
+      //     alert(`Test Evaluated! Feedback: ${overallFeedback}`);
+
+      //     setTestData((prev) => {
+      //       const pendingTests = prev.tests_with_pending_results.filter(
+      //         (test) => test.test_id !== testId
+      //       );
+      //       const evaluatedTest = prev.tests_with_pending_results.find(
+      //         (test) => test.test_id === testId
+      //       );
+
+      //       if (evaluatedTest) {
+      //         return {
+      //           ...prev,
+      //           tests_with_pending_results: pendingTests,
+      //           tests_with_results: [...prev.tests_with_results, evaluatedTest],
+      //         };
+      //       }
+
+      //       return prev;
+      //     });
+      //   } else {
+      //     const error = await response.json();
+      //     alert(`Error: ${error.error || "Failed to evaluate the test."}`);
+      //   }
+      // } catch (err) {
+      //   console.error("Error evaluating test:", err);
+      //   alert("An error occurred while evaluating the test.");
+      // }
+
+      const apiKey = prompt("Please enter your API Key to check the result:");
+
+      if (!apiKey) {
+        alert("API Key is required to proceed.");
+        return;
+      }
+
       try {
-        const response = await fetch("http://localhost:5000/check_result", {
+        const response = await fetch("http://localhost:5001/check_result", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ testId }),
+          body: JSON.stringify({ testId, apiKey }), // Pass API key to backend
         });
 
         if (response.ok) {
@@ -149,7 +197,7 @@ const ResultListPage: React.FC = () => {
       }
     } else if (action === "resume") {
       try {
-        const response = await fetch("http://localhost:5000/resume", {
+        const response = await fetch("http://localhost:5001/resume", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ testId }),
