@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./view-result-page.css";
-import Popup from "../../components/PopUp/PopUp";
 
 
 const ViewResultPage: React.FC = () => {
@@ -53,12 +52,6 @@ const ViewResultPage: React.FC = () => {
   return (
     <div className="App">
       <Header />
-      <div>
-        <Popup>
-          <h2>Hello Students!</h2>
-          <p>Please submit your api key before checking for your results</p>
-        </Popup>
-      </div>
       <div className="main-content">
         <div className="result-form-container">
           <h2>View Results</h2>
@@ -74,7 +67,7 @@ const ViewResultPage: React.FC = () => {
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <label htmlFor="api-url">API URL:</label>
               <input
                 id="api-url"
@@ -84,9 +77,9 @@ const ViewResultPage: React.FC = () => {
                 onChange={(e) => setApiUrl(e.target.value)}
                 placeholder="Enter API URL"
               />
-            </div>
+            </div> */}
             <div className="buttons-fetch-result">
-              <button className="submit-form-button" onClick={handleSubmit}>Submit API KEY</button>
+              {/* <button className="submit-form-button" onClick={handleSubmit}>Submit API KEY</button> */}
               <button type="submit" className="fetch-button-call">
                 Fetch Results
               </button>

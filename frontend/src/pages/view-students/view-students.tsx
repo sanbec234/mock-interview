@@ -37,7 +37,7 @@
 
 //   // Fetch data from backend and process test data
 //   useEffect(() => {
-//     fetch("http://localhost:5001/students")
+//     fetch("http://localhost:5000/students")
 //       .then((response) => response.json())
 //       .then((jsonData: Data) => {
 //         // Ensure that each student has tests in the proper format

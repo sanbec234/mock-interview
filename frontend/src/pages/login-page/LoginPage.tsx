@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
         if (userType === "admin") {
           navigate("/admin"); // Redirect to admin dashboard
         } else {
-          navigate("/dashborad"); // Redirect to student dashboard
+          navigate("/dashboard"); // Redirect to student dashboard
         }
       }
     } catch (error: any) {

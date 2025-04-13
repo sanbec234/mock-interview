@@ -513,7 +513,7 @@ const HomePage: React.FC = () => {
             alert(
               "Required details are missing. Please go back to the details page."
             );
-            navigate("/dashborad");
+            navigate("/dashboard");
             return;
           }
 
@@ -794,7 +794,7 @@ const HomePage: React.FC = () => {
 
       if (response.ok) {
         alert("Thank you for the feedback!");
-        navigate("/dashborad");
+        navigate("/dashboard");
       } else {
         console.error("Failed to submit Feedback");
         alert("Failed to submit Feedback. Please try again.");
@@ -851,7 +851,7 @@ const HomePage: React.FC = () => {
             <button onClick={handleFeedbackSubmit}>Submit Feedback</button>
             <br />
             <br />
-            <button onClick={() => navigate("/dashborad")}>Skip</button>
+            <button onClick={() => navigate("/dashboard")}>Skip</button>
           </div>
         ) : (
           <>

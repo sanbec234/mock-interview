@@ -77,7 +77,7 @@ const App = () => (
       <Route path="/collect-details-page" element={<Details />} />
       <Route path="/sign-up" element={<SignPage />} />
       <Route path="/dashboard" element={<Dashboardpage />} />
-      <Route path="/view-result" element={<ViewResultPage />} />
+      {/* <Route path="/view-result" element={<ViewResultPage />} /> */}
       <Route path="/resultlist" element={<Resultlist />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/upload" element={<Upload />} />
