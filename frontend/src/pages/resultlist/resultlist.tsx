@@ -37,7 +37,7 @@ const ResultListPage: React.FC = () => {
           return;
         }
 
-        const response = await fetch("http://localhost:5001/resultlist", {
+        const response = await fetch("http://localhost:5000/resultlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
@@ -87,7 +87,7 @@ const ResultListPage: React.FC = () => {
     //   }
     
     //   try {
-    //     const response = await fetch("http://localhost:5001/view_result_auth", {
+    //     const response = await fetch("http://localhost:5000/view_result_auth", {
     //       method: "POST",
     //       headers: { "Content-Type": "application/json" },
     //       body: JSON.stringify({ testId, apiKey }),
@@ -108,7 +108,7 @@ const ResultListPage: React.FC = () => {
     
     else if (action === "check_result") {
       // try {
-      //   const response = await fetch("http://localhost:5001/check_result", {
+      //   const response = await fetch("http://localhost:5000/check_result", {
       //     method: "POST",
       //     headers: { "Content-Type": "application/json" },
       //     body: JSON.stringify({ testId }),
@@ -156,7 +156,7 @@ const ResultListPage: React.FC = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:5001/check_result", {
+        const response = await fetch("http://localhost:5000/check_result", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ testId, apiKey }), // Pass API key to backend
@@ -197,7 +197,7 @@ const ResultListPage: React.FC = () => {
       }
     } else if (action === "resume") {
       try {
-        const response = await fetch("http://localhost:5001/resume", {
+        const response = await fetch("http://localhost:5000/resume", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ testId }),

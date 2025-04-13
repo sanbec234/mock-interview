@@ -65,7 +65,7 @@
 //             return;
 //           }
 
-//           response = await fetch("http://127.0.0.1:5001/start_test", {
+//           response = await fetch("http://127.0.0.1:5000/start_test", {
 //             method: "POST",
 //             headers: { "Content-Type": "application/json" },
 //             body: JSON.stringify({
@@ -248,7 +248,7 @@
 //     console.log("Submitting answers:", { rollno, testid: test_id, answers });
 
 //     try {
-//       const response = await fetch("http://127.0.0.1:5001/submit_answers", {
+//       const response = await fetch("http://127.0.0.1:5000/submit_answers", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -282,7 +282,7 @@
 //   // Submit feedback to the backend
 //   const submitFeedback = async () => {
 //     try {
-//       const response = await fetch("http://127.0.0.1:5001/submit_feedback", {
+//       const response = await fetch("http://127.0.0.1:5000/submit_feedback", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -517,7 +517,7 @@ const HomePage: React.FC = () => {
             return;
           }
 
-          response = await fetch("http://127.0.0.1:5001/start_test", {
+          response = await fetch("http://127.0.0.1:5000/start_test", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -748,7 +748,7 @@ const HomePage: React.FC = () => {
     });
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/submit_answers", {
+      const response = await fetch("http://127.0.0.1:5000/submit_answers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -783,7 +783,7 @@ const HomePage: React.FC = () => {
   // Submit feedback to the backend
   const submitFeedback = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5001/submit_feedback", {
+      const response = await fetch("http://127.0.0.1:5000/submit_feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

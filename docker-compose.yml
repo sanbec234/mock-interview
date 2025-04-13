@@ -4,7 +4,7 @@ services:
       context: ./backend  # Ensure this path exists
       dockerfile: Dockerfile-python  # Explicitly mention the Dockerfile
     ports:
-      - "5001:5001"
+      - "5000:5000"
     environment:
       - FLASK_ENV=development
     volumes:
