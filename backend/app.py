@@ -1031,7 +1031,10 @@ def submitFeedback():
         cursor = conn.cursor()
         feedback1 = data.get('feedback1')
         feedback2 = data.get('feedback2')
-        cursor.execute("INSERT INTO user_feedback (feedback1, feedback2) VALUES (%s, %s)", (feedback1, feedback2))
+        feedback3 = data.get('feedback3')
+        feedback4 = data.get('feedback4')
+        feedback5 = data.get('feedback5')
+        cursor.execute("INSERT INTO user_feedback (feedback1, feedback2, feedback3, feedback4, feedback5) VALUES (%s, %s, %s, %s, %s)", (feedback1, feedback2, feedback3, feedback4, feedback5))
         conn.commit()
         return jsonify({"message": "Feedback submitted successfully"}), 201
 
