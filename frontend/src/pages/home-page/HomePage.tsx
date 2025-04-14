@@ -472,6 +472,9 @@ const HomePage: React.FC = () => {
   const [isTestFinished, setIsTestFinished] = useState<boolean>(false);
   const [feedback1, setFeedback1] = useState<string>("");
   const [feedback2, setFeedback2] = useState<string>("");
+  const [feedback3, setFeedback3] = useState<String>("");
+  const [feedback4, setFeedback4] = useState<String>("");
+  const [feedback5, setFeedback5] = useState<String>("");
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] =
     useState<SpeechSynthesisVoice | null>(null);
@@ -773,7 +776,7 @@ const HomePage: React.FC = () => {
 
   // Handle feedback submission
   const handleFeedbackSubmit = () => {
-    if (feedback1.trim() === "" || feedback2.trim() === "") {
+    if (feedback1.trim() === "" || feedback2.trim() === "" || feedback3.trim() === "" || feedback4.trim() === "" || feedback5.trim() === "") {
       alert("Please provide the feedback.");
       return;
     }
@@ -789,6 +792,9 @@ const HomePage: React.FC = () => {
         body: JSON.stringify({
           feedback1: feedback1,
           feedback2: feedback2,
+          feedback3: feedback3,
+          feedback4: feedback4,
+          feedback5: feedback5,
         }),
       });
 
@@ -823,23 +829,130 @@ const HomePage: React.FC = () => {
       <div className="home-content">
         {isTestFinished ? (
           <div className="feedback-form">
-            <h2>Feedback Form</h2>
+            <h2>Feedback Form</h2> <br></br><br></br>
+            <div>
+  <label>
+    How helpful did you find the mock interview system in preparing for real interviews?
+  </label>
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}>
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span key={star}>
+        <input
+          type="radio"
+          id={`q1-star-${star}`}
+          value={star}
+          name="q1"
+          onChange={() => setFeedback1(String(star))} // Converts the number to string before setting
+          style={{ display: "none" }}
+        />
+        <label
+          htmlFor={`q1-star-${star}`}
+          style={{
+            cursor: "pointer",
+            fontSize: "1.5rem",
+            color: Number(feedback1) >= star ? "#FFD700" : "#ccc", // Highlight selected stars
+          }}
+        >
+          ★
+        </label>
+      </span>
+    ))}
+  </div>
+</div>
+
+<div>
+  <label>
+  Was the system able to simulate a realistic interview environment?
+  </label>
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}>
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span key={star}>
+        <input
+          type="radio"
+          id={`q2-star-${star}`}
+          value={star}
+          name="q2"
+          onChange={() => setFeedback5(String(star))} // Converts the number to string before setting
+          style={{ display: "none" }}
+        />
+        <label
+          htmlFor={`q2-star-${star}`}
+          style={{
+            cursor: "pointer",
+            fontSize: "1.5rem",
+            color: Number(feedback5) >= star ? "#FFD700" : "#ccc", // Highlight selected stars
+          }}
+        >
+          ★
+        </label>
+      </span>
+    ))}
+  </div>
+</div>
+
+<div>
+  <label>
+  Did the system help you feel more confident about your interview skills?  
+  </label>
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}>
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span key={star}>
+        <input
+          type="radio"
+          id={`q3-star-${star}`}
+          value={star}
+          name="q3"
+          onChange={() => setFeedback3(String(star))} // Converts the number to string before setting
+          style={{ display: "none" }}
+        />
+        <label
+          htmlFor={`q3-star-${star}`}
+          style={{
+            cursor: "pointer",
+            fontSize: "1.5rem",
+            color: Number(feedback3) >= star ? "#FFD700" : "#ccc", // Highlight selected stars
+          }}
+        >
+          ★
+        </label>
+      </span>
+    ))}
+  </div>
+</div>
+
+<div>
+  <label>
+  Would you recommend the mock interview system to others?  
+  </label>
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}>
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span key={star}>
+        <input
+          type="radio"
+          id={`q4-star-${star}`}
+          value={star}
+          name="q4"
+          onChange={() => setFeedback4(String(star))} // Converts the number to string before setting
+          style={{ display: "none" }}
+        />
+        <label
+          htmlFor={`q4-star-${star}`}
+          style={{
+            cursor: "pointer",
+            fontSize: "1.5rem",
+            color: Number(feedback4) >= star ? "#FFD700" : "#ccc", // Highlight selected stars
+          }}
+        >
+          ★
+        </label>
+      </span>
+    ))}
+  </div>
+</div>          
+          
             <div>
               <label>
-                How helpful did you find the mock interview system in preparing
-                for real interviews?
-                <input
-                  type="text"
-                  value={feedback1}
-                  onChange={(e) => setFeedback1(e.target.value)}
-                  placeholder="Enter your feedback"
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Do you have any suggestions or improvements for enhancing the
-                mock interview system?
+                Do you have any suggestions to improve the System?
                 <input
                   type="text"
                   value={feedback2}
@@ -849,8 +962,7 @@ const HomePage: React.FC = () => {
               </label>
             </div>
             <button onClick={handleFeedbackSubmit}>Submit Feedback</button>
-            <br />
-            <br />
+           
             <button onClick={() => navigate("/dashboard")}>Skip</button>
           </div>
         ) : (
