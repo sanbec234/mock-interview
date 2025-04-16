@@ -74,37 +74,37 @@ const ResultListPage: React.FC = () => {
   }, []);
 
   const handleAction = async (testId: number, action: string) => {
-    // if (action === "view_result") {
-    //   localStorage.setItem("test_id", testId.toString());
-    //   navigate("/completion-page");
-    // } 
     if (action === "view_result") {
-      const apiKey = prompt("Enter your API key to view the result:");
+      localStorage.setItem("test_id", testId.toString());
+      navigate("/completion-page");
+    } 
+    // if (action === "check_result") {
+    //   const apiKey = prompt("Enter your API key to view the result:");
     
-      if (!apiKey) {
-        alert("API key is required to view the result.");
-        return;
-      }
+    //   if (!apiKey) {
+    //     alert("API key is required to view the result.");
+    //     return;
+    //   }
     
-      try {
-        const response = await fetch("http://localhost:5000/view_result_auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ testId, apiKey }),
-        });
+    //   try {
+    //     const response = await fetch("http://localhost:5000/view_result_auth", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ testId, apiKey }),
+    //     });
     
-        if (response.ok) {
-          localStorage.setItem("test_id", testId.toString());
-          navigate("/completion-page");
-        } else {
-          const error = await response.json();
-          alert(`Error: ${error.error || "Invalid API key or failed request."}`);
-        }
-      } catch (err) {
-        console.error("Error viewing result:", err);
-        alert("An error occurred while trying to view the result.");
-      }
-    }
+    //     if (response.ok) {
+    //       localStorage.setItem("test_id", testId.toString());
+    //       navigate("/completion-page");
+    //     } else {
+    //       const error = await response.json();
+    //       alert(`Error: ${error.error || "Invalid API key or failed request."}`);
+    //     }
+    //   } catch (err) {
+    //     console.error("Error viewing result:", err);
+    //     alert("An error occurred while trying to view the result.");
+    //   }
+    // }
     
     else if (action === "check_result") {
       try {

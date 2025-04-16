@@ -136,6 +136,11 @@ def start_test():
             )
             fetched_questions = cursor.fetchall()
 
+            for q in fetched_questions:
+                sql = "UPDATE question_bank SET count = count + 1 WHERE id = %s"
+                cursor.execute(sql, (q['id'],))
+
+
             # Collect question IDs
             question_ids.extend([q['id'] for q in fetched_questions])
 
@@ -176,35 +181,6 @@ def start_test():
 
     finally:
         cursor.close()
-
-
-def create_question_indices(num_questions, selected_topics):
-    questions_indices = []
-
-    for i in range(len(selected_topics)):
-        subject = selected_topics[i]
-        to_ask = 0
-
-        if i == len(selected_topics) - 1:
-            to_ask = num_questions - len(questions_indices)
-        else:
-          to_ask = num_questions / len(selected_topics)
-
-        try:
-            cursor = conn.cursor()
-            call_procedure = f"CALL GetQuestionsBySubjects({to_ask}, '{subject}')"
-            cursor.execute(call_procedure)
-
-            # Fetch the results
-            results = cursor.fetchall()
-            for row in results:
-                questions_indices.append(row['id'])
-            cursor.close()
-        except Exception as e:
-            pass
-        finally:
-            cursor.close()
-    return questions_indices
 
 @app.route('/resultlist', methods=['POST'])
 def resultlist():
@@ -306,7 +282,8 @@ def checkresult():
             return jsonify({"error": "Invalid or missing JSON data"}), 400
 
         test_id = data.get('testId')
-        api_key = "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"
+        print(test_id)
+        api_key = "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"
         
         if not test_id:
             return jsonify({"error": "Missing test ID"}), 400
