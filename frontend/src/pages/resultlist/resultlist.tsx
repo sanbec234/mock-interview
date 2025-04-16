@@ -107,59 +107,11 @@ const ResultListPage: React.FC = () => {
     // }
     
     else if (action === "check_result") {
-      // try {
-      //   const response = await fetch("http://localhost:5000/check_result", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ testId }),
-      //   });
-
-      //   if (response.ok) {
-      //     const data = await response.json();
-      //     const overallFeedback =
-      //       data.overall_feedback || "No feedback available.";
-
-      //     alert(`Test Evaluated! Feedback: ${overallFeedback}`);
-
-      //     setTestData((prev) => {
-      //       const pendingTests = prev.tests_with_pending_results.filter(
-      //         (test) => test.test_id !== testId
-      //       );
-      //       const evaluatedTest = prev.tests_with_pending_results.find(
-      //         (test) => test.test_id === testId
-      //       );
-
-      //       if (evaluatedTest) {
-      //         return {
-      //           ...prev,
-      //           tests_with_pending_results: pendingTests,
-      //           tests_with_results: [...prev.tests_with_results, evaluatedTest],
-      //         };
-      //       }
-
-      //       return prev;
-      //     });
-      //   } else {
-      //     const error = await response.json();
-      //     alert(`Error: ${error.error || "Failed to evaluate the test."}`);
-      //   }
-      // } catch (err) {
-      //   console.error("Error evaluating test:", err);
-      //   alert("An error occurred while evaluating the test.");
-      // }
-
-      const apiKey = prompt("Please enter your API Key to check the result:");
-
-      if (!apiKey) {
-        alert("API Key is required to proceed.");
-        return;
-      }
-
       try {
         const response = await fetch("http://localhost:5000/check_result", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ testId, apiKey }), // Pass API key to backend
+          body: JSON.stringify({ testId }),
         });
 
         if (response.ok) {
@@ -195,27 +147,75 @@ const ResultListPage: React.FC = () => {
         console.error("Error evaluating test:", err);
         alert("An error occurred while evaluating the test.");
       }
-    } else if (action === "resume") {
-      try {
-        const response = await fetch("http://localhost:5000/resume", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ testId }),
-        });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Resume Test Data:", data);
-          localStorage.setItem("resume_test_data", JSON.stringify(data));
-          navigate("/home");
-        } else {
-          const error = await response.json();
-          alert(`Error: ${error.error || "Failed to resume the test."}`);
-        }
-      } catch (err) {
-        console.error("Error resuming test:", err);
-        alert("An error occurred while resuming the test.");
-      }
+    //   const apiKey = prompt("Please enter your API Key to check the result:");
+
+    //   if (!apiKey) {
+    //     alert("API Key is required to proceed.");
+    //     return;
+    //   }
+
+    //   try {
+    //     const response = await fetch("http://localhost:5000/check_result", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ testId, apiKey }), // Pass API key to backend
+    //     });
+
+    //     if (response.ok) {
+    //       const data = await response.json();
+    //       const overallFeedback =
+    //         data.overall_feedback || "No feedback available.";
+
+    //       alert(`Test Evaluated! Feedback: ${overallFeedback}`);
+
+    //       setTestData((prev) => {
+    //         const pendingTests = prev.tests_with_pending_results.filter(
+    //           (test) => test.test_id !== testId
+    //         );
+    //         const evaluatedTest = prev.tests_with_pending_results.find(
+    //           (test) => test.test_id === testId
+    //         );
+
+    //         if (evaluatedTest) {
+    //           return {
+    //             ...prev,
+    //             tests_with_pending_results: pendingTests,
+    //             tests_with_results: [...prev.tests_with_results, evaluatedTest],
+    //           };
+    //         }
+
+    //         return prev;
+    //       });
+    //     } else {
+    //       const error = await response.json();
+    //       alert(`Error: ${error.error || "Failed to evaluate the test."}`);
+    //     }
+    //   } catch (err) {
+    //     console.error("Error evaluating test:", err);
+    //     alert("An error occurred while evaluating the test.");
+    //   }
+    // } else if (action === "resume") {
+    //   try {
+    //     const response = await fetch("http://localhost:5000/resume", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ testId }),
+    //     });
+
+    //     if (response.ok) {
+    //       const data = await response.json();
+    //       console.log("Resume Test Data:", data);
+    //       localStorage.setItem("resume_test_data", JSON.stringify(data));
+    //       navigate("/home");
+    //     } else {
+    //       const error = await response.json();
+    //       alert(`Error: ${error.error || "Failed to resume the test."}`);
+    //     }
+    //   } catch (err) {
+    //     console.error("Error resuming test:", err);
+    //     alert("An error occurred while resuming the test.");
+    //   }
     }
   };
 
