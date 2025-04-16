@@ -788,7 +788,7 @@ def get_students():
         student_times = defaultdict(list)  # Track time taken for ranking
 
         for test in tests:
-            score = round(test["total_score"], 2)
+            score = round(test["total_score"], 2) if test["total_score"] is not None else 0
             time_taken = test["time_taken"] or 99999  # ✅ Default high value for ranking
             student_tests[test["student_id"]].append({
                 "test_id": test["test_id"],
@@ -1008,7 +1008,10 @@ def submitFeedback():
         cursor = conn.cursor()
         feedback1 = data.get('feedback1')
         feedback2 = data.get('feedback2')
-        cursor.execute("INSERT INTO user_feedback (feedback1, feedback2) VALUES (%s, %s)", (feedback1, feedback2))
+        feedback3 = data.get('feedback3')
+        feedback4 = data.get('feedback4')
+        feedback5 = data.get('feedback5')
+        cursor.execute("INSERT INTO user_feedback (feedback1, feedback2, feedback3, feedback4, feedback5) VALUES (%s, %s, %s, %s, %s)", (feedback1, feedback2, feedback3, feedback4, feedback5))
         conn.commit()
         return jsonify({"message": "Feedback submitted successfully"}), 201
 
