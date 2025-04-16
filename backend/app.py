@@ -811,7 +811,7 @@ def get_students():
         student_times = defaultdict(list)  # Track time taken for ranking
 
         for test in tests:
-            score = round(test["total_score"], 2)
+            score = round(test["total_score"], 2) if test["total_score"] is not None else 0
             time_taken = test["time_taken"] or 99999  # ✅ Default high value for ranking
             student_tests[test["student_id"]].append({
                 "test_id": test["test_id"],
