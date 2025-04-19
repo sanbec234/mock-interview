@@ -83,7 +83,7 @@ def check_relevance(question, reference_answer, user_answer,api):
     """
     
     completion = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="deepseek-r1-distill-llama-70b",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": relevance_score_prompt}
