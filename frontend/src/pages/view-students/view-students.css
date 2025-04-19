@@ -1,33 +1,41 @@
 :root {
-  --ai-primary: #6366f1;    /* Professional purple */
-  --ai-secondary: #3b82f6;  /* Trustworthy blue */
-  --ai-accent: #10b981;     /* Positive green */
-  --ai-background: #0f172a; /* Deep space blue */
-  --ai-surface: #1e293b;    /* Card background */
-  --ai-text: #f8fafc;       /* Clean white */
-  --ai-border: #334155;     /* Subtle borders */
+  --ai-primary: #6366f1;
+  --ai-secondary: #3b82f6;
+  --ai-accent: #10b981;
+  --ai-background: #0f172a;
+  --ai-surface: #1e293b;
+  --ai-text: #f8fafc;
+  --ai-border: #334155;
 }
 
-/* Unique body wrapper for the student list app */
+/* Ensure full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body wrapper for the student list app */
 .studentlist-body {
   font-family: "Inter", system-ui, sans-serif;
   background: var(--ai-background);
   color: var(--ai-text);
-  margin: 0;
-  line-height: 1.6;
+  height: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.studentlist-html {
-  background: var(--ai-background);
-}
-
-/* Main container */
-.studentlist-container {
+/* Main container and dashboard fill height */
+.studentlist-container,
+.dashboard-container-2-2 {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ai-surface);
   max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
-  background: var(--ai-surface);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid var(--ai-border);
@@ -130,8 +138,8 @@
 }
 
 .studentlist-student-item:hover {
-  background: linear-gradient(90deg, 
-    rgba(99, 102, 241, 0.1) 0%, 
+  background: linear-gradient(90deg,
+    rgba(99, 102, 241, 0.1) 0%,
     rgba(59, 130, 246, 0.1) 100%
   );
   padding-left: 1.5rem;
@@ -157,8 +165,7 @@
   opacity: 1;
 }
 
-/* New Profile Layout for Student Detail Page */
-/* Top Section: Two-column layout */
+/* Profile Layout */
 .studentlist-profile-layout {
   display: flex;
   justify-content: space-between;
@@ -167,7 +174,6 @@
   margin-bottom: 2rem;
 }
 
-/* Left Column: Profile card (cover, picture, name, year) */
 .studentlist-profile-left {
   width: 40%;
 }
@@ -182,7 +188,7 @@
   position: relative;
   background: var(--ai-surface);
   padding: 1rem;
-  margin-top: -40px; /* Adjust this value if needed */
+  margin-top: -40px;
   border-radius: 8px;
   text-align: center;
 }
@@ -207,34 +213,34 @@
   color: var(--ai-secondary);
 }
 
-/* Right Column: Additional Details */
 .studentlist-profile-right {
   width: 55%;
   background: var(--ai-surface);
   padding: 1rem;
   border-radius: 8px;
+  height: 189px;
 }
 
-.studentlist-profile-right .studentlist-profile-details {
+.studentlist-profile-details {
   font-size: 1.1rem;
   color: var(--ai-text);
 }
 
-.studentlist-profile-right .studentlist-profile-details p {
+.studentlist-profile-details p {
   margin: 0.75rem 0;
   padding: 0.5rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 6px;
 }
 
-/* Scrollable tests container (middle section) */
+/* Tests */
 .studentlist-tests-container {
   margin: 2rem auto;
-  max-width: 900px;
+  width: 1000px;
   background: var(--ai-surface);
   border: 1px solid var(--ai-border);
   border-radius: 8px;
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 .studentlist-tests-container h2 {
@@ -279,7 +285,7 @@
   animation: studentlist-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Search Bar Styles */
+/* Search Bar */
 .studentlist-search-container {
   display: flex;
   align-items: center;
@@ -354,7 +360,7 @@
   background: var(--ai-surface);
 }
 
-/* Test Tile Styles */
+/* Test Tiles */
 .studentlist-test-item {
   background: var(--ai-surface);
   padding: 1rem;
@@ -373,7 +379,7 @@
   color: var(--ai-primary);
 }
 
-/* Leaderboard Styles */
+/* Leaderboard */
 .studentlist-leaderboard-container {
   margin: 2rem auto;
   max-width: 900px;

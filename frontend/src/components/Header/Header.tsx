@@ -14,9 +14,11 @@ const Header: React.FC = () => {
     <header>
       <img src="/icon.jpg" alt=""  style={{ width: "40px", height: "40px" }} />
       <h1>Mock Interview</h1>
-      <nav>
-        <span onClick={logoutHandler}>Log out</span>
-      </nav>
+      <div className="logout-btn">
+        <nav>
+          <span onClick={logoutHandler}>Log out</span>
+        </nav>
+      </div>
     </header>
   );
 };
