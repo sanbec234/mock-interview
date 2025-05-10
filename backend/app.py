@@ -9,6 +9,8 @@ import io
 import csv
 from groq import Groq 
 import pandas as pd
+from collections import defaultdict
+
 
 
 app = Flask(__name__)
@@ -16,6 +18,7 @@ app.secret_key = 'your_secret_key'
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
   # Enable CORS with credentials
 # CORS(app)
+
 
 # Database connection timeout and parameters
 timeout = 10
@@ -464,6 +467,10 @@ def checkresult():
             cursor.execute("SELECT question, answer, keyword FROM question_bank WHERE id = %s", (qid,))
             question_data = cursor.fetchone()
 
+            if not question_data:
+                cursor.execute("SELECT question, answer, keyword FROM delete_question WHERE id = %s", (qid,))
+                question_data = cursor.fetchone()
+
             if question_data:
                 result.append({
                     "qid": qid,
@@ -642,6 +649,7 @@ def delete():
         cursor = conn.cursor()
 
         # Execute the delete query
+
         cursor.execute("DELETE FROM question_bank WHERE 1=1")  # Deletes all records from the 'question' table
         
         # Commit the transaction
@@ -747,18 +755,56 @@ def update_data(id):
     finally:
         cursor.close()
 
+
 @app.route('/api/records/<int:id>', methods=['DELETE'])
 def delete_record(id):
     try:
+        conn.ping(reconnect=True)  # Ensure connection is alive
         cursor = conn.cursor()
-        sql = "DELETE FROM question_bank WHERE id = %s"
-        cursor.execute(sql, (id,))
+
+        print("1 - Checking if record exists in history...")  # Debugging print
+
+        # Step 1: Check if the question exists in history
+        check_query = """
+        SELECT qb.id, qb.question, qb.answer, qb.keyword, qb.difficulty_level, 
+               qb.subject, qb.subtopic, qb.count
+        FROM history h
+        JOIN question_bank qb ON h.question = qb.id
+        WHERE qb.id = %s
+        """
+        cursor.execute(check_query, (id,))
+        history_record = cursor.fetchone()
+
+        if history_record:
+            print("2 - History Record Found:", history_record)  # Debugging print
+
+            # Step 2: Insert into delete_question
+            insert_query = """
+            INSERT INTO delete_question (id, question, answer, keyword, difficulty_level, subject, subtopic, count)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, tuple(history_record.values()))  # Ensure correct tuple format
+
+            conn.commit()
+            print("3 - Inserted into delete_question")
+
+        # Step 3: Delete from question_bank
+        delete_query = "DELETE FROM question_bank WHERE id = %s"
+        cursor.execute(delete_query, (id,))
         conn.commit()
-        return jsonify({'message': 'Record deleted successfully'})
+        print("4 - Deleted from question_bank")
+
+        return jsonify({'message': 'Record deleted successfully'}), 200
+
     except Exception as e:
-        return jsonify({'error': str(e)})
+        conn.rollback()
+        print("Error:", str(e))  # Debugging print
+        return jsonify({'error': str(e)}), 500
+
     finally:
         cursor.close()
+
+
 
 # Add a new record
 @app.route('/api/records', methods=['POST'])
@@ -854,7 +900,71 @@ def get_overall_feedback(df, test_id, api_key):
 
     return completion.choices[0].message.content
 
+@app.route('/students', methods=['GET'])
+def get_students():
+    try:
+        cursor = conn.cursor()  # ✅ Use dictionary cursor
 
+        # Fetch student data
+        student_query = """
+            SELECT classuser, rollno AS id, name, yearuser, email, department 
+            FROM user
+            ORDER BY classuser, rollno;
+        """
+        cursor.execute(student_query)
+        students = cursor.fetchall()
+
+        if not students:
+            return jsonify({"error": "No students found"}), 404
+
+        # Fetch test data (Only completed tests with results)
+        test_query = """
+            SELECT test.test_id, test.rollno AS student_id, test.created_at,
+                   (history.similarity_score * 0.15 + history.keyword_matching * 0.15 + 
+                    history.grammar_check * 0.20 + history.llm_score * 0.50) AS total_score
+            FROM test
+            JOIN history ON test.test_id = history.test_id
+            WHERE test.iscompleted = 1 AND test.isresult = 1
+        """
+        cursor.execute(test_query)
+        tests = cursor.fetchall()
+
+        # Organize test data by student_id
+        student_tests = defaultdict(list)
+        for test in tests:
+            student_tests[test["student_id"]].append({
+                "test_id": test["test_id"],
+                "created_at": test["created_at"].strftime("%Y-%m-%d %H:%M:%S"),  # ✅ Format timestamp
+                "mark": round(test["total_score"], 2)  # ✅ Round score for better readability
+            })
+
+        # Group students by class
+        students_dict = defaultdict(list)
+
+        for student in students:
+            class_name = student["classuser"] or "Unknown Class"  # ✅ Handle NULL values
+            student_id = student["id"]
+
+            student_info = {
+                "id": student_id,
+                "name": student["name"] or "Unknown",
+                "yearuser": f"{student['yearuser']}th" if student["yearuser"] else "N/A",
+                "email": student["email"] or "N/A",
+                "department": student["department"] or "N/A",
+                "tests": student_tests.get(student_id, [])  # ✅ Add test list
+            }
+            students_dict[class_name].append(student_info)
+
+        return jsonify(dict(students_dict)), 200  # ✅ Convert defaultdict to dict
+
+    except mysql.connector.Error as db_error:
+        return jsonify({"error": f"Database error: {db_error}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {e}"}), 500
+
+    finally:
+        if "cursor" in locals():
+            cursor.close()
 
 
 @app.route('/api/topics', methods=['GET'])
@@ -868,7 +978,6 @@ def get_topics():
     topics = [row['subject'] for row in result]
     cursor.close()
     return jsonify({"topics": topics})
-  
 @app.route('/view_result', methods=['POST'])
 def viewresult():
     try:
@@ -910,11 +1019,20 @@ def viewresult():
             llm_relevance_score = row["llm_relevance_score"]
             feedback = row["feedback"]
 
+            # First, check in question_bank
             cursor.execute(
                 "SELECT question, answer, subject, subtopic, difficulty_level FROM question_bank WHERE id = %s", 
                 (question_id,)
             )
             question_data = cursor.fetchone()
+
+            # If not found, check in delete_question
+            if not question_data:
+                cursor.execute(
+                    "SELECT question, answer, subject, subtopic, difficulty_level FROM delete_question WHERE id = %s", 
+                    (question_id,)
+                )
+                question_data = cursor.fetchone()
 
             if question_data:
                 question = question_data["question"]
@@ -922,7 +1040,7 @@ def viewresult():
                 difficulty = question_data["difficulty_level"]
                 subject = question_data["subject"]
                 subtopic = question_data["subtopic"]
-
+                
                 avg_score = (grammar_score * 100 + similarity_score + keyword_score + (llm_relevance_score * 20)) / 4
                 total_score += avg_score
 
@@ -947,8 +1065,9 @@ def viewresult():
                     "explanation": explanation
                 })
             else:
+                # If not found in both tables, display "This question has been removed from the dataset."
                 evaluations.append({
-                    "question": None,
+                    "question": "This question has been removed from the dataset.",
                     "reference_answer": None,
                     "difficulty": None,
                     "subject": None,
